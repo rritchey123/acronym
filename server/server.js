@@ -1,32 +1,29 @@
-import express from "express"
-const app = express();
-const port = 3000;
+const server = require('express')();
+const http = require('http').createServer(server);
 
-// Sample data - Replace these with your desired objects
-const acroynms = [
-  { id: 1, name: 'abc' },
-  { id: 2, name: 'wtf' },
-  { id: 3, name: 'sos' },
-];
 
-// Route to get all generic objects
-app.get('/api/objects', (req, res) => {
-  res.json(acroynms);
-});
-
-// Route to get a specific generic object by ID
-app.get('/api/objects/:id', (req, res) => {
-  const objectId = parseInt(req.params.id);
-  const object = acroynms.find((obj) => obj.id === objectId);
-
-  if (!object) {
-    return res.status(404).json({ error: 'Object not found' });
+// Enable requests coming in from the front end?
+const io = require('socket.io')(http,{
+  "cors": {
+    "origin": `http://localhost:${3000}`
   }
+})
 
-  res.json(object);
+
+io.on('connection', function (socket) {
+  console.log('A user connected: ' + socket.id);
+
+  socket.on('create-something', function (e) {
+    console.log('GOT A create-something EVENT!!!' + socket.id);
+    console.log(e)
 });
 
-// Start the server
-app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
+  socket.on('disconnect', function () {
+      console.log('A user disconnected: ' + socket.id);
+  });
+});
+
+// Start listening on 3030
+http.listen(3030, function () {
+  console.log('Server started!');
 });
