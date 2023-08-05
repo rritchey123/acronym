@@ -3,7 +3,7 @@ const http = require('http').createServer(server);
 
 
 // Enable requests coming in from the front end?
-const io = require('socket.io')(http,{
+const io = require('socket.io')(http, {
   "cors": {
     "origin": `http://localhost:${3000}`
   }
@@ -16,10 +16,10 @@ io.on('connection', function (socket) {
   socket.on('create-something', function (e) {
     console.log('GOT A create-something EVENT!!!' + socket.id);
     console.log(e)
-});
+  });
 
   socket.on('disconnect', function () {
-      console.log('A user disconnected: ' + socket.id);
+    console.log('A user disconnected: ' + socket.id);
   });
 });
 
