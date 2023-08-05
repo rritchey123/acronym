@@ -10,7 +10,7 @@ export default function App() {
   const [fooEvents, setFooEvents] = useState([]);
 
   useEffect(() => {
-    socket.connect()
+    
     function onConnect() {
       console.log("CONNECTED TO THE SERVER")
       setIsConnected(true);
@@ -20,6 +20,7 @@ export default function App() {
       console.log("DISCONNECTED FROM THE SERVER")
       setIsConnected(false);
     }
+
 
     function onFooEvent(value) {
       setFooEvents(previous => [...previous, value]);
