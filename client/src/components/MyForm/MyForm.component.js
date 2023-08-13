@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import  socket from '../socket';
+import socket from '../../socket';
 
 export function MyForm() {
   const [value, setValue] = useState('');
@@ -15,10 +15,10 @@ export function MyForm() {
   }
 
   return (
-    <form onSubmit={ onSubmit }>
-      <input onChange={ e => setValue(e.target.value) } />
+    <form onSubmit={onSubmit}>
+      <input onChange={e => setValue(e.target.value)} />
 
-      <button type="submit" disabled={ isLoading }>Submit</button>
+      <button type="submit" disabled={isLoading}>Submit</button>
     </form>
   );
 }

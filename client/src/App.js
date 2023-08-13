@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import  socket  from './socket';
-import { ConnectionState } from './components/ConnectionState';
-import { ConnectionManager } from './components/ConnectionManager';
-import { MyForm } from './components/MyForm';
-import { Events } from './components/Events';
+import socket from './socket';
+import { ConnectionState } from './components/ConnectionState/ConnectionState.component';
+import { ConnectionManager } from './components/ConnectionManager/ConnectionManager.component';
+import { MyForm } from './components/MyForm/MyForm.component';
+import { Events } from './components/Events/Events.component';
 
 export default function App() {
   const [isConnected, setIsConnected] = useState(socket.connected);
   const [fooEvents, setFooEvents] = useState([]);
 
   useEffect(() => {
-    
+
     function onConnect() {
       console.log("CONNECTED TO THE SERVER")
       setIsConnected(true);
@@ -40,8 +40,8 @@ export default function App() {
 
   return (
     <div className="App">
-      <ConnectionState isConnected={ isConnected } />
-      <Events events={ fooEvents } />
+      <ConnectionState isConnected={isConnected} />
+      <Events events={fooEvents} />
       <ConnectionManager />
       <MyForm />
     </div>
