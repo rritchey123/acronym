@@ -5,9 +5,12 @@ import { ConnectionManager } from './components/ConnectionManager/ConnectionMana
 import { MyForm } from './components/MyForm/MyForm.component';
 import { Events } from './components/Events/Events.component';
 
+import { useSelector } from 'react-redux';
+
 export default function App() {
   const [isConnected, setIsConnected] = useState(socket.connected);
   const [fooEvents, setFooEvents] = useState([]);
+  const { feState } = useSelector((state) => state.feState)
 
   useEffect(() => {
 
@@ -41,6 +44,7 @@ export default function App() {
   return (
     <div className="App">
       <ConnectionState isConnected={isConnected} />
+      <h1>feState : {feState}</h1>
       <Events events={fooEvents} />
       <ConnectionManager />
       <MyForm />
