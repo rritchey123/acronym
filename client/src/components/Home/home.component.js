@@ -1,7 +1,7 @@
 import React from 'react';
-
-import { ConnectionManager } from '../ConnectionManager/ConnectionManager.component';
 import { MyForm } from '../MyForm/MyForm.component';
+import { ConnectButton } from '../ConnectButton/ConnectButton.component';
+import { DisconnectButton } from '../DisconnectButton/DisconnectButton.component';
 
 import { useSelector } from 'react-redux';
 export function Home() {
@@ -11,7 +11,8 @@ export function Home() {
         <div className="App">
             <h1>feState : {feState}</h1>
             <h1>connected : {connected ? "We connected" : "Negatory on that connection son"}</h1>
-            <ConnectionManager />
+            <ConnectButton />
+            <DisconnectButton />
             <MyForm />
         </div>
     );

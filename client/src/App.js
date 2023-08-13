@@ -1,9 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import socket from './socket';
-
-import { ConnectionManager } from './components/ConnectionManager/ConnectionManager.component';
-import { MyForm } from './components/MyForm/MyForm.component';
-import { Events } from './components/Events/Events.component';
 
 import { setConnectionState } from "./redux/connectionState"
 import { useSelector, useDispatch } from 'react-redux';
