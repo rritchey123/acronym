@@ -24,6 +24,11 @@ io.on('connection', function (socket) {
     socket.emit("room-created", roomId)
   });
 
+  socket.on('leave-room', function (payload) {
+    // TODO: Remove player from game. If last player, remove room
+    socket.emit("room-left")
+  });
+
   socket.on('join-room', function (payload) {
     console.log('RECEIVED join-room EVENT ' + socket.id);
     console.log(payload)

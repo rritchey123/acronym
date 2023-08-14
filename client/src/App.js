@@ -27,9 +27,15 @@ export default function App() {
       dispatch(setState("room"))
     }
 
+    function roomLeft() {
+      dispatch(setRoomId(""))
+      dispatch(setState("home"))
+    }
+
     socket.on('connect', onConnect);
     socket.on('disconnect', onDisconnect);
     socket.on('room-created', roomCreated)
+    socket.on('room-left', roomLeft)
 
     return () => {
       // ! TODO: WHAT IS SOCKET.OFF?
