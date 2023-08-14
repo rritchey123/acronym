@@ -4,7 +4,7 @@ import connectionStateReducer from './connectionState'
 
 export default configureStore({
     reducer: {
-        feStateASDF: feStateReducer,
+        feState: feStateReducer,
         connectionState: connectionStateReducer
     }
 })

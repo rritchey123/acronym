@@ -6,7 +6,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Home } from './components/Home/home.component';
 
 export default function App() {
-  const { feState } = useSelector((state) => state.feStateASDF)
+  const { feState } = useSelector((state) => state.feState)
   const dispatch = useDispatch()
 
   useEffect(() => {
