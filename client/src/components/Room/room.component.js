@@ -5,18 +5,16 @@ import { DisconnectButton } from '../DisconnectButton/DisconnectButton.component
 
 import { useSelector } from 'react-redux';
 
-export function Home() {
-    const { state, roomId } = useSelector((state) => state.feState)
+export function Room() {
+    const { roomId } = useSelector((state) => state.feState)
     const { connected } = useSelector((state) => state.connectionState)
 
     return (
         <div className="App">
-            <h1>HOME SCREEN</h1>
+            <h1>ROOM SCREEN</h1>
+            <h1>roomId: {roomId || "No room"}</h1>
             <h1>connected : {connected ? "We connected" : "Negatory on that connection son"}</h1>
-            <ConnectButton />
-            <DisconnectButton />
 
-            <MyForm />
         </div>
     );
 }

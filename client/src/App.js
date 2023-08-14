@@ -6,9 +6,10 @@ import { setRoomId, setState } from "./redux/feState"
 
 import { useSelector, useDispatch } from 'react-redux';
 import { Home } from './components/Home/home.component';
+import { Room } from './components/Room/room.component';
 
 export default function App() {
-  const { feState } = useSelector((state) => state.feState)
+  const { state } = useSelector((state) => state.feState)
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -39,13 +40,13 @@ export default function App() {
     };
   }, []);
 
-  if (feState === "home") {
+  if (state === "home") {
     return (
       <Home></Home>
     )
   } else {
     return (
-      <Home></Home>
+      <Room></Room>
     )
   }
 
