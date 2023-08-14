@@ -4,12 +4,16 @@ class RoomTrackerService {
     }
 
     static getInstance() {
-        if (!this._instance) this._instance = new RoomTrackerSercice()
+        if (!this._instance) this._instance = new RoomTrackerService()
         return this._instance
     }
 
     _generateId() {
         return (Math.random() + 1).toString(36).substring(7);
+    }
+
+    getRooms() {
+        return this._rooms
     }
 
     createRoom() {
@@ -52,3 +56,5 @@ class RoomTrackerService {
         roomDetails.players = roomsDetails.players.filter((i) => i.id !== playerId)
     }
 }
+
+module.exports = RoomTrackerService
