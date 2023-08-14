@@ -2,6 +2,8 @@ import React, { useEffect } from 'react';
 import socket from './socket';
 
 import { setConnectionState } from "./redux/connectionState"
+import { setRoomId, setState } from "./redux/feState"
+
 import { useSelector, useDispatch } from 'react-redux';
 import { Home } from './components/Home/home.component';
 
@@ -12,23 +14,28 @@ export default function App() {
   useEffect(() => {
 
     function onConnect() {
-      console.log("CONNECTED TO THE SERVER")
       dispatch(setConnectionState(true));
     }
 
     function onDisconnect() {
-      console.log("DISCONNECTED FROM THE SERVER")
       dispatch(setConnectionState(false));
     }
+
+    function roomCreated(payload) {
+      dispatch(setRoomId(payload))
+      dispatch(setState("room"))
+    }
+
     socket.on('connect', onConnect);
     socket.on('disconnect', onDisconnect);
-    // socket.on('foo', onFooEvent);
+    socket.on('room-created', roomCreated)
 
     return () => {
       // ! TODO: WHAT IS SOCKET.OFF?
       socket.off('connect', onConnect);
       socket.off('disconnect', onDisconnect);
-      // socket.off('foo', onFooEvent);
+      socket.off("room-created", roomCreated)
+
     };
   }, []);
 

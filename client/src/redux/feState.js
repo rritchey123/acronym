@@ -3,12 +3,12 @@ import { createSlice } from "@reduxjs/toolkit"
 export const feStateSlice = createSlice({
     name: "feState",
     initialState: {
-        feState: "home",
+        state: "home",
         roomId: ""
     },
     reducers: {
-        setFeState: (state, action) => {
-            state.feState = action.payload
+        setState: (state, action) => {
+            state.state = action.payload
         },
         setRoomId: (state, action) => {
             state.roomId = action.payload
@@ -16,5 +16,5 @@ export const feStateSlice = createSlice({
     }
 })
 
-export const { setFeState, setRoomId } = feStateSlice.actions
+export const { setState, setRoomId } = feStateSlice.actions
 export default feStateSlice.reducer
