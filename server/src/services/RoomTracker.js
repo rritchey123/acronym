@@ -8,14 +8,21 @@ class RoomTrackerService {
         return this._instance
     }
 
+    // Helpers
     _generateId() {
         return (Math.random() + 1).toString(36).substring(7);
     }
+    _checkIfRoomExists(roomId) {
+        if (this._rooms[roomId]) throw new Error(`Room ${roomId} does not exist.`)
+    }
+    _checkIfPlayerExists(playerId) {
 
+    }
     getRooms() {
         return this._rooms
     }
 
+    // Room operations
     createRoom() {
         let id = this._generateId()
         while (this._rooms[id]) { id = this._generateI() }
@@ -26,17 +33,16 @@ class RoomTrackerService {
 
         return id
     }
-
     getRoomDetails(roomId) {
-        if (this._rooms[roomId]) throw new Error(`Room ${roomId} does not exist.`)
+        this._checkIfRoomExists(roomId)
         return this._rooms[roomId]
     }
-
     deleteRoom(roomId) {
-        this.getRoomDetails(roomId)
+        this._checkIfRoomExists(roomId)
         delete this._rooms[roomId]
     }
 
+    // Player operations
     addPlayer(roomId, playerDetails) {
         const { playerId, playerName } = playerDetails
         const roomDetails = this.getRoomDetails(roomId)
@@ -50,7 +56,7 @@ class RoomTrackerService {
     }
 
     removePlayer(roomId, playerId) {
-        const roomDetials = this.getRoomDetails(roomId)
+        const roomDetails = this.getRoomDetails(roomId)
 
         if (!roomDetails.players.find((i) => i.id === playerid)) throw new Error(`Player with id ${playerId} does not exist.`)
         roomDetails.players = roomsDetails.players.filter((i) => i.id !== playerId)
