@@ -12,7 +12,7 @@ export function Room() {
     const { connected } = useSelector((state) => state.connectionState)
 
     function leaveRoom() {
-        socket.emit("leave-room")
+        socket.emit("leave-room", { roomId })
     }
 
     return (

@@ -15,29 +15,42 @@ const io = require('socket.io')(http, {
 io.on('connection', function (socket) {
   console.log('A user connected: ' + socket.id);
 
-  socket.on('create-room', function (payload) {
-    console.log('create-room FROM ' + socket.id, "PAYLOAD: ", payload);
-
-    const roomTracker = RoomTrackerService.getInstance()
-    const roomId = roomTracker.createRoom()
-
-    socket.emit("room-created", roomId)
-  });
-
-  socket.on('leave-room', function (payload) {
-    // TODO: Remove player from game. If last player, remove room
-    socket.emit("room-left")
-  });
-
-  socket.on('join-room', function (payload) {
-    console.log('RECEIVED join-room EVENT ' + socket.id);
-    console.log(payload)
-  });
-
-
   socket.on('disconnect', function () {
     console.log('A user disconnected: ' + socket.id);
   });
+
+  socket.on('create-room', function (payload) {
+    const { playerName } = payload
+    console.log('create-room FROM ' + socket.id, "PAYLOAD: ", payload);
+
+    const roomTracker = RoomTrackerService.getInstance()
+    const message = roomTracker.createRoom(playerName, socket.id)
+
+    socket.emit("room-created", message)
+  });
+
+  socket.on('leave-room', function (payload) {
+    console.log('leave-room FROM ' + socket.id, "PAYLOAD: ", payload);
+    const { roomId } = payload
+
+    const roomTracker = RoomTrackerService.getInstance()
+    const message = roomTracker.leaveRoom(roomId, socket.id)
+
+    socket.emit("room-left", message)
+  });
+
+  socket.on('join-room', function (payload) {
+    console.log('join-room EVENT ' + socket.id, "PAYLOAD: ", payload);
+    const { roomId, playerName } = payload
+
+    const roomTracker = RoomTrackerService.getInstance()
+    const message = roomTracker.joinRoom(roomId, { playerName, playerId: socket.id })
+
+    socket.emit("room-joined", message)
+  });
+
+
+
 });
 
 // Start listening on 3030

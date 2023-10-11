@@ -2,18 +2,19 @@ import React, { useState } from 'react';
 import socket from '../../socket';
 
 export function MyForm() {
-  const [name, setName] = useState('');
+  const [playerName, setPlayerName] = useState('');
+  const [roomId, setRoomId] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   function createRoom(event) {
     event.preventDefault();
-    if (!name) {
-      alert("Please enter a name")
+    if (!playerName) {
+      alert("Please enter a player name")
       return
     }
     setIsLoading(true);
 
-    socket.timeout(1000).emit('create-room', null, () => {
+    socket.timeout(1000).emit('create-room', { playerName }, () => {
       setIsLoading(false);
     });
     return
@@ -22,22 +23,29 @@ export function MyForm() {
   function joinRoom(event) {
 
     event.preventDefault();
-    if (!name) {
+    if (!playerName) {
       alert("Please enter a name")
+      return
+    }
+    if (!roomId) {
+      alert("Please enter a room ID")
       return
     }
     setIsLoading(true);
 
-    socket.timeout(1000).emit('join-room', name, () => {
+    socket.timeout(1000).emit('join-room', { playerName, roomId }, () => {
       setIsLoading(false);
     });
   }
 
   return (
     <form onSubmit={joinRoom}>
-      <input onChange={e => setName(e.target.value)} placeholder='Enter a name' />
+      <input onChange={e => setPlayerName(e.target.value)} placeholder='Enter a player name' />
+      <div></div>
       <button type="button" onClick={createRoom} disabled={isLoading}>Create Room</button>
-      <button type="submit" disabled={isLoading}>Join Room</button>
+      <button type="submit" onClick={joinRoom} disabled={isLoading}>Join Room</button>
+      <div></div>
+      <input onChange={e => setRoomId(e.target.value)} placeholder='Enter a room ID' />
     </form>
   );
 }

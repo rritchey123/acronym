@@ -23,11 +23,32 @@ export default function App() {
     }
 
     function roomCreated(payload) {
-      dispatch(setRoomId(payload))
+      const { success, reason, data } = payload
+      const { roomId, playerId, playerName } = data
+      dispatch(setRoomId(roomId))
       dispatch(setState("room"))
     }
 
-    function roomLeft() {
+    function roomJoined(payload) {
+      const { success, reason, data } = payload
+      if (!success) {
+        alert(reason)
+        return
+      }
+
+      console.log("room-joined event RECEIVED:", payload)
+      const { roomId, playerId, playerName } = data
+
+      dispatch(setRoomId(roomId))
+      dispatch(setState("room"))
+    }
+
+    function roomLeft(payload) {
+      const { success, reason, data } = payload
+      if (!success) {
+        alert(reason)
+        return
+      }
       dispatch(setRoomId(""))
       dispatch(setState("home"))
     }
@@ -36,12 +57,15 @@ export default function App() {
     socket.on('disconnect', onDisconnect);
     socket.on('room-created', roomCreated)
     socket.on('room-left', roomLeft)
+    socket.on("room-joined", roomJoined)
 
     return () => {
       // ! TODO: WHAT IS SOCKET.OFF?
       socket.off('connect', onConnect);
       socket.off('disconnect', onDisconnect);
       socket.off("room-created", roomCreated)
+      socket.off("room-left", roomLeft)
+      socket.off("room-joined", roomJoined)
 
     };
   }, []);
