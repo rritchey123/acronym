@@ -3,7 +3,7 @@ import socket from '../../socket';
 
 export function MyForm() {
   const [playerName, setPlayerName] = useState('');
-  const [roomId, setRoomId] = useState('');
+  const [roomId, setRoomIdInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   function createRoom(event) {
@@ -45,7 +45,7 @@ export function MyForm() {
       <button type="button" onClick={createRoom} disabled={isLoading}>Create Room</button>
       <button type="submit" onClick={joinRoom} disabled={isLoading}>Join Room</button>
       <div></div>
-      <input onChange={e => setRoomId(e.target.value)} placeholder='Enter a room ID' />
+      <input onChange={e => setRoomIdInput(e.target.value)} placeholder='Enter a room ID' />
     </form>
   );
 }
