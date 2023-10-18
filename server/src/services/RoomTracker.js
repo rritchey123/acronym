@@ -24,11 +24,14 @@ class RoomTrackerService {
         let id = this._generateId()
         while (this._rooms[id]) { id = this._generateId() }
 
+        const playerObj = { name: playerName, id: playerId, type: "leader" }
+
         this._rooms[id] = {
-            players: [{ name: playerName, id: playerId }]
+            players: [playerObj],
+            state: "waiting"
         }
 
-        return { success: true, reason: "", data: { roomId: id, playerId, playerName } }
+        return { success: true, reason: "", data: { roomId: id, ...playerObj } }
     }
     getRoomDetails(roomId) {
         //this._checkIfRoomExists(roomId)
@@ -50,10 +53,11 @@ class RoomTrackerService {
         if (roomDetails.players.find((i) => i.id === playerId)) return { success: false, reason: `Player with id ${playerId} already in room.` }
         if (roomDetails.players.find((i) => i.name === playerName)) return { success: false, reason: `Player with name ${playerName} already in room.` }
 
-        roomDetails.players.push({
-            id: playerId, name: playerName
-        })
-        return { success: true, reason: "", data: { roomId, playerId, playerName } }
+        const playerObj = {
+            id: playerId, name: playerName, type: "player"
+        }
+        roomDetails.players.push(playerObj)
+        return { success: true, reason: "", data: { roomId, ...playerObj } }
     }
 
     leaveRoom(roomId, playerId) {
@@ -69,6 +73,11 @@ class RoomTrackerService {
         if (roomDetails.players.length === 0) this.deleteRoom(roomId)
 
         return { success: true, reason: "", data: {} }
+    }
+
+    // Game operation
+    startGame() {
+        console.log("STARTING GAME")
     }
 }
 
