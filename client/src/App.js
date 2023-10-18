@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import socket from './socket';
 
 import { setConnectionState } from "./redux/connectionState"
-import { setRoomId, setState } from "./redux/feState"
+import { setRoomId, setState, setPlayerType } from "./redux/feState"
 
 import { useSelector, useDispatch } from 'react-redux';
 import { Home } from './components/Home/home.component';
@@ -24,9 +24,10 @@ export default function App() {
 
     function roomCreated(payload) {
       const { success, reason, data } = payload
-      const { roomId, playerId, playerName } = data
+      const { roomId, playerId, playerName, type } = data
       dispatch(setRoomId(roomId))
       dispatch(setState("room"))
+      dispatch(setPlayerType(type))
     }
 
     function roomJoined(payload) {
@@ -37,10 +38,11 @@ export default function App() {
       }
 
       console.log("room-joined event RECEIVED:", payload)
-      const { roomId, playerId, playerName } = data
+      const { roomId, playerId, playerName, type } = data
 
       dispatch(setRoomId(roomId))
       dispatch(setState("room"))
+      dispatch(setPlayerType(type))
     }
 
     function roomLeft(payload) {
@@ -51,6 +53,7 @@ export default function App() {
       }
       dispatch(setRoomId(""))
       dispatch(setState("home"))
+      dispatch(setPlayerType(null))
     }
 
     socket.on('connect', onConnect);
