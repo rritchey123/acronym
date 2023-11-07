@@ -25,6 +25,7 @@ export default function App() {
     function roomCreated(payload) {
       const { success, reason, data } = payload
       const { roomId, playerId, playerName, type } = data
+
       dispatch(setRoomId(roomId))
       dispatch(setState("room"))
       dispatch(setPlayerType(type))
@@ -58,9 +59,6 @@ export default function App() {
 
     socket.on('connect', onConnect);
     socket.on('disconnect', onDisconnect);
-    socket.on('room-created', roomCreated)
-    socket.on('room-left', roomLeft)
-    socket.on("room-joined", roomJoined)
 
     return () => {
       // ! TODO: WHAT IS SOCKET.OFF?

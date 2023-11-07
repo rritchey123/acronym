@@ -20,18 +20,16 @@ class RoomTrackerService {
     }
 
     // Room operations
-    createRoom(playerName, playerId) {
+    createRoom() {
         let id = this._generateId()
         while (this._rooms[id]) { id = this._generateId() }
 
-        const playerObj = { name: playerName, id: playerId, type: "leader" }
-
         this._rooms[id] = {
-            players: [playerObj],
+            players: [],
             state: "waiting"
         }
 
-        return { success: true, reason: "", data: { roomId: id, ...playerObj } }
+        return { success: true, reason: "", data: { roomId: id } }
     }
     getRoomDetails(roomId) {
         //this._checkIfRoomExists(roomId)
@@ -45,16 +43,16 @@ class RoomTrackerService {
     // Player operations
     joinRoom(roomId, playerDetails) {
         console.log("ROOM TRACKER JOIN ROOM")
-        const { playerId, playerName } = playerDetails
+        const { playerId, playerName, playerType } = playerDetails
         const roomDetails = this.getRoomDetails(roomId)
-        console.log(roomDetails)
+
         if (!roomDetails) return { success: false, reason: `Room ${roomId} does not exist.`, data: {} }
 
         if (roomDetails.players.find((i) => i.id === playerId)) return { success: false, reason: `Player with id ${playerId} already in room.` }
         if (roomDetails.players.find((i) => i.name === playerName)) return { success: false, reason: `Player with name ${playerName} already in room.` }
 
         const playerObj = {
-            id: playerId, name: playerName, type: "player"
+            id: playerId, name: playerName, type: playerType
         }
         roomDetails.players.push(playerObj)
         return { success: true, reason: "", data: { roomId, ...playerObj } }

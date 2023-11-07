@@ -10,7 +10,7 @@ export function Home() {
     const { connected } = useSelector((state) => state.connectionState)
 
     return (
-        <div className="App">
+        <div className="Home">
             <h1>HOME SCREEN</h1>
             <h1>connected : {connected ? "We connected" : "Negatory on that connection son"}</h1>
             <ConnectButton />

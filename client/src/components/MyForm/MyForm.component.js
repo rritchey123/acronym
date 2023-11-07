@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
 import socket from '../../socket';
+import { setRoomId, setState, setPlayerType } from "../../redux/feState"
+import { useSelector, useDispatch } from 'react-redux';
 
 export function MyForm() {
   const [playerName, setPlayerName] = useState('');
   const [roomId, setRoomIdInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+
+  const dispatch = useDispatch()
 
   function createRoom(event) {
     event.preventDefault();
@@ -14,8 +18,17 @@ export function MyForm() {
     }
     setIsLoading(true);
 
-    socket.timeout(1000).emit('create-room', { playerName }, () => {
-      setIsLoading(false);
+    socket.emit('create-room', ({ success, reason, data }) => {
+      const { roomId } = data
+
+      socket.emit('join-room', { roomId, playerName, playerType: "leader" }, ({ success, reason, data }) => {
+        console.log('INSIDE join-room CALLBACK')
+
+        dispatch(setRoomId(roomId))
+        dispatch(setState("room"))
+        dispatch(setPlayerType("leader"))
+      })
+      // setIsLoading(false);
     });
     return
   }
@@ -33,8 +46,11 @@ export function MyForm() {
     }
     setIsLoading(true);
 
-    socket.timeout(1000).emit('join-room', { playerName, roomId }, () => {
-      setIsLoading(false);
+    socket.emit('join-room', { playerName, roomId, playerName: "player" }, () => {
+      dispatch(setRoomId(roomId))
+      dispatch(setState("room"))
+      dispatch(setPlayerType("player"))
+      // setIsLoading(false);
     });
   }
 
