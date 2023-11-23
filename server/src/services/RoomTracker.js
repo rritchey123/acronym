@@ -76,6 +76,7 @@ class RoomTrackerService {
     // Game operation
     startGame(roomId) {
         console.log("STARTING GAME")
+        this._rooms[roomId] = "playing"
         return { success: true, reason: "", data: { roomId } }
     }
 }
