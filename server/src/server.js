@@ -36,7 +36,6 @@ io.on('connection', function (socket) {
     const message = roomTracker.leaveRoom(roomId, socket.id)
 
     cb(message)
-    // socket.emit("room-left", message)
   });
 
   socket.on('join-room', function (payload, cb) {
@@ -56,10 +55,11 @@ io.on('connection', function (socket) {
     const { roomId } = payload
 
     const roomTracker = RoomTrackerService.getInstance()
-    const message = roomTracker.startGame()
+    const message = roomTracker.startGame(roomId)
 
     // ! Emit to all !
-    // socket.emit("game-started")
+    socket.emit("game-started", message)
+    socket.in(roomId).emit("game-started", message)
   })
 
 

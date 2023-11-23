@@ -5,10 +5,12 @@ import { setConnectionState } from "./redux/connectionState"
 import { setRoomId, setState, setPlayerType } from "./redux/feState"
 
 import { useSelector, useDispatch } from 'react-redux';
-import { Home } from './components/Home/home.component';
-import { Room } from './components/Room/room.component';
+import { Home } from './components/Home/Home.component';
+import { WaitingRoom } from './components/WaitingRoom/WaitingRoom.component'
+import { PlayingRoom } from './components/PlayingRoom/PlayingRoom.component';
 
 export default function App() {
+  console.log('RE-RENDERING APP COMPONENT')
   const { state } = useSelector((state) => state.feState)
   const dispatch = useDispatch()
 
@@ -22,51 +24,27 @@ export default function App() {
       dispatch(setConnectionState(false));
     }
 
-    function roomCreated(payload) {
-      const { success, reason, data } = payload
-      const { roomId, playerId, playerName, type } = data
-
-      dispatch(setRoomId(roomId))
-      dispatch(setState("room"))
-      dispatch(setPlayerType(type))
-    }
-
-    function roomJoined(payload) {
+    function gameStarted(payload) {
       const { success, reason, data } = payload
       if (!success) {
         alert(reason)
         return
       }
+      console.log('GAME STARTED')
 
-      console.log("room-joined event RECEIVED:", payload)
-      const { roomId, playerId, playerName, type } = data
+      dispatch(setState("playingRoom"))
 
-      dispatch(setRoomId(roomId))
-      dispatch(setState("room"))
-      dispatch(setPlayerType(type))
-    }
-
-    function roomLeft(payload) {
-      const { success, reason, data } = payload
-      if (!success) {
-        alert(reason)
-        return
-      }
-      dispatch(setRoomId(""))
-      dispatch(setState("home"))
-      dispatch(setPlayerType(null))
     }
 
     socket.on('connect', onConnect);
     socket.on('disconnect', onDisconnect);
+    socket.on('game-started', gameStarted)
 
     return () => {
       // ! TODO: WHAT IS SOCKET.OFF?
       socket.off('connect', onConnect);
       socket.off('disconnect', onDisconnect);
-      socket.off("room-created", roomCreated)
-      socket.off("room-left", roomLeft)
-      socket.off("room-joined", roomJoined)
+      socket.off("game-started", gameStarted)
 
     };
   }, []);
@@ -75,10 +53,16 @@ export default function App() {
     return (
       <Home></Home>
     )
-  } else {
+  } else if (state === "waitingRoom") {
     return (
-      <Room></Room>
+      <WaitingRoom></WaitingRoom>
     )
+  } else if (state === "playingRoom") {
+    return (
+      <PlayingRoom></PlayingRoom>
+    )
+  } else {
+    return (<Home></Home>)
   }
 
 

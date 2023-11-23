@@ -16,16 +16,18 @@ export function MyForm() {
       alert("Please enter a player name")
       return
     }
-    setIsLoading(true);
+    //setIsLoading(true);
 
     socket.emit('create-room', ({ success, reason, data }) => {
       const { roomId } = data
 
       socket.emit('join-room', { roomId, playerName, playerType: "leader" }, ({ success, reason, data }) => {
-        console.log('INSIDE join-room CALLBACK')
-
+        if (!success) {
+          alert(reason)
+          return
+        }
         dispatch(setRoomId(roomId))
-        dispatch(setState("room"))
+        dispatch(setState("waitingRoom"))
         dispatch(setPlayerType("leader"))
       })
       // setIsLoading(false);
@@ -44,11 +46,15 @@ export function MyForm() {
       alert("Please enter a room ID")
       return
     }
-    setIsLoading(true);
+    //setIsLoading(true);
 
-    socket.emit('join-room', { playerName, roomId, playerName: "player" }, () => {
+    socket.emit('join-room', { playerName, roomId, playerName: "player" }, ({ success, reason, data }) => {
+      if (!success) {
+        alert(reason)
+        return
+      }
       dispatch(setRoomId(roomId))
-      dispatch(setState("room"))
+      dispatch(setState("waitingRoom"))
       dispatch(setPlayerType("player"))
       // setIsLoading(false);
     });

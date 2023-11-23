@@ -74,8 +74,9 @@ class RoomTrackerService {
     }
 
     // Game operation
-    startGame() {
+    startGame(roomId) {
         console.log("STARTING GAME")
+        return { success: true, reason: "", data: { roomId } }
     }
 }
 
