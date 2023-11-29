@@ -76,9 +76,16 @@ class RoomTrackerService {
     // Game operation
     startGame(roomId) {
         console.log("STARTING GAME")
-        this._rooms[roomId] = "playing"
+        this._rooms[roomId].state = "playing"
         return { success: true, reason: "", data: { roomId } }
     }
+
+    endGame(roomId) {
+        console.log("ENDING GAME")
+        this._rooms[roomId].state = "ended"
+        return { success: true, reason: "", data: { roomId } }
+    }
+
 }
 
 module.exports = RoomTrackerService

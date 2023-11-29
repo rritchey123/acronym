@@ -62,6 +62,16 @@ io.on('connection', function (socket) {
     socket.in(roomId).emit("game-started", message)
   })
 
+  socket.on('end-game', function (payload) {
+    console.log('end-game EVENT ' + socket.id, "PAYLOAD: ", payload);
+    const { roomId } = payload
+
+    const roomTracker = RoomTrackerService.getInstance()
+    const message = roomTracker.endGame(roomId)
+
+    socket.emit("game-ended", message)
+    socket.in(roomId).emit("game-ended", message)
+  })
 
 
 });
