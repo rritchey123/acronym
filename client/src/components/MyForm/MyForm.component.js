@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import socket from '../../socket';
 import { setRoomId, setState, setPlayerType } from "../../redux/feState"
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 export function MyForm() {
   const [playerName, setPlayerName] = useState('');

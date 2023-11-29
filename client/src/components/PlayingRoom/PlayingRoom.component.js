@@ -1,8 +1,6 @@
 import React from 'react';
-// import { MyForm } from '../MyForm/MyForm.component';
-// import { ConnectButton } from '../ConnectButton/ConnectButton.component';
-// import { DisconnectButton } from '../DisconnectButton/DisconnectButton.component';
 
+import { DebugDetails } from '../DebugDetails/DebugDetails.component';
 import { setRoomId, setState, setPlayerType } from "../../redux/feState"
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -32,13 +30,7 @@ export function PlayingRoom() {
 
     return (
         <div className="App">
-            <h1>PLAYING ROOM SCREEN</h1>
-            <h1>roomId: {roomId || "No room"}</h1>
-            <h1>connected : {connected ? "We connected" : "Negatory on that connection son"}</h1>
-            <h1>playerType : {playerType} </h1>
-            {
-                playerType === "leader" && <button type="button" onClick={startGame}>Start Game</button>
-            }
+            <DebugDetails roomName='Playing Room'></DebugDetails>
             <button type="button" onClick={leaveRoom} >Leave Room</button>
         </div>
     );
