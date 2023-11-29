@@ -19,7 +19,7 @@ export function PlayRoom() {
                 return
             }
             dispatch(setRoomId(""))
-            dispatch(setState("home"))
+            dispatch(setState("homeRoom"))
             dispatch(setPlayerType(null))
         })
     }

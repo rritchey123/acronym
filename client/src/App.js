@@ -50,7 +50,7 @@ export default function App() {
     };
   }, []);
 
-  if (state === "home") {
+  if (state === "homeRoom") {
     return (
       <HomeRoom></HomeRoom>
     )

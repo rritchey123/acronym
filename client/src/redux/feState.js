@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit"
 export const feStateSlice = createSlice({
     name: "feState",
     initialState: {
-        state: "home",
+        state: "homeRoom",
         roomId: "",
         playerType: null
     },

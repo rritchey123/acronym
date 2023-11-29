@@ -6,7 +6,7 @@ import { DebugDetails } from '../DebugDetails/DebugDetails.component';
 export function HomeRoom() {
     return (
         <div className="Home">
-            <DebugDetails roomName='Home'></DebugDetails>
+            <DebugDetails roomName='Home Room'></DebugDetails>
             <MyForm />
         </div>
     );
