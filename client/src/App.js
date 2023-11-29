@@ -5,9 +5,10 @@ import { setConnectionState } from "./redux/connectionState"
 import { setRoomId, setState, setPlayerType } from "./redux/feState"
 
 import { useSelector, useDispatch } from 'react-redux';
-import { Home } from './components/Home/Home.component';
-import { WaitingRoom } from './components/WaitingRoom/WaitingRoom.component'
-import { PlayingRoom } from './components/PlayingRoom/PlayingRoom.component';
+
+import { HomeRoom } from './components/HomeRoom/HomeRoom.component';
+import { WaitRoom } from './components/WaitRoom/WaitRoom.component';
+import { PlayRoom } from './components/PlayRoom/PlayRoom.component';
 
 export default function App() {
   console.log('RE-RENDERING APP COMPONENT')
@@ -32,7 +33,7 @@ export default function App() {
       }
       console.log('GAME STARTED')
 
-      dispatch(setState("playingRoom"))
+      dispatch(setState("playRoom"))
 
     }
 
@@ -51,18 +52,18 @@ export default function App() {
 
   if (state === "home") {
     return (
-      <Home></Home>
+      <HomeRoom></HomeRoom>
     )
-  } else if (state === "waitingRoom") {
+  } else if (state === "waitRoom") {
     return (
-      <WaitingRoom></WaitingRoom>
+      <WaitRoom></WaitRoom>
     )
-  } else if (state === "playingRoom") {
+  } else if (state === "playRoom") {
     return (
-      <PlayingRoom></PlayingRoom>
+      <PlayRoom></PlayRoom>
     )
   } else {
-    return (<Home></Home>)
+    return (<HomeRoom></HomeRoom>)
   }
 
 

@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import socket from '../../socket';
 import { DebugDetails } from '../DebugDetails/DebugDetails.component';
 
-export function WaitingRoom() {
+export function WaitRoom() {
     const { roomId, playerType } = useSelector((state) => state.feState)
 
     const dispatch = useDispatch()
@@ -28,7 +28,7 @@ export function WaitingRoom() {
 
     return (
         <div className="App">
-            <DebugDetails roomName='Waiting room'></DebugDetails>
+            <DebugDetails roomName='Wait room'></DebugDetails>
             {
                 playerType === "leader" && <button type="button" onClick={startGame}>Start Game</button>
             }

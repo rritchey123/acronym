@@ -6,7 +6,7 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import socket from '../../socket';
 
-export function PlayingRoom() {
+export function PlayRoom() {
     const { roomId, playerType } = useSelector((state) => state.feState)
     const { connected } = useSelector((state) => state.connectionState)
 
@@ -30,7 +30,7 @@ export function PlayingRoom() {
 
     return (
         <div className="App">
-            <DebugDetails roomName='Playing Room'></DebugDetails>
+            <DebugDetails roomName='Play Room'></DebugDetails>
             <button type="button" onClick={leaveRoom} >Leave Room</button>
         </div>
     );

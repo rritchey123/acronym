@@ -27,7 +27,7 @@ export function MyForm() {
           return
         }
         dispatch(setRoomId(roomId))
-        dispatch(setState("waitingRoom"))
+        dispatch(setState("waitRoom"))
         dispatch(setPlayerType("leader"))
       })
       // setIsLoading(false);
@@ -54,7 +54,7 @@ export function MyForm() {
         return
       }
       dispatch(setRoomId(roomId))
-      dispatch(setState("waitingRoom"))
+      dispatch(setState("waitRoom"))
       dispatch(setPlayerType("player"))
       // setIsLoading(false);
     });

@@ -3,7 +3,7 @@ import { MyForm } from '../MyForm/MyForm.component';
 import { DebugDetails } from '../DebugDetails/DebugDetails.component';
 
 
-export function Home() {
+export function HomeRoom() {
     return (
         <div className="Home">
             <DebugDetails roomName='Home'></DebugDetails>
