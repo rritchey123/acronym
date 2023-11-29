@@ -9,6 +9,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { HomeRoom } from './components/HomeRoom/HomeRoom.component';
 import { WaitRoom } from './components/WaitRoom/WaitRoom.component';
 import { PlayRoom } from './components/PlayRoom/PlayRoom.component';
+import { EndRoom } from './components/EndRoom/EndRoom.component';
+
 
 export default function App() {
   console.log('RE-RENDERING APP COMPONENT')
@@ -37,15 +39,28 @@ export default function App() {
 
     }
 
+    function gameEnded(payload) {
+      const { success, reason, data } = payload
+      if (!success) {
+        alert(reason)
+        return
+      }
+      console.log('GAME ENDED')
+
+      dispatch(setState("endRoom"))
+    }
+
     socket.on('connect', onConnect);
     socket.on('disconnect', onDisconnect);
     socket.on('game-started', gameStarted)
+    socket.on('game-ended', gameEnded)
 
     return () => {
       // ! TODO: WHAT IS SOCKET.OFF?
       socket.off('connect', onConnect);
       socket.off('disconnect', onDisconnect);
       socket.off("game-started", gameStarted)
+      socket.off('game-ended', gameEnded)
 
     };
   }, []);
@@ -61,6 +76,10 @@ export default function App() {
   } else if (state === "playRoom") {
     return (
       <PlayRoom></PlayRoom>
+    )
+  } else if (state === "endRoom") {
+    return (
+      <EndRoom></EndRoom>
     )
   } else {
     return (<HomeRoom></HomeRoom>)
