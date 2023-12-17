@@ -77,7 +77,7 @@ class RoomTrackerService {
     startGame(roomId) {
         console.log("STARTING GAME")
         this._rooms[roomId].state = "playing"
-        return { success: true, reason: "", data: { roomId } }
+        return { success: true, reason: "", data: { roomId, players: this._rooms[roomId].players } }
     }
 
     endGame(roomId) {
