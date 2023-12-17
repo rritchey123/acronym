@@ -4,10 +4,12 @@ import { DebugDetails } from '../DebugDetails/DebugDetails.component';
 import { setRoomId, setState, setPlayerType } from "../../redux/feState"
 import { useSelector, useDispatch } from 'react-redux';
 
+import { Player } from '../Player/Player.component';
+
 import socket from '../../socket';
 
 export function PlayRoom() {
-    const { roomId, playerType } = useSelector((state) => state.feState)
+    const { roomId, playerType, players } = useSelector((state) => state.feState)
     const { connected } = useSelector((state) => state.connectionState)
 
     const dispatch = useDispatch()
@@ -33,7 +35,13 @@ export function PlayRoom() {
             {
                 playerType === "leader" && <button type="button" onClick={endGame}>End Game</button>
             }
+
             <button type="button" onClick={leaveRoom} >Leave Room</button>
+
+            <div>PLAYERS</div>
+            {players.map(({ name: playerName }) => {
+                return <Player playerName={playerName}></Player>
+            })}
         </div>
     );
 }

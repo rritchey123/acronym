@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import socket from './socket';
 
 import { setConnectionState } from "./redux/connectionState"
-import { setRoomId, setState, setPlayerType } from "./redux/feState"
+import { setRoomId, setState, setPlayerType, setPlayers } from "./redux/feState"
 
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -34,8 +34,8 @@ export default function App() {
         return
       }
       console.log('GAME STARTED')
-
       dispatch(setState("playRoom"))
+      dispatch(setPlayers(data.players))
 
     }
 

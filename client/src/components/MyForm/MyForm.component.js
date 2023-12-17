@@ -48,7 +48,7 @@ export function MyForm() {
     }
     //setIsLoading(true);
 
-    socket.emit('join-room', { playerName, roomId, playerName: "player" }, ({ success, reason, data }) => {
+    socket.emit('join-room', { playerName, roomId, playerType: "player" }, ({ success, reason, data }) => {
       if (!success) {
         alert(reason)
         return
