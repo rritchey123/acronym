@@ -36,6 +36,8 @@ io.on('connection', function (socket) {
     const message = roomTracker.leaveRoom(roomId, socket.id)
 
     cb(message)
+
+    roomTracker.updatePlayers(socket, roomId)
   });
 
   socket.on('join-room', function (payload, cb) {
