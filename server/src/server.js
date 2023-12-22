@@ -42,10 +42,8 @@ io.on('connection', function (socket) {
     console.log('join-room EVENT ' + socket.id, "PAYLOAD: ", payload);
     const { roomId, playerName, playerType } = payload
 
-    socket.join(roomId)
-
     const roomTracker = RoomTrackerService.getInstance()
-    const message = roomTracker.joinRoom(roomId, { playerName, playerId: socket.id, playerType })
+    const message = roomTracker.joinRoom(socket, roomId, { playerName, playerId: socket.id, playerType })
 
     cb(message)
   });

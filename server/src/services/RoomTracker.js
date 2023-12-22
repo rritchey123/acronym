@@ -41,12 +41,14 @@ class RoomTrackerService {
     }
 
     // Player operations
-    joinRoom(roomId, playerDetails) {
+    joinRoom(socket, roomId, playerDetails) {
         console.log("ROOM TRACKER JOIN ROOM")
         const { playerId, playerName, playerType } = playerDetails
         const roomDetails = this.getRoomDetails(roomId)
 
         if (!roomDetails) return { success: false, reason: `Room ${roomId} does not exist.`, data: {} }
+
+        if (roomDetails.state !== 'waiting') return { success: false, reason: `Room ${roomId} has already started`, data: {} }
 
         if (roomDetails.players.find((i) => i.id === playerId)) return { success: false, reason: `Player with id ${playerId} already in room.` }
         if (roomDetails.players.find((i) => i.name === playerName)) return { success: false, reason: `Player with name ${playerName} already in room.` }
@@ -55,7 +57,10 @@ class RoomTrackerService {
             id: playerId, name: playerName, type: playerType
         }
         roomDetails.players.push(playerObj)
-        return { success: true, reason: "", data: { roomId, ...playerObj } }
+
+        socket.join(roomId)
+
+        return { success: true, reason: "", data: { roomId, roomDetails, ...playerObj } }
     }
 
     leaveRoom(roomId, playerId) {
