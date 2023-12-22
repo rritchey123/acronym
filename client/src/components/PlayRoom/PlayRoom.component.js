@@ -9,7 +9,7 @@ import { Player } from '../Player/Player.component';
 import socket from '../../socket';
 
 export function PlayRoom() {
-    const { roomId, playerType, players } = useSelector((state) => state.feState)
+    const { roomId, playerType, players, acronym, prompt } = useSelector((state) => state.feState)
     const { connected } = useSelector((state) => state.connectionState)
 
     const dispatch = useDispatch()
@@ -42,6 +42,11 @@ export function PlayRoom() {
             {players.map(({ name: playerName }) => {
                 return <Player playerName={playerName}></Player>
             })}
+
+            <div>ACRONYM</div>
+            {acronym}
+            <div>PROMPT</div>
+            {prompt}
         </div>
     );
 }
