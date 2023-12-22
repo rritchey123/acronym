@@ -46,6 +46,8 @@ io.on('connection', function (socket) {
     const message = roomTracker.joinRoom(socket, roomId, { playerName, playerId: socket.id, playerType })
 
     cb(message)
+
+    roomTracker.updatePlayers(socket, roomId)
   });
 
   socket.on('start-game', function (payload) {

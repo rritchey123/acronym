@@ -35,8 +35,6 @@ export default function App() {
       }
       console.log('GAME STARTED')
       dispatch(setState("playRoom"))
-      dispatch(setPlayers(data.players))
-
     }
 
     function gameEnded(payload) {
@@ -50,10 +48,21 @@ export default function App() {
       dispatch(setState("endRoom"))
     }
 
+    function updatePlayers(payload) {
+      const { success, reason, data } = payload
+      if (!success) {
+        alert(reason)
+        return
+      }
+      console.log('UPDATING PLAYERS')
+      dispatch(setPlayers(data.players))
+    }
+
     socket.on('connect', onConnect);
     socket.on('disconnect', onDisconnect);
     socket.on('game-started', gameStarted)
     socket.on('game-ended', gameEnded)
+    socket.on('update-players', updatePlayers)
 
     return () => {
       // ! TODO: WHAT IS SOCKET.OFF?
@@ -61,7 +70,7 @@ export default function App() {
       socket.off('disconnect', onDisconnect);
       socket.off("game-started", gameStarted)
       socket.off('game-ended', gameEnded)
-
+      socket.off('update-players', updatePlayers)
     };
   }, []);
 

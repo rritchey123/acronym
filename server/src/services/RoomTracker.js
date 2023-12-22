@@ -60,7 +60,7 @@ class RoomTrackerService {
 
         socket.join(roomId)
 
-        return { success: true, reason: "", data: { roomId, roomDetails, ...playerObj } }
+        return { success: true, reason: "", data: { roomId, players: roomDetails.players, ...playerObj } }
     }
 
     leaveRoom(roomId, playerId) {
@@ -82,13 +82,21 @@ class RoomTrackerService {
     startGame(roomId) {
         console.log("STARTING GAME")
         this._rooms[roomId].state = "playing"
-        return { success: true, reason: "", data: { roomId, players: this._rooms[roomId].players } }
+        return { success: true, reason: "", data: { roomId } }
     }
 
     endGame(roomId) {
         console.log("ENDING GAME")
         this._rooms[roomId].state = "ended"
         return { success: true, reason: "", data: { roomId } }
+    }
+
+    // Players 
+    updatePlayers(socket, roomId) {
+        console.log("UPDATE PLAYERS")
+        const roomDetails = this.getRoomDetails(roomId)
+        const message = { success: true, reason: "", data: { players: roomDetails.players } }
+        socket.in(roomId).emit("update-players", message)
     }
 
 }

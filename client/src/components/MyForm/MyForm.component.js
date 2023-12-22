@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import socket from '../../socket';
-import { setRoomId, setState, setPlayerType } from "../../redux/feState"
+import { setRoomId, setState, setPlayerType, setPlayers } from "../../redux/feState"
 import { useDispatch } from 'react-redux';
 
 export function MyForm() {
@@ -22,6 +22,8 @@ export function MyForm() {
       const { roomId } = data
 
       socket.emit('join-room', { roomId, playerName, playerType: "leader" }, ({ success, reason, data }) => {
+        const { players } = data
+
         if (!success) {
           alert(reason)
           return
@@ -29,6 +31,7 @@ export function MyForm() {
         dispatch(setRoomId(roomId))
         dispatch(setState("waitRoom"))
         dispatch(setPlayerType("leader"))
+        dispatch(setPlayers(players))
       })
       // setIsLoading(false);
     });
@@ -49,6 +52,7 @@ export function MyForm() {
     //setIsLoading(true);
 
     socket.emit('join-room', { playerName, roomId, playerType: "player" }, ({ success, reason, data }) => {
+      const { players } = data
       if (!success) {
         alert(reason)
         return
@@ -56,6 +60,7 @@ export function MyForm() {
       dispatch(setRoomId(roomId))
       dispatch(setState("waitRoom"))
       dispatch(setPlayerType("player"))
+      dispatch(setPlayers(players))
       // setIsLoading(false);
     });
   }
