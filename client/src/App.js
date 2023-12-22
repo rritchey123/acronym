@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import socket from './socket';
 
 import { setConnectionState } from "./redux/connectionState"
-import { setRoomId, setState, setPlayerType, setPlayers } from "./redux/feState"
+import { setRoomId, setState, setPlayerType, setPlayers, setAcronym, setPrompt } from "./redux/feState"
 
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -50,12 +50,15 @@ export default function App() {
 
     function updatePlayers(payload) {
       const { success, reason, data } = payload
+      const { room } = data
       if (!success) {
         alert(reason)
         return
       }
       console.log('UPDATING PLAYERS')
-      dispatch(setPlayers(data.players))
+      dispatch(setPlayers(room.players))
+      dispatch(setAcronym(room.acronym))
+      dispatch(setPrompt(room.prompt))
     }
 
     socket.on('connect', onConnect);
