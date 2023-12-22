@@ -57,7 +57,7 @@ io.on('connection', function (socket) {
     const { roomId } = payload
 
     const roomTracker = RoomTrackerService.getInstance()
-    const message = roomTracker.startGame(roomId)
+    const message = roomTracker.startGame(socket, roomId)
 
     // ! Emit to all !
     socket.emit("game-started", message)

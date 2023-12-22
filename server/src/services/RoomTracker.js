@@ -1,3 +1,4 @@
+const DatabaseService = require('./Database')
 class RoomTrackerService {
     constructor() {
         this._rooms = {}
@@ -26,7 +27,9 @@ class RoomTrackerService {
 
         this._rooms[id] = {
             players: [],
-            state: "waiting"
+            state: "waiting",
+            acronym: null,
+            prompt: null
         }
 
         return { success: true, reason: "", data: { roomId: id } }
@@ -79,9 +82,15 @@ class RoomTrackerService {
     }
 
     // Game operation
-    startGame(roomId) {
+    startGame(socket, roomId) {
         console.log("STARTING GAME")
-        this._rooms[roomId].state = "playing"
+        const room = this.getRoomDetails(roomId)
+        room.state = "playing"
+        room.acronym = DatabaseService.getRandomAcronym()
+        room.prompt = DatabaseService.getRandomPrompt()
+
+        this.updatePlayers(socket, roomId, true)
+
         return { success: true, reason: "", data: { roomId } }
     }
 
@@ -92,14 +101,17 @@ class RoomTrackerService {
     }
 
     // Players 
-    updatePlayers(socket, roomId) {
+    updatePlayers(socket, roomId, emitToSender = false) {
         console.log("UPDATE PLAYERS")
         const roomDetails = this.getRoomDetails(roomId)
         if (!roomDetails) return
 
-        const message = { success: true, reason: "", data: { players: roomDetails.players } }
+        const message = { success: true, reason: "", data: { room: roomDetails } }
+        if (emitToSender) socket.emit('update-players', message)
         socket.in(roomId).emit("update-players", message)
     }
+
+
 
 }
 
