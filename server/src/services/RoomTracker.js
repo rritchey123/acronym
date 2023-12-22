@@ -95,6 +95,8 @@ class RoomTrackerService {
     updatePlayers(socket, roomId) {
         console.log("UPDATE PLAYERS")
         const roomDetails = this.getRoomDetails(roomId)
+        if (!roomDetails) return
+
         const message = { success: true, reason: "", data: { players: roomDetails.players } }
         socket.in(roomId).emit("update-players", message)
     }
