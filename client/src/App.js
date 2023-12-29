@@ -6,11 +6,11 @@ import { setRoomId, setState, setPlayerType, setPlayers, setAcronym, setPrompt, 
 
 import { useSelector, useDispatch } from 'react-redux';
 
-import { HomeRoom } from './components/HomeRoom/HomeRoom.component';
-import { WaitRoom } from './components/WaitRoom/WaitRoom.component';
-import { PlayRoom } from './components/PlayRoom/PlayRoom.component';
-import { EndRoom } from './components/EndRoom/EndRoom.component';
-import { VoteRoom } from './components/VoteRoom/VoteRoom.component';
+import { HomeRoom } from './components/Rooms/HomeRoom/HomeRoom.component';
+import { WaitRoom } from './components/Rooms/WaitRoom/WaitRoom.component';
+import { PlayRoom } from './components/Rooms/PlayRoom/PlayRoom.component';
+import { EndRoom } from './components/Rooms/EndRoom/EndRoom.component';
+import { VoteRoom } from './components/Rooms/VoteRoom/VoteRoom.component';
 
 
 export default function App() {

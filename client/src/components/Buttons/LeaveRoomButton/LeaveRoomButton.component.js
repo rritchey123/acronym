@@ -1,7 +1,7 @@
 import React from 'react';
-import socket from '../../socket';
+import socket from '../../../socket';
 import { useSelector, useDispatch } from 'react-redux';
-import { setRoomId, setState, setPlayerType } from "../../redux/feState"
+import { setRoomId, setState, setPlayerType } from "../../../redux/feState"
 
 
 export function LeaveRoomButton() {

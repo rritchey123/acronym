@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 
-import { DebugDetails } from '../DebugDetails/DebugDetails.component';
-import { AnswerEntry } from '../AnswerEntry/AnswerEntry.component';
-import { LeaveRoomButton } from '../LeaveRoomButton/LeaveRoomButton.component';
+import { DebugDetails } from '../../Misc/DebugDetails/DebugDetails.component';
+import { AnswerEntry } from '../../Forms/AnswerEntry/AnswerEntry.component';
+import { LeaveRoomButton } from '../../Buttons/LeaveRoomButton/LeaveRoomButton.component';
 
 import { useSelector } from 'react-redux';
 
-import { Player } from '../Player/Player.component';
+import { Player } from '../../Cards/Player/Player.component';
 
-import socket from '../../socket';
+import socket from '../../../socket';
 
 export function PlayRoom() {
     const [hasAnswered, setHasAnswered] = useState(false)

@@ -1,8 +1,8 @@
 import React from 'react';
 
 import { useSelector } from 'react-redux';
-import { DebugDetails } from '../DebugDetails/DebugDetails.component';
-import { LeaveRoomButton } from '../LeaveRoomButton/LeaveRoomButton.component';
+import { DebugDetails } from '../../Misc/DebugDetails/DebugDetails.component';
+import { LeaveRoomButton } from '../../Buttons/LeaveRoomButton/LeaveRoomButton.component';
 
 
 

@@ -1,13 +1,13 @@
 import React from 'react';
-import { MyForm } from '../MyForm/MyForm.component';
-import { DebugDetails } from '../DebugDetails/DebugDetails.component';
+import { HomeForm } from '../../Forms/HomeForm/HomeForm.component';
+import { DebugDetails } from '../../Misc/DebugDetails/DebugDetails.component';
 
 
 export function HomeRoom() {
     return (
         <div className="Home">
             <DebugDetails roomName='Home Room'></DebugDetails>
-            <MyForm />
+            <HomeForm />
         </div>
     );
 }

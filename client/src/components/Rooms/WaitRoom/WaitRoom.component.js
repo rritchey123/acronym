@@ -1,9 +1,9 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-import socket from '../../socket';
-import { DebugDetails } from '../DebugDetails/DebugDetails.component';
-import { LeaveRoomButton } from '../LeaveRoomButton/LeaveRoomButton.component';
+import socket from '../../../socket';
+import { DebugDetails } from '../../Misc/DebugDetails/DebugDetails.component';
+import { LeaveRoomButton } from '../../Buttons/LeaveRoomButton/LeaveRoomButton.component';
 
 export function WaitRoom() {
     const { roomId, playerType } = useSelector((state) => state.feState)

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import socket from '../../socket';
-import { setRoomId, setState, setPlayerType, setPlayers } from "../../redux/feState"
+import socket from '../../../socket';
+import { setRoomId, setState, setPlayerType, setPlayers } from "../../../redux/feState"
 import { useDispatch } from 'react-redux';
 
-export function MyForm() {
+export function HomeForm() {
   const [playerName, setPlayerName] = useState('');
   const [roomId, setRoomIdInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
