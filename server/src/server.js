@@ -75,7 +75,14 @@ io.on('connection', function (socket) {
     socket.in(roomId).emit("game-ended", message)
   })
 
+  socket.on('submit-answer', function (payload) {
+    console.log('submit-answer EVENT ' + socket.id, "PAYLOAD: ", payload);
+    const { roomId, answer } = payload
 
+    const roomTracker = RoomTrackerService.getInstance()
+    roomTracker.submitAnswer(socket, roomId, answer)
+
+  })
 });
 
 // Start listening on 3030

@@ -111,6 +111,20 @@ class RoomTrackerService {
         socket.in(roomId).emit("update-players", message)
     }
 
+    submitAnswer(socket, roomId, answer) {
+        console.log("SUBMIT ANSWER")
+        const roomDetails = this.getRoomDetails(roomId)
+        if (!roomDetails) return
+
+        const playerObj = roomDetails.players.find((i) => i.id === socket.id)
+        playerObj.answer = answer
+
+        // If everyone has answered, update all players with player answers`
+        if (roomDetails.players.filter((i) => !i.answer).length === 0) {
+            socket.emit('vote-ready', { success: true, reason: "", data: { answers: roomDetails.players.map(({ id, answer }) => ({ id, answer })) } })
+        }
+    }
+
 
 
 }
