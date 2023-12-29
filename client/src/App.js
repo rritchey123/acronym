@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import socket from './socket';
 
 import { setConnectionState } from "./redux/connectionState"
-import { setRoomId, setState, setPlayerType, setPlayers, setAcronym, setPrompt, setAnswers } from "./redux/feState"
+import { setState, setPlayers, setAcronym, setPrompt, setAnswers } from "./redux/feState"
 
 import { useSelector, useDispatch } from 'react-redux';
 

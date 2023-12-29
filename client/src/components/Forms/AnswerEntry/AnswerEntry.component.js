@@ -11,14 +11,9 @@ export function AnswerEntry(props) {
 
     function sendAnswer(event) {
         event.preventDefault()
-        console.log('inside send answer callback!!!')
-        setAnswer('')
-
         socket.emit('submit-answer', { roomId, answer });
-
         setHasAnswered(true)
     }
-    // ! Find way to clear textbox
     return (
         <form onSubmit={sendAnswer}>
             <input onChange={e => setAnswer(e.target.value)} placeholder='Enter an answer' />
