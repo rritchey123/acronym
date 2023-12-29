@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 
 import { DebugDetails } from '../DebugDetails/DebugDetails.component';
 import { AnswerEntry } from '../AnswerEntry/AnswerEntry.component';
-import { setRoomId, setState, setPlayerType } from "../../redux/feState"
-import { useSelector, useDispatch } from 'react-redux';
+import { LeaveRoomButton } from '../LeaveRoomButton/LeaveRoomButton.component';
+
+import { useSelector } from 'react-redux';
 
 import { Player } from '../Player/Player.component';
 
@@ -14,20 +15,6 @@ export function PlayRoom() {
 
     const { roomId, playerType, players, acronym, prompt } = useSelector((state) => state.feState)
 
-    const dispatch = useDispatch()
-
-    function leaveRoom() {
-        socket.emit("leave-room", { roomId }, ({ success, reason, data }) => {
-            if (!success) {
-                alert(reason)
-                return
-            }
-            dispatch(setRoomId(""))
-            dispatch(setState("homeRoom"))
-            dispatch(setPlayerType(null))
-
-        })
-    }
     function endGame() {
         socket.emit("end-game", { roomId })
     }
@@ -39,7 +26,7 @@ export function PlayRoom() {
                 playerType === "leader" && <button type="button" onClick={endGame}>End Game</button>
             }
 
-            <button type="button" onClick={leaveRoom} >Leave Room</button>
+            <LeaveRoomButton></LeaveRoomButton>
 
             <div>PLAYERS</div>
             {players.map(({ name: playerName }) => {
