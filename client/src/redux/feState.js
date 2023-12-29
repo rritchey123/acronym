@@ -8,7 +8,8 @@ export const feStateSlice = createSlice({
         playerType: null,
         players: [],
         acronym: null,
-        prompt: null
+        prompt: null,
+        answers: []
     },
     reducers: {
         setState: (state, action) => {
@@ -28,11 +29,14 @@ export const feStateSlice = createSlice({
         },
         setPrompt: (state, action) => {
             state.prompt = action.payload
-        }
+        },
+        setAnswers: (state, action) => {
+            state.answers = action.payload
+        },
 
     }
 
 })
 
-export const { setState, setRoomId, setPlayerType, setPlayers, setAcronym, setPrompt } = feStateSlice.actions
+export const { setState, setRoomId, setPlayerType, setPlayers, setAcronym, setPrompt, setAnswers } = feStateSlice.actions
 export default feStateSlice.reducer

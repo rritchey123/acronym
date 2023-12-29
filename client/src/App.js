@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import socket from './socket';
 
 import { setConnectionState } from "./redux/connectionState"
-import { setRoomId, setState, setPlayerType, setPlayers, setAcronym, setPrompt } from "./redux/feState"
+import { setRoomId, setState, setPlayerType, setPlayers, setAcronym, setPrompt, setAnswers } from "./redux/feState"
 
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -10,6 +10,7 @@ import { HomeRoom } from './components/HomeRoom/HomeRoom.component';
 import { WaitRoom } from './components/WaitRoom/WaitRoom.component';
 import { PlayRoom } from './components/PlayRoom/PlayRoom.component';
 import { EndRoom } from './components/EndRoom/EndRoom.component';
+import { VoteRoom } from './components/VoteRoom/VoteRoom.component';
 
 
 export default function App() {
@@ -61,11 +62,24 @@ export default function App() {
       dispatch(setPrompt(room.prompt))
     }
 
+    function voteReady(payload) {
+      const { success, reason, data } = payload
+      const { room } = data
+      if (!success) {
+        alert(reason)
+        return
+      }
+      console.log('SETTING STATE TO VOTE READY')
+      dispatch(setState("voteRoom"))
+      dispatch(setAnswers(data.answers))
+    }
+
     socket.on('connect', onConnect);
     socket.on('disconnect', onDisconnect);
     socket.on('game-started', gameStarted)
     socket.on('game-ended', gameEnded)
     socket.on('update-players', updatePlayers)
+    socket.on('vote-ready', voteReady)
 
     return () => {
       // ! TODO: WHAT IS SOCKET.OFF?
@@ -74,6 +88,7 @@ export default function App() {
       socket.off("game-started", gameStarted)
       socket.off('game-ended', gameEnded)
       socket.off('update-players', updatePlayers)
+      socket.off('vote-ready', voteReady)
     };
   }, []);
 
@@ -93,7 +108,10 @@ export default function App() {
     return (
       <EndRoom></EndRoom>
     )
-  } else {
+  } else if (state === 'voteRoom') {
+    return (<VoteRoom></VoteRoom>)
+  }
+  else {
     return (<HomeRoom></HomeRoom>)
   }
 
