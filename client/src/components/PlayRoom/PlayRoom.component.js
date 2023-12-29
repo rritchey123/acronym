@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { DebugDetails } from '../DebugDetails/DebugDetails.component';
+import { AnswerEntry } from '../AnswerEntry/AnswerEntry.component';
 import { setRoomId, setState, setPlayerType } from "../../redux/feState"
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -9,8 +10,9 @@ import { Player } from '../Player/Player.component';
 import socket from '../../socket';
 
 export function PlayRoom() {
+    const [hasAnswered, setHasAnswered] = useState(false)
+
     const { roomId, playerType, players, acronym, prompt } = useSelector((state) => state.feState)
-    const { connected } = useSelector((state) => state.connectionState)
 
     const dispatch = useDispatch()
 
@@ -23,6 +25,7 @@ export function PlayRoom() {
             dispatch(setRoomId(""))
             dispatch(setState("homeRoom"))
             dispatch(setPlayerType(null))
+
         })
     }
     function endGame() {
@@ -47,6 +50,11 @@ export function PlayRoom() {
             {acronym}
             <div>PROMPT</div>
             {prompt}
+
+            {
+                hasAnswered ? <div>WAITING FOR OTHER PLAYERS</div> : <AnswerEntry setHasAnswered={setHasAnswered}></AnswerEntry>
+            }
+
         </div>
     );
 }
