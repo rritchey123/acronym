@@ -2,12 +2,18 @@ import server from 'express'
 import httpModule from 'http'
 import RoomTrackerService from './services/RoomTracker.js'
 import { Server } from 'socket.io'
+import { instrument } from '@socket.io/admin-ui'
 const http = httpModule.createServer(server)
 const io = new Server(http, {
     cors: {
-        origin: `http://localhost:${3000}`,
+        origin: [`http://localhost:3000`, 'https://admin.socket.io'],
+        credentials: true,
     },
+    transports: ['websocket', 'polling'],
 })
+
+// URL => https://admin.socket.io/#/
+instrument(io, { auth: false, mode: 'development' })
 
 io.on('connection', function (socket) {
     console.log('A user connected: ' + socket.id)
