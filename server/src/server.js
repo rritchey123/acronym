@@ -15,6 +15,8 @@ const io = new Server(http, {
 // URL => https://admin.socket.io/#/
 instrument(io, { auth: false, mode: 'development' })
 
+const roomTracker = new RoomTrackerService({ io })
+
 io.on('connection', function (socket) {
     console.log('A user connected: ' + socket.id)
 
@@ -23,20 +25,14 @@ io.on('connection', function (socket) {
     })
 
     socket.on('create-room', function (cb) {
-        console.log('create-room FROM ' + socket.id)
-        const roomTracker = RoomTrackerService.getInstance()
         const message = roomTracker.createRoom()
         cb(message)
     })
 
     socket.on('leave-room', function (payload, cb) {
-        console.log('leave-room FROM ' + socket.id, 'PAYLOAD: ', payload)
         const { roomId } = payload
 
-        socket.leave(roomId)
-
-        const roomTracker = RoomTrackerService.getInstance()
-        const message = roomTracker.leaveRoom(roomId, socket.id)
+        const message = roomTracker.leaveRoom(roomId, socket)
 
         cb(message)
 
@@ -44,10 +40,8 @@ io.on('connection', function (socket) {
     })
 
     socket.on('join-room', function (payload, cb) {
-        console.log('join-room EVENT ' + socket.id, 'PAYLOAD: ', payload)
         const { roomId, playerName, playerType } = payload
 
-        const roomTracker = RoomTrackerService.getInstance()
         const message = roomTracker.joinRoom(socket, roomId, {
             playerName,
             playerId: socket.id,
@@ -60,33 +54,24 @@ io.on('connection', function (socket) {
     })
 
     socket.on('start-game', function (payload) {
-        console.log('start-game EVENT ' + socket.id, 'PAYLOAD: ', payload)
         const { roomId } = payload
 
-        const roomTracker = RoomTrackerService.getInstance()
         const message = roomTracker.startGame(socket, roomId)
 
-        // ! Emit to all !
-        socket.emit('game-started', message)
-        socket.in(roomId).emit('game-started', message)
+        io.in(roomId).emit('game-started', message)
     })
 
     socket.on('end-game', function (payload) {
-        console.log('end-game EVENT ' + socket.id, 'PAYLOAD: ', payload)
         const { roomId } = payload
 
-        const roomTracker = RoomTrackerService.getInstance()
         const message = roomTracker.endGame(roomId)
 
-        socket.emit('game-ended', message)
-        socket.in(roomId).emit('game-ended', message)
+        io.in(roomId).emit('game-ended', message)
     })
 
     socket.on('submit-answer', function (payload) {
-        console.log('submit-answer EVENT ' + socket.id, 'PAYLOAD: ', payload)
         const { roomId, answer } = payload
 
-        const roomTracker = RoomTrackerService.getInstance()
         roomTracker.submitAnswer(socket, roomId, answer)
     })
 })

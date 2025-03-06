@@ -9,5 +9,5 @@ export const getRandomAcronym = () => {
 
 export const getRandomPrompt = () => {
     // Find out how to get random index
-    return ACRONYMS[1]
+    return PROMPTS[1]
 }

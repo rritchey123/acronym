@@ -1,24 +1,24 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
+import React from 'react'
+import { useSelector } from 'react-redux'
 
-import socket from '../../../socket';
-import { DebugDetails } from '../../Misc/DebugDetails/DebugDetails.component';
-import { LeaveRoomButton } from '../../Buttons/LeaveRoomButton/LeaveRoomButton.component';
+import socket from '../../../socket'
+import { LeaveRoomButton } from '../../Buttons/LeaveRoomButton/LeaveRoomButton.component'
 
 export function WaitRoom() {
     const { roomId, playerType } = useSelector((state) => state.feState)
 
     function startGame() {
-        socket.emit("start-game", { roomId })
+        socket.emit('start-game', { roomId })
     }
 
     return (
         <div className="App">
-            <DebugDetails roomName='Wait room'></DebugDetails>
-            {
-                playerType === "leader" && <button type="button" onClick={startGame}>Start Game</button>
-            }
-            <LeaveRoomButton></LeaveRoomButton>
+            {playerType === 'leader' && (
+                <button type="button" onClick={startGame}>
+                    Start Game
+                </button>
+            )}
+            <LeaveRoomButton />
         </div>
-    );
+    )
 }

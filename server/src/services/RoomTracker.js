@@ -1,7 +1,8 @@
 import { getRandomAcronym, getRandomPrompt } from './Database.js'
 export default class RoomTrackerService {
-    constructor() {
+    constructor({ io }) {
         this._rooms = {}
+        this.io = io
     }
 
     static getInstance() {
@@ -48,7 +49,6 @@ export default class RoomTrackerService {
 
     // Player operations
     joinRoom(socket, roomId, playerDetails) {
-        console.log('ROOM TRACKER JOIN ROOM')
         const { playerId, playerName, playerType } = playerDetails
         const roomDetails = this.getRoomDetails(roomId)
 
@@ -93,9 +93,11 @@ export default class RoomTrackerService {
         }
     }
 
-    leaveRoom(roomId, playerId) {
-        console.log('ROOM TRACKER LEAVE ROOM')
+    leaveRoom(roomId, socket) {
         const roomDetails = this.getRoomDetails(roomId)
+        const playerId = socket.id
+
+        socket.leave(roomId)
 
         if (!roomDetails)
             return {
@@ -120,7 +122,6 @@ export default class RoomTrackerService {
 
     // Game operation
     startGame(socket, roomId) {
-        console.log('STARTING GAME')
         const room = this.getRoomDetails(roomId)
         room.state = 'playing'
         room.acronym = getRandomAcronym()
@@ -132,14 +133,12 @@ export default class RoomTrackerService {
     }
 
     endGame(roomId) {
-        console.log('ENDING GAME')
         this._rooms[roomId].state = 'ended'
         return { success: true, reason: '', data: { roomId } }
     }
 
     // Players
     updatePlayers(socket, roomId, emitToSender = false) {
-        console.log('UPDATE PLAYERS')
         const roomDetails = this.getRoomDetails(roomId)
         if (!roomDetails) return
 
@@ -153,7 +152,6 @@ export default class RoomTrackerService {
     }
 
     submitAnswer(socket, roomId, answer) {
-        console.log('SUBMIT ANSWER')
         const roomDetails = this.getRoomDetails(roomId)
         if (!roomDetails) return
 
@@ -162,7 +160,7 @@ export default class RoomTrackerService {
 
         // If everyone has answered, update all players with player answers`
         if (roomDetails.players.filter((i) => !i.answer).length === 0) {
-            socket.emit('vote-ready', {
+            this.io.in(roomId).emit('vote-ready', {
                 success: true,
                 reason: '',
                 data: {
