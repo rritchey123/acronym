@@ -1,19 +1,19 @@
-import { createSlice } from "@reduxjs/toolkit"
+import { createSlice } from '@reduxjs/toolkit'
 
 export const feStateSlice = createSlice({
-    name: "feState",
+    name: 'feState',
     initialState: {
-        state: "homeRoom",
-        roomId: "",
+        roomName: 'homeRoom',
+        roomId: '',
         playerType: null,
         players: [],
         acronym: null,
         prompt: null,
-        answers: []
+        answers: [],
     },
     reducers: {
-        setState: (state, action) => {
-            state.state = action.payload
+        setRoomName: (state, action) => {
+            state.roomName = action.payload
         },
         setRoomId: (state, action) => {
             state.roomId = action.payload
@@ -33,10 +33,16 @@ export const feStateSlice = createSlice({
         setAnswers: (state, action) => {
             state.answers = action.payload
         },
-
-    }
-
+    },
 })
 
-export const { setState, setRoomId, setPlayerType, setPlayers, setAcronym, setPrompt, setAnswers } = feStateSlice.actions
+export const {
+    setRoomName,
+    setRoomId,
+    setPlayerType,
+    setPlayers,
+    setAcronym,
+    setPrompt,
+    setAnswers,
+} = feStateSlice.actions
 export default feStateSlice.reducer

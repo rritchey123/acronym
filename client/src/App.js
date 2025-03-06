@@ -3,7 +3,7 @@ import socket from './socket'
 
 import { setConnectionState } from './redux/connectionState'
 import {
-    setState,
+    setRoomName,
     setPlayers,
     setAcronym,
     setPrompt,
@@ -20,7 +20,7 @@ import { VoteRoom } from './components/Rooms/VoteRoom/VoteRoom.component'
 
 export default function App() {
     console.log('RE-RENDERING APP COMPONENT')
-    const { state } = useSelector((state) => state.feState)
+    const { roomName } = useSelector((state) => state.feState)
     const dispatch = useDispatch()
 
     useEffect(() => {
@@ -39,7 +39,7 @@ export default function App() {
                 return
             }
             console.log('GAME STARTED')
-            dispatch(setState('playRoom'))
+            dispatch(setRoomName('playRoom'))
         }
 
         function gameEnded(payload) {
@@ -50,7 +50,7 @@ export default function App() {
             }
             console.log('GAME ENDED')
 
-            dispatch(setState('endRoom'))
+            dispatch(setRoomName('endRoom'))
         }
 
         function updatePlayers(payload) {
@@ -74,7 +74,7 @@ export default function App() {
                 return
             }
             console.log('SETTING STATE TO VOTE READY')
-            dispatch(setState('voteRoom'))
+            dispatch(setRoomName('voteRoom'))
             dispatch(setAnswers(data.answers))
         }
 
@@ -97,7 +97,7 @@ export default function App() {
     }, [])
 
     const getRoom = useCallback(() => {
-        switch (state) {
+        switch (roomName) {
             case 'homeRoom':
                 return <HomeRoom />
             case 'waitRoom':
@@ -111,7 +111,7 @@ export default function App() {
             default:
                 return <HomeRoom />
         }
-    }, [state])
+    }, [roomName])
 
     return (
         <>

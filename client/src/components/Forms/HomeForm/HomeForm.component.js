@@ -1,78 +1,100 @@
-import React, { useState } from 'react';
-import socket from '../../../socket';
-import { setRoomId, setState, setPlayerType, setPlayers } from "../../../redux/feState"
-import { useDispatch } from 'react-redux';
+import React, { useState } from 'react'
+import socket from '../../../socket'
+import {
+    setRoomId,
+    setRoomName,
+    setPlayerType,
+    setPlayers,
+} from '../../../redux/feState'
+import { useDispatch } from 'react-redux'
 
 export function HomeForm() {
-  const [playerName, setPlayerName] = useState('');
-  const [roomId, setRoomIdInput] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+    const [playerName, setPlayerName] = useState('')
+    const [roomId, setRoomIdInput] = useState('')
+    const [isLoading, setIsLoading] = useState(false)
 
-  const dispatch = useDispatch()
+    const dispatch = useDispatch()
 
-  function createRoom(event) {
-    event.preventDefault();
-    if (!playerName) {
-      alert("Please enter a player name")
-      return
-    }
-    //setIsLoading(true);
-
-    socket.emit('create-room', ({ success, reason, data }) => {
-      const { roomId } = data
-
-      socket.emit('join-room', { roomId, playerName, playerType: "leader" }, ({ success, reason, data }) => {
-        const { players } = data
-
-        if (!success) {
-          alert(reason)
-          return
+    function createRoom(event) {
+        event.preventDefault()
+        if (!playerName) {
+            alert('Please enter a player name')
+            return
         }
-        dispatch(setRoomId(roomId))
-        dispatch(setState("waitRoom"))
-        dispatch(setPlayerType("leader"))
-        dispatch(setPlayers(players))
-      })
-      // setIsLoading(false);
-    });
-    return
-  }
+        //setIsLoading(true);
 
-  function joinRoom(event) {
+        socket.emit('create-room', ({ success, reason, data }) => {
+            const { roomId } = data
 
-    event.preventDefault();
-    if (!playerName) {
-      alert("Please enter a name")
-      return
-    }
-    if (!roomId) {
-      alert("Please enter a room ID")
-      return
-    }
-    //setIsLoading(true);
+            socket.emit(
+                'join-room',
+                { roomId, playerName, playerType: 'leader' },
+                ({ success, reason, data }) => {
+                    const { players } = data
 
-    socket.emit('join-room', { playerName, roomId, playerType: "player" }, ({ success, reason, data }) => {
-      const { players } = data
-      if (!success) {
-        alert(reason)
+                    if (!success) {
+                        alert(reason)
+                        return
+                    }
+                    dispatch(setRoomId(roomId))
+                    dispatch(setRoomName('waitRoom'))
+                    dispatch(setPlayerType('leader'))
+                    dispatch(setPlayers(players))
+                }
+            )
+            // setIsLoading(false);
+        })
         return
-      }
-      dispatch(setRoomId(roomId))
-      dispatch(setState("waitRoom"))
-      dispatch(setPlayerType("player"))
-      dispatch(setPlayers(players))
-      // setIsLoading(false);
-    });
-  }
+    }
 
-  return (
-    <form onSubmit={joinRoom}>
-      <input onChange={e => setPlayerName(e.target.value)} placeholder='Enter a player name' />
-      <div></div>
-      <button type="button" onClick={createRoom} disabled={isLoading}>Create Room</button>
-      <button type="submit" onClick={joinRoom} disabled={isLoading}>Join Room</button>
-      <div></div>
-      <input onChange={e => setRoomIdInput(e.target.value)} placeholder='Enter a room ID' />
-    </form>
-  );
+    function joinRoom(event) {
+        event.preventDefault()
+        if (!playerName) {
+            alert('Please enter a name')
+            return
+        }
+        if (!roomId) {
+            alert('Please enter a room ID')
+            return
+        }
+        //setIsLoading(true);
+
+        socket.emit(
+            'join-room',
+            { playerName, roomId, playerType: 'player' },
+            ({ success, reason, data }) => {
+                const { players } = data
+                if (!success) {
+                    alert(reason)
+                    return
+                }
+                dispatch(setRoomId(roomId))
+                dispatch(setRoomName('waitRoom'))
+                dispatch(setPlayerType('player'))
+                dispatch(setPlayers(players))
+                // setIsLoading(false);
+            }
+        )
+    }
+
+    return (
+        <form onSubmit={joinRoom}>
+            <input
+                onChange={(e) => setPlayerName(e.target.value)}
+                placeholder="Enter a player name"
+            />
+            <div></div>
+            <button type="button" onClick={createRoom} disabled={isLoading}>
+                Create Room
+            </button>
+            <button type="submit" onClick={joinRoom} disabled={isLoading}>
+                Join Room
+            </button>
+            <div></div>
+            <input
+                onChange={(e) => setRoomIdInput(e.target.value)}
+                placeholder="Enter a room ID"
+            />
+        </form>
+    )
 }
