@@ -16,8 +16,8 @@ export function SummaryRoom() {
                 <button onClick={onClick}>Ready for next round?</button>
             )}
             {players.map(({ id, name }) => {
-                const voteCount = votes[id]
-                const answer = answers[id]
+                const voteCount = votes[id] || 0
+                const answer = answers[id] || 'No answer :/'
 
                 return (
                     <div

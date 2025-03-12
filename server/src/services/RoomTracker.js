@@ -203,6 +203,16 @@ export default class RoomTrackerService {
         room.acronym = getRandomAcronym()
         room.prompt = getRandomPrompt()
         room.round += 1
+        room.votes = {}
+        for (const player of room.players) {
+            player.answer = null
+        }
+
         this.updatePlayers(socket, roomId, true)
+        this.io.in(roomId).emit('next-round-started', {
+            success: true,
+            reason: '',
+            data: {},
+        })
     }
 }

@@ -68,10 +68,6 @@ export default function App() {
             dispatch(setAcronym(room.acronym))
             dispatch(setPrompt(room.prompt))
             dispatch(setRound(room.round))
-
-            if (room.state === 'playing') {
-                dispatch(setRoomName('playRoom'))
-            }
         }
 
         function voteReady(payload) {
@@ -96,6 +92,15 @@ export default function App() {
             dispatch(setVotes(data.votes))
         }
 
+        function nextRoundStarted(payload) {
+            const { success, reason, data } = payload
+            if (!success) {
+                alert(reason)
+                return
+            }
+            dispatch(setRoomName('playRoom'))
+        }
+
         socket.on('connect', onConnect)
         socket.on('disconnect', onDisconnect)
         socket.on('game-started', gameStarted)
@@ -103,6 +108,7 @@ export default function App() {
         socket.on('update-players', updatePlayers)
         socket.on('vote-ready', voteReady)
         socket.on('summary-ready', summaryReady)
+        socket.on('next-round-started', nextRoundStarted)
 
         return () => {
             socket.off('connect', onConnect)
@@ -112,6 +118,7 @@ export default function App() {
             socket.off('update-players', updatePlayers)
             socket.off('vote-ready', voteReady)
             socket.off('summary-ready', summaryReady)
+            socket.off('next-round-started', nextRoundStarted)
         }
     }, [])
 
