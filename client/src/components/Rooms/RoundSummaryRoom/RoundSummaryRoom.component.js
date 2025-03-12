@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux'
 import socket from '../../../socket'
 
-export function SummaryRoom() {
+export function RoundSummaryRoom() {
     const { answers, votes, playerType, players, roomId } = useSelector(
         (state) => state.feState
     )

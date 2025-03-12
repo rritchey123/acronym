@@ -19,7 +19,7 @@ import { WaitRoom } from './components/Rooms/WaitRoom/WaitRoom.component'
 import { PlayRoom } from './components/Rooms/PlayRoom/PlayRoom.component'
 import { EndRoom } from './components/Rooms/EndRoom/EndRoom.component'
 import { VoteRoom } from './components/Rooms/VoteRoom/VoteRoom.component'
-import { SummaryRoom } from './components/Rooms/SummaryRoom/SummaryRoom.component'
+import { RoundSummaryRoom } from './components/Rooms/RoundSummaryRoom/RoundSummaryRoom.component'
 
 export default function App() {
     console.log('RE-RENDERING APP COMPONENT')
@@ -82,13 +82,13 @@ export default function App() {
             dispatch(setAnswers(data.answers))
         }
 
-        function summaryReady(payload) {
+        function roundSummaryReady(payload) {
             const { success, reason, data } = payload
             if (!success) {
                 alert(reason)
                 return
             }
-            dispatch(setRoomName('summaryRoom'))
+            dispatch(setRoomName('roundSummaryRoom'))
             dispatch(setVotes(data.votes))
         }
 
@@ -107,7 +107,7 @@ export default function App() {
         socket.on('game-ended', gameEnded)
         socket.on('update-players', updatePlayers)
         socket.on('vote-ready', voteReady)
-        socket.on('summary-ready', summaryReady)
+        socket.on('round-summary-ready', roundSummaryReady)
         socket.on('next-round-started', nextRoundStarted)
 
         return () => {
@@ -117,7 +117,7 @@ export default function App() {
             socket.off('game-ended', gameEnded)
             socket.off('update-players', updatePlayers)
             socket.off('vote-ready', voteReady)
-            socket.off('summary-ready', summaryReady)
+            socket.off('round-summary-ready', roundSummaryReady)
             socket.off('next-round-started', nextRoundStarted)
         }
     }, [])
@@ -134,8 +134,8 @@ export default function App() {
                 return <EndRoom />
             case 'voteRoom':
                 return <VoteRoom />
-            case 'summaryRoom':
-                return <SummaryRoom />
+            case 'roundSummaryRoom':
+                return <RoundSummaryRoom />
             default:
                 return <HomeRoom />
         }

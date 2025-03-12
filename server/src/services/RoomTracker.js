@@ -34,6 +34,9 @@ export default class RoomTrackerService {
             state: 'waiting',
             acronym: null,
             prompt: null,
+            votes: {},
+            round: 1,
+            scores: {},
         }
 
         return { success: true, reason: '', data: { roomId: id } }
@@ -181,13 +184,15 @@ export default class RoomTrackerService {
 
         if (!roomDetails.votes) roomDetails.votes = {}
         roomDetails.votes[playerId] = (roomDetails.votes[playerId] || 0) + 1
+        if (!roomDetails.scores) roomDetails.scores = {}
+        roomDetails.scores[playerId] = (roomDetails.scores[playerId] || 0) + 1
 
         const totalVotes = Object.values(roomDetails.votes).reduce(
             (acc, cur) => acc + cur,
             0
         )
         if (totalVotes === roomDetails.players.length) {
-            this.io.in(roomId).emit('summary-ready', {
+            this.io.in(roomId).emit('round-summary-ready', {
                 success: true,
                 reason: '',
                 data: {
