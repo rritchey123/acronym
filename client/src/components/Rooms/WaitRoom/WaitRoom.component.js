@@ -13,6 +13,7 @@ export function WaitRoom() {
 
     return (
         <div className="App">
+            <h1>Waiting on leader to start the game...</h1>
             {playerType === 'leader' && (
                 <button type="button" onClick={startGame}>
                     Start Game

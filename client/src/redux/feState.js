@@ -10,6 +10,7 @@ export const feStateSlice = createSlice({
         acronym: null,
         prompt: null,
         answers: [],
+        votes: [],
     },
     reducers: {
         setRoomName: (state, action) => {
@@ -33,6 +34,9 @@ export const feStateSlice = createSlice({
         setAnswers: (state, action) => {
             state.answers = action.payload
         },
+        setVotes: (state, action) => {
+            state.votes = action.payload
+        },
     },
 })
 
@@ -44,5 +48,6 @@ export const {
     setAcronym,
     setPrompt,
     setAnswers,
+    setVotes,
 } = feStateSlice.actions
 export default feStateSlice.reducer

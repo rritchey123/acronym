@@ -8,6 +8,7 @@ import {
     setAcronym,
     setPrompt,
     setAnswers,
+    setVotes,
 } from './redux/feState'
 
 import { useSelector, useDispatch } from 'react-redux'
@@ -17,6 +18,7 @@ import { WaitRoom } from './components/Rooms/WaitRoom/WaitRoom.component'
 import { PlayRoom } from './components/Rooms/PlayRoom/PlayRoom.component'
 import { EndRoom } from './components/Rooms/EndRoom/EndRoom.component'
 import { VoteRoom } from './components/Rooms/VoteRoom/VoteRoom.component'
+import { SummaryRoom } from './components/Rooms/SummaryRoom/SummaryRoom.component'
 
 export default function App() {
     console.log('RE-RENDERING APP COMPONENT')
@@ -78,21 +80,32 @@ export default function App() {
             dispatch(setAnswers(data.answers))
         }
 
+        function summaryReady(payload) {
+            const { success, reason, data } = payload
+            if (!success) {
+                alert(reason)
+                return
+            }
+            dispatch(setRoomName('summaryRoom'))
+            dispatch(setVotes(data.votes))
+        }
+
         socket.on('connect', onConnect)
         socket.on('disconnect', onDisconnect)
         socket.on('game-started', gameStarted)
         socket.on('game-ended', gameEnded)
         socket.on('update-players', updatePlayers)
         socket.on('vote-ready', voteReady)
+        socket.on('summary-ready', summaryReady)
 
         return () => {
-            // ! TODO: WHAT IS SOCKET.OFF?
             socket.off('connect', onConnect)
             socket.off('disconnect', onDisconnect)
             socket.off('game-started', gameStarted)
             socket.off('game-ended', gameEnded)
             socket.off('update-players', updatePlayers)
             socket.off('vote-ready', voteReady)
+            socket.off('summary-ready', summaryReady)
         }
     }, [])
 
@@ -108,6 +121,8 @@ export default function App() {
                 return <EndRoom />
             case 'voteRoom':
                 return <VoteRoom />
+            case 'summaryRoom':
+                return <SummaryRoom />
             default:
                 return <HomeRoom />
         }
