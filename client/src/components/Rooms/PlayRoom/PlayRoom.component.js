@@ -12,7 +12,7 @@ import socket from '../../../socket'
 export function PlayRoom() {
     const [hasAnswered, setHasAnswered] = useState(false)
 
-    const { roomId, playerType, players, acronym, prompt } = useSelector(
+    const { roomId, playerType, players, acronym, prompt, round } = useSelector(
         (state) => state.feState
     )
 
@@ -22,6 +22,7 @@ export function PlayRoom() {
 
     return (
         <div className="App">
+            <h3>Round {round}</h3>
             {playerType === 'leader' && (
                 <button type="button" onClick={endGame}>
                     End Game

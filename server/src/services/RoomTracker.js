@@ -126,6 +126,7 @@ export default class RoomTrackerService {
         room.state = 'playing'
         room.acronym = getRandomAcronym()
         room.prompt = getRandomPrompt()
+        room.round = 1
 
         this.updatePlayers(socket, roomId, true)
 
@@ -194,5 +195,14 @@ export default class RoomTrackerService {
                 },
             })
         }
+    }
+
+    startNextRound(socket, roomId) {
+        const room = this.getRoomDetails(roomId)
+        room.state = 'playing'
+        room.acronym = getRandomAcronym()
+        room.prompt = getRandomPrompt()
+        room.round += 1
+        this.updatePlayers(socket, roomId, true)
     }
 }

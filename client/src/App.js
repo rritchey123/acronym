@@ -9,6 +9,7 @@ import {
     setPrompt,
     setAnswers,
     setVotes,
+    setRound,
 } from './redux/feState'
 
 import { useSelector, useDispatch } from 'react-redux'
@@ -66,6 +67,11 @@ export default function App() {
             dispatch(setPlayers(room.players))
             dispatch(setAcronym(room.acronym))
             dispatch(setPrompt(room.prompt))
+            dispatch(setRound(room.round))
+
+            if (room.state === 'playing') {
+                dispatch(setRoomName('playRoom'))
+            }
         }
 
         function voteReady(payload) {

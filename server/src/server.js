@@ -77,8 +77,12 @@ io.on('connection', function (socket) {
 
     socket.on('submit-vote', function (payload) {
         const { roomId, playerId } = payload
-        console.log(payload)
         roomTracker.submitVote(roomId, playerId)
+    })
+
+    socket.on('start-next-round', function (payload) {
+        const { roomId } = payload
+        roomTracker.startNextRound(socket, roomId)
     })
 })
 
