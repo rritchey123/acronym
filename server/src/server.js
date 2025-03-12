@@ -74,6 +74,12 @@ io.on('connection', function (socket) {
 
         roomTracker.submitAnswer(socket, roomId, answer)
     })
+
+    socket.on('submit-vote', function (payload) {
+        const { roomId, playerId } = payload
+        console.log(payload)
+        roomTracker.submitVote(roomId, playerId)
+    })
 })
 
 // Start listening on 3030

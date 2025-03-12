@@ -160,14 +160,37 @@ export default class RoomTrackerService {
 
         // If everyone has answered, update all players with player answers`
         if (roomDetails.players.filter((i) => !i.answer).length === 0) {
+            const answers = roomDetails.players.reduce((acc, player) => {
+                acc[player.id] = player.answer
+                return acc
+            }, {})
             this.io.in(roomId).emit('vote-ready', {
                 success: true,
                 reason: '',
                 data: {
-                    answers: roomDetails.players.map(({ id, answer }) => ({
-                        id,
-                        answer,
-                    })),
+                    answers,
+                },
+            })
+        }
+    }
+
+    submitVote(roomId, playerId) {
+        const roomDetails = this.getRoomDetails(roomId)
+        if (!roomDetails) return
+
+        if (!roomDetails.votes) roomDetails.votes = {}
+        roomDetails.votes[playerId] = (roomDetails.votes[playerId] || 0) + 1
+
+        const totalVotes = Object.values(roomDetails.votes).reduce(
+            (acc, cur) => acc + cur,
+            0
+        )
+        if (totalVotes === roomDetails.players.length) {
+            this.io.in(roomId).emit('summary-ready', {
+                success: true,
+                reason: '',
+                data: {
+                    votes: roomDetails.votes,
                 },
             })
         }
