@@ -5,7 +5,7 @@ export const ScoreReviewRoom = () => {
     const { playerType, players, roomId, scores, isGameOver } = useSelector(
         (state) => state.feState
     )
-
+    console.log(scores)
     const onNextRountButtonClick = () => {
         socket.emit('start-next-round', { roomId })
     }
@@ -23,9 +23,7 @@ export const ScoreReviewRoom = () => {
                 </button>
             )}
             {isGameOver && <LeaveRoomButton buttonText="back to home page" />}
-            {players.map(({ id, name }) => {
-                const score = scores[id] || 0
-
+            {scores.map(({ name, score }, id) => {
                 return <div key={id}>{`${name} => ${score}`}</div>
             })}
         </>

@@ -1,6 +1,6 @@
 import { getRandomAcronym, getRandomPrompt } from './Database.js'
 
-const SCORE_LIMIT = 5
+const SCORE_LIMIT = 10
 
 export default class RoomTrackerService {
     constructor({ io }) {
@@ -227,11 +227,21 @@ export default class RoomTrackerService {
     }
 
     reviewScores(socket, roomId) {
+        const roomDetails = this.getRoomDetails(roomId)
+        const scoreArray = []
+        for (const player of roomDetails.players) {
+            scoreArray.push({
+                name: player.name,
+                score: roomDetails.scores[player.id] || 0,
+            })
+        }
         this.updatePlayers(socket, roomId, true)
+
+        // {name, score}[]
         this.io.in(roomId).emit('review-scores', {
             success: true,
             reason: '',
-            data: {},
+            data: scoreArray,
         })
     }
 

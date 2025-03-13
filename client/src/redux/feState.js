@@ -11,7 +11,7 @@ export const feStateSlice = createSlice({
         prompt: null,
         answers: [],
         votes: {},
-        scores: {},
+        scores: [],
         isGameOver: false,
         round: 1,
     },

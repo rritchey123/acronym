@@ -71,7 +71,7 @@ export default function App() {
             dispatch(setAcronym(room.acronym))
             dispatch(setPrompt(room.prompt))
             dispatch(setRound(room.round))
-            dispatch(setScores(room.scores))
+
             dispatch(setIsGameOver(room.isGameOver))
         }
 
@@ -103,6 +103,7 @@ export default function App() {
                 alert(reason)
                 return
             }
+            dispatch(setScores(data))
             dispatch(setRoomName('scoreReviewRoom'))
         }
 
