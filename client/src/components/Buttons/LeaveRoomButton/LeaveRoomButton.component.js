@@ -3,7 +3,7 @@ import socket from '../../../socket'
 import { useSelector, useDispatch } from 'react-redux'
 import { setRoomId, setRoomName, setPlayerType } from '../../../redux/feState'
 
-export function LeaveRoomButton() {
+export function LeaveRoomButton({ buttonText = 'Leave Room' }) {
     const { roomId } = useSelector((state) => state.feState)
 
     const dispatch = useDispatch()
@@ -22,7 +22,7 @@ export function LeaveRoomButton() {
 
     return (
         <button type="button" onClick={leaveRoom}>
-            Leave Room
+            {buttonText}
         </button>
     )
 }

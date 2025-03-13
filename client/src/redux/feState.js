@@ -10,8 +10,9 @@ export const feStateSlice = createSlice({
         acronym: null,
         prompt: null,
         answers: [],
-        votes: [],
+        votes: {},
         scores: {},
+        isGameOver: false,
         round: 1,
     },
     reducers: {
@@ -45,6 +46,9 @@ export const feStateSlice = createSlice({
         setScores: (state, action) => {
             state.scores = action.payload
         },
+        setIsGameOver: (state, action) => {
+            state.isGameOver = action.payload
+        },
     },
 })
 
@@ -59,5 +63,6 @@ export const {
     setVotes,
     setRound,
     setScores,
+    setIsGameOver,
 } = feStateSlice.actions
 export default feStateSlice.reducer

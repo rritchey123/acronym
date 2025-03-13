@@ -11,6 +11,7 @@ import {
     setVotes,
     setRound,
     setScores,
+    setIsGameOver,
 } from './redux/feState'
 
 import { useSelector, useDispatch } from 'react-redux'
@@ -71,6 +72,7 @@ export default function App() {
             dispatch(setPrompt(room.prompt))
             dispatch(setRound(room.round))
             dispatch(setScores(room.scores))
+            dispatch(setIsGameOver(room.isGameOver))
         }
 
         function voteReady(payload) {

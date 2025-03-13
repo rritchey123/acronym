@@ -1,4 +1,7 @@
 import { getRandomAcronym, getRandomPrompt } from './Database.js'
+
+const SCORE_LIMIT = 5
+
 export default class RoomTrackerService {
     constructor({ io }) {
         this._rooms = {}
@@ -37,6 +40,7 @@ export default class RoomTrackerService {
             votes: {},
             round: 1,
             scores: {},
+            isGameOver: false,
         }
 
         return { success: true, reason: '', data: { roomId: id } }
@@ -192,6 +196,7 @@ export default class RoomTrackerService {
             0
         )
         if (totalVotes === roomDetails.players.length) {
+            roomDetails.isGameOver = this.isGameOver(roomId)
             this.io.in(roomId).emit('round-summary-ready', {
                 success: true,
                 reason: '',
@@ -228,5 +233,12 @@ export default class RoomTrackerService {
             reason: '',
             data: {},
         })
+    }
+
+    isGameOver(roomId) {
+        const roomDetails = this.getRoomDetails(roomId)
+        return Object.values(roomDetails.scores).some(
+            (score) => score >= SCORE_LIMIT
+        )
     }
 }
