@@ -1,19 +1,18 @@
 import { useSelector } from 'react-redux'
 import socket from '../../../socket'
-
 export function RoundSummaryRoom() {
     const { answers, votes, playerType, players, roomId } = useSelector(
         (state) => state.feState
     )
 
     const onClick = () => {
-        socket.emit('start-next-round', { roomId })
+        socket.emit('review-scores', { roomId })
     }
 
     return (
         <>
             {playerType === 'leader' && (
-                <button onClick={onClick}>Ready for next round?</button>
+                <button onClick={onClick}>Review scores?</button>
             )}
             {players.map(({ id, name }) => {
                 const voteCount = votes[id] || 0

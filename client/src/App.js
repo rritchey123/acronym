@@ -10,6 +10,7 @@ import {
     setAnswers,
     setVotes,
     setRound,
+    setScores,
 } from './redux/feState'
 
 import { useSelector, useDispatch } from 'react-redux'
@@ -20,6 +21,7 @@ import { PlayRoom } from './components/Rooms/PlayRoom/PlayRoom.component'
 import { EndRoom } from './components/Rooms/EndRoom/EndRoom.component'
 import { VoteRoom } from './components/Rooms/VoteRoom/VoteRoom.component'
 import { RoundSummaryRoom } from './components/Rooms/RoundSummaryRoom/RoundSummaryRoom.component'
+import { ScoreReviewRoom } from './components/Rooms/ScoreReviewRoom/ScoreReviewRoom.component'
 
 export default function App() {
     console.log('RE-RENDERING APP COMPONENT')
@@ -68,6 +70,7 @@ export default function App() {
             dispatch(setAcronym(room.acronym))
             dispatch(setPrompt(room.prompt))
             dispatch(setRound(room.round))
+            dispatch(setScores(room.scores))
         }
 
         function voteReady(payload) {
@@ -92,6 +95,15 @@ export default function App() {
             dispatch(setVotes(data.votes))
         }
 
+        function reviewScores(payload) {
+            const { success, reason, data } = payload
+            if (!success) {
+                alert(reason)
+                return
+            }
+            dispatch(setRoomName('scoreReviewRoom'))
+        }
+
         function nextRoundStarted(payload) {
             const { success, reason, data } = payload
             if (!success) {
@@ -108,6 +120,7 @@ export default function App() {
         socket.on('update-players', updatePlayers)
         socket.on('vote-ready', voteReady)
         socket.on('round-summary-ready', roundSummaryReady)
+        socket.on('review-scores', reviewScores)
         socket.on('next-round-started', nextRoundStarted)
 
         return () => {
@@ -118,6 +131,7 @@ export default function App() {
             socket.off('update-players', updatePlayers)
             socket.off('vote-ready', voteReady)
             socket.off('round-summary-ready', roundSummaryReady)
+            socket.off('review-scores', reviewScores)
             socket.off('next-round-started', nextRoundStarted)
         }
     }, [])
@@ -136,6 +150,8 @@ export default function App() {
                 return <VoteRoom />
             case 'roundSummaryRoom':
                 return <RoundSummaryRoom />
+            case 'scoreReviewRoom':
+                return <ScoreReviewRoom />
             default:
                 return <HomeRoom />
         }

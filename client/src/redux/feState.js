@@ -11,6 +11,7 @@ export const feStateSlice = createSlice({
         prompt: null,
         answers: [],
         votes: [],
+        scores: {},
         round: 1,
     },
     reducers: {
@@ -41,6 +42,9 @@ export const feStateSlice = createSlice({
         setRound: (state, action) => {
             state.round = action.payload
         },
+        setScores: (state, action) => {
+            state.scores = action.payload
+        },
     },
 })
 
@@ -54,5 +58,6 @@ export const {
     setAnswers,
     setVotes,
     setRound,
+    setScores,
 } = feStateSlice.actions
 export default feStateSlice.reducer

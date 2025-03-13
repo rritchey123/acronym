@@ -220,4 +220,13 @@ export default class RoomTrackerService {
             data: {},
         })
     }
+
+    reviewScores(socket, roomId) {
+        this.updatePlayers(socket, roomId, true)
+        this.io.in(roomId).emit('review-scores', {
+            success: true,
+            reason: '',
+            data: {},
+        })
+    }
 }

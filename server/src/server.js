@@ -80,6 +80,11 @@ io.on('connection', function (socket) {
         roomTracker.submitVote(roomId, playerId)
     })
 
+    socket.on('review-scores', function (payload) {
+        const { roomId } = payload
+        roomTracker.reviewScores(socket, roomId)
+    })
+
     socket.on('start-next-round', function (payload) {
         const { roomId } = payload
         roomTracker.startNextRound(socket, roomId)
