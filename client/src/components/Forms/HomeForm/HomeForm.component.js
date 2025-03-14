@@ -30,12 +30,11 @@ export function HomeForm() {
                 'join-room',
                 { roomId, playerName, playerType: 'leader' },
                 ({ success, reason, data }) => {
-                    const { players } = data
-
                     if (!success) {
                         alert(reason)
                         return
                     }
+                    const { players } = data
                     dispatch(setRoomId(roomId))
                     dispatch(setRoomName('waitRoom'))
                     dispatch(setPlayerType('leader'))
@@ -63,11 +62,11 @@ export function HomeForm() {
             'join-room',
             { playerName, roomId, playerType: 'player' },
             ({ success, reason, data }) => {
-                const { players } = data
                 if (!success) {
                     alert(reason)
                     return
                 }
+                const { players } = data
                 dispatch(setRoomId(roomId))
                 dispatch(setRoomName('waitRoom'))
                 dispatch(setPlayerType('player'))

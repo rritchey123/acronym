@@ -100,11 +100,11 @@ export default class RoomTrackerService {
         }
     }
 
-    leaveRoom(roomId, socket) {
+    leaveRoom(roomId, socket, onDisconnect = false) {
         const roomDetails = this.getRoomDetails(roomId)
         const playerId = socket.id
 
-        socket.leave(roomId)
+        if (!onDisconnect) socket.leave(roomId)
 
         if (!roomDetails)
             return {
@@ -157,6 +157,18 @@ export default class RoomTrackerService {
         }
         if (emitToSender) socket.emit('update-players', message)
         socket.in(roomId).emit('update-players', message)
+    }
+
+    updateAllPlayers(roomId) {
+        const roomDetails = this.getRoomDetails(roomId)
+        if (!roomDetails) return
+
+        const message = {
+            success: true,
+            reason: '',
+            data: { room: roomDetails },
+        }
+        this.io.in(roomId).emit('update-players', message)
     }
 
     submitAnswer(socket, roomId, answer) {
@@ -250,5 +262,11 @@ export default class RoomTrackerService {
         return Object.values(roomDetails.scores).some(
             (score) => score >= SCORE_LIMIT
         )
+    }
+
+    getRoomIdByPlayerId(playerId) {
+        return Object.entries(this._rooms).find(([, roomDetails]) =>
+            roomDetails.players.some((p) => p.id === playerId)
+        )[0]
     }
 }

@@ -22,6 +22,9 @@ io.on('connection', function (socket) {
 
     socket.on('disconnect', function () {
         console.log('A user disconnected: ' + socket.id)
+        const roomId = roomTracker.getRoomIdByPlayerId(socket.id)
+        roomTracker.leaveRoom(roomId, socket, true)
+        roomTracker.updateAllPlayers(roomId)
     })
 
     socket.on('create-room', function (cb) {
