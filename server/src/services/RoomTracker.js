@@ -267,6 +267,6 @@ export default class RoomTrackerService {
     getRoomIdByPlayerId(playerId) {
         return Object.entries(this._rooms).find(([, roomDetails]) =>
             roomDetails.players.some((p) => p.id === playerId)
-        )[0]
+        )?.[0]
     }
 }

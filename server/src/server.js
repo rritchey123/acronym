@@ -23,6 +23,7 @@ io.on('connection', function (socket) {
     socket.on('disconnect', function () {
         console.log('A user disconnected: ' + socket.id)
         const roomId = roomTracker.getRoomIdByPlayerId(socket.id)
+        if (!roomId) return
         roomTracker.leaveRoom(roomId, socket, true)
         roomTracker.updateAllPlayers(roomId)
     })
