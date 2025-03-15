@@ -7,6 +7,7 @@ import {
     setPlayers,
 } from '../../../redux/feState'
 import { useDispatch } from 'react-redux'
+import { Button } from '@/components/ui/button'
 
 export function HomeForm() {
     const [playerName, setPlayerName] = useState('')
@@ -83,9 +84,9 @@ export function HomeForm() {
                 placeholder="Enter a player name"
             />
             <div></div>
-            <button type="button" onClick={createRoom} disabled={isLoading}>
+            <Button type="button" onClick={createRoom} disabled={isLoading}>
                 Create Room
-            </button>
+            </Button>
             <button type="submit" onClick={joinRoom} disabled={isLoading}>
                 Join Room
             </button>
