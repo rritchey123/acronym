@@ -1,7 +1,7 @@
 import { createContext, useContext, useState } from 'react'
 
 const initialState = {
-    theme: { mode: 'dark', color: 'yellow' },
+    theme: { mode: 'light', color: 'violet' },
     setTheme: () => null,
 }
 
@@ -9,7 +9,7 @@ const ThemeProviderContext = createContext(initialState)
 
 export function ThemeProvider({
     children,
-    defaultTheme = { mode: 'dark', color: 'yellow' },
+    defaultTheme = { mode: 'light', color: 'violet' },
     storageKey = 'distort-ui-theme',
     ...props
 }) {

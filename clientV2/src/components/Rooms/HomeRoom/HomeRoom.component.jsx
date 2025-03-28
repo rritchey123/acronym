@@ -9,11 +9,22 @@ import {
 } from '../../../redux/feState'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from '@/components/ui/popover'
+import { InfoPopover } from '../../InfoPopover'
 
 export function HomeRoom() {
     const [playerName, setPlayerName] = useState('')
     const [roomId, setRoomIdInput] = useState('')
     const [isLoading, setIsLoading] = useState(false)
+    const [isPopupOpen, setIsPopupOpen] = useState(false)
+
+    const togglePopupOpen = () => {
+        setIsPopupOpen(!isPopupOpen)
+    }
 
     const dispatch = useDispatch()
 
@@ -80,34 +91,34 @@ export function HomeRoom() {
 
     return (
         <div className="mt-8 flex flex-col justify-center items-center">
-            <p className="text-foreground text-4xl">text-foreground</p>
-            {/* <p className="text-primary-foreground text-4xl">
-                text-primary-foreground
-            </p>
-            <p className="text-secondary-foreground text-4xl">
-                text-secondary-foreground
-            </p>
-            <p className="text-accent-foreground text-4xl">
-                text-accent-foreground
-            </p>
-            <p className="text-destructive-foreground text-4xl">
-                text-destructive-foreground
-            </p> */}
+            <p className="text-foreground text-4xl mb-4">Welcome!</p>
+            <InfoPopover />
+
             <form onSubmit={joinRoom}>
                 <Input
+                    className="mb-1 text-foreground"
                     onChange={(e) => setPlayerName(e.target.value)}
                     placeholder="Enter a player name"
                 />
-                <div></div>
-                <Button type="button" onClick={createRoom} disabled={isLoading}>
+                <Button
+                    className="w-full"
+                    type="button"
+                    onClick={createRoom}
+                    disabled={isLoading}
+                >
                     Create Room
                 </Button>
-                <p className="text-foreground text-2xl">or</p>
-                <Button type="submit" onClick={joinRoom} disabled={isLoading}>
+                <p className="text-foreground text-2xl text-center mb-1">or</p>
+                <Button
+                    className="w-full mb-1"
+                    type="submit"
+                    onClick={joinRoom}
+                    disabled={isLoading}
+                >
                     Join Room
                 </Button>
-                <div></div>
                 <Input
+                    className="mb-1 text-foreground"
                     onChange={(e) => setRoomIdInput(e.target.value)}
                     placeholder="Enter a room ID"
                 />
