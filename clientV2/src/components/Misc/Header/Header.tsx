@@ -1,4 +1,5 @@
-import ThemeModeToggle from '../../ThemeModeToggle.jsx'
+import { ThemeModeToggle } from '@/components/ThemeModeTogle'
+
 export const Header = () => {
     return (
         <header className="fixed top-0 left-0 w-full bg-primary text-white py-4 text-center flex justify-center items-center z-10">
