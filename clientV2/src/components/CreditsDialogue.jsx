@@ -14,17 +14,13 @@ import { useTheme } from './ThemeProvider'
 
 export function CreditsDialogue() {
     const { theme } = useTheme()
-    const dataTheme = `${theme.color}-${theme.mode}`
     return (
         <>
             <Dialog>
                 <DialogTrigger asChild>
                     <Button>Credits</Button>
                 </DialogTrigger>
-                <DialogContent
-                    className="sm:max-w-[425px]"
-                    dataTheme={dataTheme}
-                >
+                <DialogContent className="sm:max-w-[425px]">
                     <DialogHeader>
                         <DialogTitle>Credits</DialogTitle>
                         <DialogDescription>

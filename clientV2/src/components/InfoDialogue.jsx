@@ -14,17 +14,13 @@ import { useTheme } from './ThemeProvider'
 
 export function InfoDialogue() {
     const { theme } = useTheme()
-    const dataTheme = `${theme.color}-${theme.mode}`
     return (
         <>
             <Dialog>
                 <DialogTrigger asChild>
                     <Button className="mb-4">Info</Button>
                 </DialogTrigger>
-                <DialogContent
-                    className="sm:max-w-[425px]"
-                    dataTheme={dataTheme}
-                >
+                <DialogContent className="sm:max-w-[425px]">
                     <DialogHeader>
                         <DialogTitle>Info</DialogTitle>
                         <DialogDescription>How this works:</DialogDescription>

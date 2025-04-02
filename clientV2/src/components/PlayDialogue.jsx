@@ -94,10 +94,7 @@ export function PlayDialogue() {
                 <DialogTrigger asChild>
                     <Button className="mb-4">Play</Button>
                 </DialogTrigger>
-                <DialogContent
-                    className="sm:max-w-[425px]"
-                    dataTheme={`${theme.color}-${theme.mode}`}
-                >
+                <DialogContent className="sm:max-w-[425px]">
                     <DialogHeader>
                         <DialogTitle>Edit profile</DialogTitle>
                         <DialogDescription>

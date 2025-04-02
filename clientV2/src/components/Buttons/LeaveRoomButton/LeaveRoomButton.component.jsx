@@ -2,6 +2,7 @@ import React from 'react'
 import socket from '../../../socket'
 import { useSelector, useDispatch } from 'react-redux'
 import { setRoomId, setRoomName, setPlayerType } from '../../../redux/feState'
+import { Button } from '../../ui/button'
 
 export function LeaveRoomButton({ buttonText = 'Leave Room' }) {
     const { roomId } = useSelector((state) => state.feState)
@@ -21,8 +22,8 @@ export function LeaveRoomButton({ buttonText = 'Leave Room' }) {
     }
 
     return (
-        <button type="button" onClick={leaveRoom}>
+        <Button variant="destructive" onClick={leaveRoom}>
             {buttonText}
-        </button>
+        </Button>
     )
 }
