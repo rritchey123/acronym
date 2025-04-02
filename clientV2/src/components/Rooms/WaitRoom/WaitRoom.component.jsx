@@ -3,6 +3,8 @@ import { useSelector } from 'react-redux'
 
 import socket from '../../../socket'
 import { LeaveRoomButton } from '../../Buttons/LeaveRoomButton/LeaveRoomButton.component'
+import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
 
 export function WaitRoom() {
     const { roomId, playerType, players } = useSelector(
@@ -12,21 +14,29 @@ export function WaitRoom() {
     function startGame() {
         socket.emit('start-game', { roomId })
     }
-
     return (
-        <div className="App">
-            <h1>Waiting on leader to start the game...</h1>
-            <h2>Room code: {roomId}</h2>
-            {playerType === 'leader' && (
-                <button type="button" onClick={startGame}>
-                    Start Game
-                </button>
-            )}
-            {players.map((player) => {
-                return <h3>{player.name}</h3>
-            })}
-
+        <div>
+            <div className="text-center text-2xl mt-4">
+                Waiting on leader to start the game...
+            </div>
+            <div className="text-center text-2xl">Room code: {roomId}</div>
             <LeaveRoomButton />
+            {playerType === 'leader' && (
+                <Button className="mt-4 ml-2" onClick={startGame}>
+                    Start Game
+                </Button>
+            )}
+
+            <div className="text-center text-2xl my-4">PLAYERS</div>
+            <div className="flex flex-wrap gap-4 justify-center">
+                {players.map((player) => {
+                    return (
+                        <div className="rounded border bg-primary py-1 min-w-[100px] text-center">
+                            {player.name}
+                        </div>
+                    )
+                })}
+            </div>
         </div>
     )
 }
