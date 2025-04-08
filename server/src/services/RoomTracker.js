@@ -178,6 +178,13 @@ export default class RoomTrackerService {
         const playerObj = roomDetails.players.find((i) => i.id === socket.id)
         playerObj.answer = answer
 
+        const message = {
+            success: true,
+            reason: '',
+            data: { room: roomDetails },
+        }
+        this.io.in(roomId).emit('update-players', message)
+
         // If everyone has answered, update all players with player answers`
         if (roomDetails.players.filter((i) => !i.answer).length === 0) {
             const answers = roomDetails.players.reduce((acc, player) => {
