@@ -3,9 +3,14 @@ import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { LeaveRoomButton } from '../../Buttons/LeaveRoomButton/LeaveRoomButton.component'
 import socket from '../../../socket'
+import { Button } from '@/components/ui/button'
+import { EndGameButton } from '../../EndGameButton'
+import { RoundHeader } from '../../RoundHeader'
 
 export function VoteRoom() {
-    const { answers, roomId } = useSelector((state) => state.feState)
+    const { answers, roomId, playerType } = useSelector(
+        (state) => state.feState
+    )
     const [hasVoted, setHasVoted] = useState(false)
 
     const submitVote = (playerId) => {
@@ -14,16 +19,33 @@ export function VoteRoom() {
             setHasVoted(true)
         }
     }
+
     return (
-        <div className="Vote room">
-            <LeaveRoomButton />
-            {hasVoted ? (
-                <div>Waiting for other players to finish voting</div>
-            ) : (
-                Object.entries(answers).map(([playerId, answer]) => {
-                    return <li onClick={submitVote(playerId)}>{answer}</li>
-                })
-            )}
-        </div>
+        <>
+            <RoundHeader />
+
+            <div className="flex justify-center">
+                <div className="w-sm">
+                    <div className="text-2xl text-center">
+                        {hasVoted
+                            ? 'Waiting for other players to finish voting'
+                            : 'Vote for the best answer!'}
+                    </div>
+                    <div className="flex flex-wrap gap-4 justify-center">
+                        {Object.entries(answers).map(([playerId, answer]) => {
+                            return (
+                                <Button
+                                    className={`rounded border bg-primary py-1 w-[100px] text-center text-wrap`}
+                                    disabled={hasVoted}
+                                    onClick={submitVote(playerId)}
+                                >
+                                    {answer}
+                                </Button>
+                            )
+                        })}
+                    </div>
+                </div>
+            </div>
+        </>
     )
 }

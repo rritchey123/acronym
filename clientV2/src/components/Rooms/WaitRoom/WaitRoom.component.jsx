@@ -5,6 +5,7 @@ import socket from '../../../socket'
 import { LeaveRoomButton } from '../../Buttons/LeaveRoomButton/LeaveRoomButton.component'
 import { Button } from '@/components/ui/button'
 import { PlayerCard } from '../../Cards/Player/PlayerCard.component'
+import { PlayersContainer } from '@/components/PlayersContainer'
 
 export function WaitRoom() {
     const { roomId, playerType, players } = useSelector(
@@ -16,12 +17,14 @@ export function WaitRoom() {
     }
     return (
         <>
-            <LeaveRoomButton />
-            {playerType === 'leader' && (
-                <Button className="mt-4 ml-2" onClick={startGame}>
-                    Start Game
-                </Button>
-            )}
+            <div>
+                <LeaveRoomButton />
+                {playerType === 'leader' && (
+                    <Button className="mt-4 ml-2" onClick={startGame}>
+                        Start Game
+                    </Button>
+                )}
+            </div>
             <div className="flex justify-center">
                 <div className="w-sm">
                     <div className="text-center text-2xl mt-4">
@@ -32,11 +35,7 @@ export function WaitRoom() {
                     </div>
 
                     <div className="text-center text-2xl my-4">PLAYERS</div>
-                    <div className="flex flex-wrap gap-4 justify-center">
-                        {players.map((p, idx) => {
-                            return <PlayerCard key={idx} player={p} />
-                        })}
-                    </div>
+                    <PlayersContainer players={players} />
                 </div>
             </div>
         </>
