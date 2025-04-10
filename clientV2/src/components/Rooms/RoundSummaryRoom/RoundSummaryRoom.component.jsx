@@ -44,7 +44,7 @@ export function RoundSummaryRoom() {
                         return (
                             <div
                                 key={id}
-                                className="flex gap-2 items-center justify-between my-2"
+                                className="flex gap-2 items-center justify-around my-2"
                             >
                                 <PlayerCard player={p} />
                                 <TmpCard answer={answer} />

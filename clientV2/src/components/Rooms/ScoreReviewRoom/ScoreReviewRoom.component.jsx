@@ -1,11 +1,12 @@
 import { useSelector } from 'react-redux'
 import socket from '../../../socket'
 import { LeaveRoomButton } from '../../Buttons/LeaveRoomButton/LeaveRoomButton.component'
+import { PlayerCard } from '../../Cards/Player/PlayerCard.component'
+import { Button } from '../../ui/button'
 export const ScoreReviewRoom = () => {
     const { playerType, players, roomId, scores, isGameOver } = useSelector(
         (state) => state.feState
     )
-    console.log(scores)
     const onNextRountButtonClick = () => {
         socket.emit('start-next-round', { roomId })
     }
@@ -18,14 +19,31 @@ export const ScoreReviewRoom = () => {
                 </>
             )}
             {!isGameOver && playerType === 'leader' && (
-                <button onClick={onNextRountButtonClick}>
-                    Ready for next round?
-                </button>
+                <Button className="m-4" onClick={onNextRountButtonClick}>
+                    Next round
+                </Button>
             )}
             {isGameOver && <LeaveRoomButton buttonText="back to home page" />}
-            {scores.map(({ name, score }, id) => {
-                return <div key={id}>{`${name} => ${score}`}</div>
-            })}
+            <div className="flex justify-center">
+                <div className="w-sm text-center flex-col">
+                    <div className="mb-8 text-2xl text-center">
+                        Waiting for leader to continue!
+                    </div>
+                    {scores.map(({ name, score }, id) => {
+                        return (
+                            <div
+                                key={id}
+                                className="flex gap-2 items-center justify-around my-2"
+                            >
+                                <PlayerCard player={{ name }} />
+                                <div className='w-20 className="text-3xl text-center"'>{`${score} vote${
+                                    score !== 1 ? 's' : ''
+                                }`}</div>
+                            </div>
+                        )
+                    })}
+                </div>
+            </div>
         </>
     )
 }
