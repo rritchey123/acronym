@@ -18,7 +18,7 @@ export function CreditsDialogue() {
         <>
             <Dialog>
                 <DialogTrigger asChild>
-                    <Button>Credits</Button>
+                    <Button className="mb-4 w-20">Credits</Button>
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-[425px]">
                     <DialogHeader>

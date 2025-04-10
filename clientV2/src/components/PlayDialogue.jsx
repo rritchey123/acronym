@@ -92,17 +92,20 @@ export function PlayDialogue() {
         <>
             <Dialog>
                 <DialogTrigger asChild>
-                    <Button className="mb-4">Play</Button>
+                    <Button className="mb-4 w-20">Play</Button>
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-[425px]">
                     <DialogHeader>
-                        <DialogTitle>Edit profile</DialogTitle>
+                        <DialogTitle>Play</DialogTitle>
                         <DialogDescription>
-                            Make changes to your profile here. Click save when
-                            you're done.
+                            Enter a player name. Create a new room or join a
+                            game with a room code.
                         </DialogDescription>
                     </DialogHeader>
-                    <form onSubmit={joinRoom}>
+                    <form
+                        className="flex flex-col justify-around gap-8"
+                        onSubmit={joinRoom}
+                    >
                         <Input
                             className="mb-1 text-foreground"
                             onChange={(e) => setPlayerName(e.target.value)}
@@ -116,22 +119,21 @@ export function PlayDialogue() {
                         >
                             Create Room
                         </Button>
-                        <p className="text-foreground text-2xl text-center mb-1">
-                            or
-                        </p>
-                        <Button
-                            className="w-full mb-1"
-                            type="submit"
-                            onClick={joinRoom}
-                            disabled={isLoading}
-                        >
-                            Join Room
-                        </Button>
-                        <Input
-                            className="mb-1 text-foreground"
-                            onChange={(e) => setRoomIdInput(e.target.value)}
-                            placeholder="Enter a room ID"
-                        />
+                        <div>
+                            <Button
+                                className="w-full mb-1"
+                                type="submit"
+                                onClick={joinRoom}
+                                disabled={isLoading}
+                            >
+                                Join Room
+                            </Button>
+                            <Input
+                                className="mb-1 text-foreground"
+                                onChange={(e) => setRoomIdInput(e.target.value)}
+                                placeholder="Enter a room ID"
+                            />
+                        </div>
                     </form>
                 </DialogContent>
             </Dialog>
