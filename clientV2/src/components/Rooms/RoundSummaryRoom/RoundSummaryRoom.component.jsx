@@ -1,5 +1,19 @@
 import { useSelector } from 'react-redux'
 import socket from '../../../socket'
+import { RoundHeader } from '../../RoundHeader'
+import { Button } from '../../ui/button'
+import { PlayerCard } from '../../Cards/Player/PlayerCard.component'
+
+const TmpCard = ({ answer }) => {
+    return (
+        <div
+            className={`rounded border bg-primary py-1 min-w-[100px] text-center justify-center`}
+        >
+            {answer}
+        </div>
+    )
+}
+
 export function RoundSummaryRoom() {
     const { answers, votes, playerType, players, roomId } = useSelector(
         (state) => state.feState
@@ -11,19 +25,37 @@ export function RoundSummaryRoom() {
 
     return (
         <>
+            <RoundHeader isSummary />
             {playerType === 'leader' && (
-                <button onClick={onClick}>Review scores?</button>
+                <Button className="m-4" onClick={onClick}>
+                    Review scores?
+                </Button>
             )}
-            {players.map(({ id, name }) => {
-                const voteCount = votes[id] || 0
-                const answer = answers[id] || 'No answer :/'
+            <div className="flex justify-center">
+                <div className="w-sm text-center flex-col">
+                    <div className="mb-8 text-2xl text-center">
+                        Waiting for leader to continue!
+                    </div>
+                    {players.map((p) => {
+                        const { id, name } = p
+                        const voteCount = votes[id] || 0
+                        const answer = answers[id] || 'No answer :/'
 
-                return (
-                    <div
-                        key={id}
-                    >{`${name} => ${answer} => ${voteCount} votes`}</div>
-                )
-            })}
+                        return (
+                            <div
+                                key={id}
+                                className="flex gap-2 items-center justify-between my-2"
+                            >
+                                <PlayerCard player={p} />
+                                <TmpCard answer={answer} />
+                                <div className='className="text-3xl text-center"'>{`${voteCount} vote${
+                                    voteCount !== 1 ? 's' : ''
+                                }`}</div>
+                            </div>
+                        )
+                    })}
+                </div>
+            </div>
         </>
     )
 }
