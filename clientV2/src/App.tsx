@@ -15,14 +15,13 @@ import {
 } from './redux/feState.js'
 
 import { useSelector, useDispatch } from 'react-redux'
-import { DebugDetails } from './components/Misc/DebugDetails/DebugDetails.component.jsx'
-import { HomeRoom } from './components/Rooms/HomeRoom/HomeRoom.component.jsx'
-import { WaitRoom } from './components/Rooms/WaitRoom/WaitRoom.component.jsx'
-import { PlayRoom } from './components/Rooms/PlayRoom/PlayRoom.component.jsx'
-import { EndRoom } from './components/Rooms/EndRoom/EndRoom.component.jsx'
-import { VoteRoom } from './components/Rooms/VoteRoom/VoteRoom.component.jsx'
-import { RoundSummaryRoom } from './components/Rooms/RoundSummaryRoom/RoundSummaryRoom.component.jsx'
-import { ScoreReviewRoom } from './components/Rooms/ScoreReviewRoom/ScoreReviewRoom.component.jsx'
+import { HomeRoom } from './components/Rooms/HomeRoom/HomeRoom.tsx'
+import { WaitRoom } from './components/Rooms/WaitRoom/WaitRoom.tsx'
+import { PlayRoom } from './components/Rooms/PlayRoom/PlayRoom.tsx'
+import { EndRoom } from './components/Rooms/EndRoom/EndRoom.tsx'
+import { VoteRoom } from './components/Rooms/VoteRoom/VoteRoom.tsx'
+import { RoundSummaryRoom } from './components/Rooms/RoundSummaryRoom/RoundSummaryRoom.tsx'
+import { ScoreReviewRoom } from './components/Rooms/ScoreReviewRoom/ScoreReviewRoom.tsx'
 
 export default function App() {
     console.log('RE-RENDERING APP COMPONENT')
