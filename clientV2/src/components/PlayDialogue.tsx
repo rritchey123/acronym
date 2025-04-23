@@ -10,7 +10,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { useTheme } from './ThemeProvider'
 import { useDispatch } from 'react-redux'
-import socket from '../socket'
+import socket from '../socket.ts'
 import { useState } from 'react'
 import {
     setRoomId,

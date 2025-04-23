@@ -1,5 +1,5 @@
 import { Button } from './ui/button'
-import socket from '../socket'
+import socket from '../socket.ts'
 import { useSelector } from 'react-redux'
 export const EndGameButton = () => {
     const { roomId } = useSelector((state) => state.feState)

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect } from 'react'
-import socket from './socket.js'
+import socket from './socket.ts'
 
 import { setConnectionState } from './redux/connectionState.js'
 import {

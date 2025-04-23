@@ -1,5 +1,5 @@
 import React from 'react'
-import socket from '../../../socket'
+import socket from '../../../socket.ts'
 import { useSelector, useDispatch } from 'react-redux'
 import { setRoomId, setRoomName, setPlayerType } from '../../../redux/feState'
 import { Button } from '../../ui/button'

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useSelector } from 'react-redux'
-import socket from '../../../socket'
+import socket from '../../../socket.ts'
 import { Button } from '@/components/ui/button'
 import { RoundHeader } from '../../RoundHeader'
 

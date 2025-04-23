@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux'
-import socket from '../../../socket'
+import socket from '../../../socket.ts'
 import { LeaveRoomButton } from '../../Buttons/LeaveRoomButton/LeaveRoomButton'
 import { Button } from '@/components/ui/button'
 import { PlayersContainer } from '@/components/PlayersContainer'

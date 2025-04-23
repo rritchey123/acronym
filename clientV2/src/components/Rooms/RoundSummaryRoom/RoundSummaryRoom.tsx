@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux'
-import socket from '../../../socket'
+import socket from '../../../socket.ts'
 import { RoundHeader } from '../../RoundHeader'
 import { Button } from '../../ui/button'
 import { PlayerCard } from '../../Cards/Player/PlayerCard'

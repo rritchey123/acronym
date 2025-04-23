@@ -1,12 +1,10 @@
-import React from 'react';
-import socket from '../../../socket';
+import React from 'react'
+import socket from '../../../socket.ts'
 
 export function DisconnectButton() {
     function disconnect() {
-        socket.disconnect();
+        socket.disconnect()
     }
 
-    return (
-        <button onClick={disconnect}>Disconnect</button>
-    );
+    return <button onClick={disconnect}>Disconnect</button>
 }
