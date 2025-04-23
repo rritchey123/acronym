@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux'
 import socket from '../../../socket'
-import { LeaveRoomButton } from '../../Buttons/LeaveRoomButton/LeaveRoomButton.component'
-import { PlayerCard } from '../../Cards/Player/PlayerCard.component'
+import { LeaveRoomButton } from '../../Buttons/LeaveRoomButton/LeaveRoomButton'
+import { PlayerCard } from '../../Cards/Player/PlayerCard'
 import { Button } from '../../ui/button'
 export const ScoreReviewRoom = () => {
     const { playerType, players, roomId, scores, isGameOver } = useSelector(

@@ -1,10 +1,7 @@
-import React, { useState } from 'react'
-
+import { useState } from 'react'
 import { useSelector } from 'react-redux'
-import { LeaveRoomButton } from '../../Buttons/LeaveRoomButton/LeaveRoomButton.component'
 import socket from '../../../socket'
 import { Button } from '@/components/ui/button'
-import { EndGameButton } from '../../EndGameButton'
 import { RoundHeader } from '../../RoundHeader'
 
 export function VoteRoom() {

@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux'
 import socket from '../../../socket'
 import { RoundHeader } from '../../RoundHeader'
 import { Button } from '../../ui/button'
-import { PlayerCard } from '../../Cards/Player/PlayerCard.component'
+import { PlayerCard } from '../../Cards/Player/PlayerCard'
 
 const TmpCard = ({ answer }) => {
     return (

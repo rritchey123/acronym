@@ -1,4 +1,4 @@
-import { PlayerCard } from './Cards/Player/PlayerCard.component.jsx'
+import { PlayerCard } from './Cards/Player/PlayerCard'
 export const PlayersContainer = ({ players }) => {
     return (
         <div className="flex flex-wrap gap-4 justify-center">

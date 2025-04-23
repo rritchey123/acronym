@@ -1,6 +1,6 @@
 import React from 'react'
-import { ConnectButton } from '../../Buttons/ConnectButton/ConnectButton.component'
-import { DisconnectButton } from '../../Buttons/DisconnectButton/DisconnectButton.component'
+import { ConnectButton } from '../../Buttons/ConnectButton/ConnectButton.tsx'
+import { DisconnectButton } from '../../Buttons/DisconnectButton/DisconnectButton.tsx'
 
 import { useSelector } from 'react-redux'
 

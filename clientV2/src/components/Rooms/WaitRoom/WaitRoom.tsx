@@ -1,10 +1,7 @@
-import React from 'react'
 import { useSelector } from 'react-redux'
-
 import socket from '../../../socket'
-import { LeaveRoomButton } from '../../Buttons/LeaveRoomButton/LeaveRoomButton.component'
+import { LeaveRoomButton } from '../../Buttons/LeaveRoomButton/LeaveRoomButton'
 import { Button } from '@/components/ui/button'
-import { PlayerCard } from '../../Cards/Player/PlayerCard.component'
 import { PlayersContainer } from '@/components/PlayersContainer'
 
 export function WaitRoom() {
