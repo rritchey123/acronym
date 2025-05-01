@@ -1,5 +1,5 @@
-import server from 'express'
-import httpModule from 'http'
+import * as server from 'express'
+import * as httpModule from 'http'
 import RoomTrackerService from './services/RoomTracker.js'
 import { Server } from 'socket.io'
 import { instrument } from '@socket.io/admin-ui'
@@ -24,7 +24,7 @@ io.on('connection', function (socket) {
         console.log('A user disconnected: ' + socket.id)
         const roomId = roomTracker.getRoomIdByPlayerId(socket.id)
         if (!roomId) return
-        roomTracker.leaveRoom(roomId, socket, true)
+        roomTracker.leaveRoom({ roomId, socket, onDisconnect: true })
         roomTracker.updateAllPlayers(roomId)
     })
 
@@ -36,31 +36,27 @@ io.on('connection', function (socket) {
     socket.on('leave-room', function (payload, cb) {
         const { roomId } = payload
 
-        const message = roomTracker.leaveRoom(roomId, socket)
+        const message = roomTracker.leaveRoom({ roomId, socket })
 
         cb(message)
 
-        roomTracker.updatePlayers(socket, roomId)
+        roomTracker.updatePlayersExceptSelf(socket, roomId)
     })
 
     socket.on('join-room', function (payload, cb) {
         const { roomId, playerName, playerType } = payload
-
-        const message = roomTracker.joinRoom(socket, roomId, {
-            playerName,
-            playerId: socket.id,
-            playerType,
-        })
+        const player = { id: socket.id, name: playerName, type: playerType }
+        const message = roomTracker.joinRoom({ socket, roomId, player })
 
         cb(message)
 
-        roomTracker.updatePlayers(socket, roomId)
+        roomTracker.updatePlayersExceptSelf(socket, roomId)
     })
 
     socket.on('start-game', function (payload) {
         const { roomId } = payload
 
-        const message = roomTracker.startGame(socket, roomId)
+        const message = roomTracker.startGame(roomId)
 
         io.in(roomId).emit('game-started', message)
     })
@@ -86,12 +82,12 @@ io.on('connection', function (socket) {
 
     socket.on('review-scores', function (payload) {
         const { roomId } = payload
-        roomTracker.reviewScores(socket, roomId)
+        roomTracker.reviewScores(roomId)
     })
 
     socket.on('start-next-round', function (payload) {
         const { roomId } = payload
-        roomTracker.startNextRound(socket, roomId)
+        roomTracker.startNextRound(roomId)
     })
 })
 
