@@ -1,5 +1,22 @@
 import { createSlice } from '@reduxjs/toolkit'
 
+export interface FeState {
+    roomName: string
+    roomId: string
+    playerType: string | null
+    players: string[]
+    acronym: string | null
+    prompt: string | null
+    answers: string[]
+    votes: { [key: string]: string[] }
+    scores: number[]
+    isGameOver: boolean
+    round: number
+}
+
+export interface ReduxState {
+    feState: FeState
+}
 export const feStateSlice = createSlice({
     name: 'feState',
     initialState: {
