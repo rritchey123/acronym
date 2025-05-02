@@ -10,23 +10,19 @@ export interface Player {
     currentAnswer?: string
 }
 
-export enum StateValue {
+export enum RoomStatus {
     WAITING = 'waiting',
     PLAYING = 'playing',
     ENDED = 'ended',
 }
 
-export interface RoomState {
-    stateValue: StateValue
+export interface Room {
+    status: RoomStatus
     acronym?: string
     prompt?: string
-    votes: Record<string, number>
-    round: number
-    scores: Record<string, number>
     isGameOver: boolean
-}
-
-export interface Room {
-    state: RoomState
-    players: Player[]
+    round: number
+    votes: Record<string, number>
+    scores: Record<string, number>
+    players: Record<string, Player>
 }
