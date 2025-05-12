@@ -8,81 +8,75 @@ import {
     DialogTrigger,
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
-import { useTheme } from './ThemeProvider'
 import { useDispatch } from 'react-redux'
 import socket from '../socket.ts'
 import { useState } from 'react'
-import {
-    setRoomId,
-    setRoomName,
-    setPlayerType,
-    setPlayers,
-} from '../redux/feState'
+import { PlayerType } from '@shared/index'
+import { setPlayerType } from '@/redux/feState.ts'
 
 export function PlayDialogue() {
-    const { theme } = useTheme()
     const [playerName, setPlayerName] = useState('')
-    const [roomId, setRoomIdInput] = useState('')
+    const [roomId, setRoomId] = useState('')
     const [isLoading, setIsLoading] = useState(false)
 
     const dispatch = useDispatch()
-    function createRoom(event) {
+    function createRoom(event: any) {
         event.preventDefault()
         if (!playerName) {
             alert('Please enter a player name')
             return
         }
-        //setIsLoading(true);
 
-        socket.emit('create-room', ({ success, reason, data }) => {
-            const { roomId } = data
+        setIsLoading(true)
 
+        socket.emit('create-room', ({ success, data }) => {
+            if (!success) {
+                alert(`Failed to create room: ${JSON.stringify(data)}`)
+                setIsLoading(false)
+                return
+            }
             socket.emit(
                 'join-room',
-                { roomId, playerName, playerType: 'leader' },
-                ({ success, reason, data }) => {
+                {
+                    roomId: data.roomId,
+                    playerName,
+                    playerType: PlayerType.LEADER,
+                },
+                ({ success, data }) => {
                     if (!success) {
-                        alert(reason)
-                        return
+                        alert(`Failed to join room: ${JSON.stringify(data)}`)
+                    } else {
+                        dispatch(setPlayerType(PlayerType.LEADER))
                     }
-                    const { players } = data
-                    dispatch(setRoomId(roomId))
-                    dispatch(setRoomName('waitRoom'))
-                    dispatch(setPlayerType('leader'))
-                    dispatch(setPlayers(players))
+
+                    setIsLoading(false)
                 }
             )
-            // setIsLoading(false);
         })
-        return
     }
 
-    function joinRoom(event) {
+    function joinRoom(event: any) {
         event.preventDefault()
+        setIsLoading(true)
         if (!playerName) {
             alert('Please enter a name')
+            setIsLoading(false)
             return
         }
         if (!roomId) {
             alert('Please enter a room ID')
+            setIsLoading(false)
             return
         }
-        //setIsLoading(true);
 
         socket.emit(
             'join-room',
-            { playerName, roomId, playerType: 'player' },
-            ({ success, reason, data }) => {
+            { playerName, roomId, playerType: PlayerType.NORMAL },
+            ({ success, data }) => {
                 if (!success) {
-                    alert(reason)
-                    return
+                    alert(`Failed to join room: ${JSON.stringify(data)}`)
                 }
-                const { players } = data
-                dispatch(setRoomId(roomId))
-                dispatch(setRoomName('waitRoom'))
-                dispatch(setPlayerType('player'))
-                dispatch(setPlayers(players))
-                // setIsLoading(false);
+                setIsLoading(false)
             }
         )
     }
@@ -128,7 +122,7 @@ export function PlayDialogue() {
                             </Button>
                             <Input
                                 className="mb-1 text-foreground"
-                                onChange={(e) => setRoomIdInput(e.target.value)}
+                                onChange={(e) => setRoomId(e.target.value)}
                                 placeholder="Enter a room ID"
                             />
                         </div>

@@ -3,16 +3,36 @@ import socket from '../../../socket.ts'
 import { useSelector } from 'react-redux'
 import { Input } from '../../ui/input'
 import { Button } from '../../ui/button'
+import { selectFeState } from '@/lib/utils.ts'
 
-export function AnswerEntry(props) {
+interface AnswerEntryProps {
+    setHasAnswered: (hasAnswered: boolean) => void
+}
+export function AnswerEntry({ setHasAnswered }: AnswerEntryProps) {
     const [answer, setAnswer] = useState('')
-    const { setHasAnswered } = props
-    const { roomId } = useSelector((state) => state.feState)
+    const { room } = useSelector(selectFeState)
+    if (!room) {
+        alert('Room does not exist')
+        return null
+    }
 
-    function sendAnswer(event) {
+    function sendAnswer(event: any) {
+        if (!room) {
+            alert('Room does not exist')
+            return null
+        }
         event.preventDefault()
-        socket.emit('submit-answer', { roomId, answer })
         setHasAnswered(true)
+        socket.emit(
+            'submit-answer',
+            { roomId: room.id, answer },
+            ({ success, data }) => {
+                if (!success) {
+                    alert(`Failed to submit answer: ${JSON.stringify(data)}`)
+                    return
+                }
+            }
+        )
     }
     return (
         <form

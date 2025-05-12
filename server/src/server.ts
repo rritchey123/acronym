@@ -3,8 +3,14 @@ import * as httpModule from 'http'
 import RoomTrackerService from './services/RoomTracker.js'
 import { Server } from 'socket.io'
 import { instrument } from '@socket.io/admin-ui'
+import { ClientToServerEvents, ServerToClientEvents } from '@shared/index.js'
 const http = httpModule.createServer(server)
-const io = new Server(http, {
+const io = new Server<
+    ClientToServerEvents,
+    ServerToClientEvents,
+    undefined,
+    undefined
+>(http, {
     cors: {
         origin: [`http://localhost:3000`, 'https://admin.socket.io'],
         credentials: true,
@@ -21,73 +27,113 @@ io.on('connection', function (socket) {
     console.log('A user connected: ' + socket.id)
 
     socket.on('disconnect', function () {
-        console.log('A user disconnected: ' + socket.id)
-        const roomId = roomTracker.getRoomIdByPlayerId(socket.id)
-        if (!roomId) return
-        roomTracker.leaveRoom({ roomId, socket, onDisconnect: true })
-        roomTracker.updateAllPlayers(roomId)
+        try {
+            roomTracker.playerDisconnected(socket)
+        } catch (err) {
+            console.error(`Error while disconnecting player: ${err}`)
+        }
     })
 
     socket.on('create-room', function (cb) {
-        const message = roomTracker.createRoom()
-        cb(message)
+        try {
+            const roomId = roomTracker.createRoom()
+            cb({ success: true, data: { roomId } })
+        } catch (err) {
+            console.error(`Error while creating room: ${err}`)
+            cb({ success: false, data: err })
+        }
     })
 
     socket.on('leave-room', function (payload, cb) {
         const { roomId } = payload
-
-        const message = roomTracker.leaveRoom({ roomId, socket })
-
-        cb(message)
-
-        roomTracker.updatePlayersExceptSelf(socket, roomId)
+        try {
+            roomTracker.leaveRoom({ roomId, socket })
+            cb({ success: true })
+        } catch (err) {
+            console.error(`Error while leaving room: ${err}`)
+            cb({ success: false, data: err })
+        }
     })
 
     socket.on('join-room', function (payload, cb) {
         const { roomId, playerName, playerType } = payload
         const player = { id: socket.id, name: playerName, type: playerType }
-        const message = roomTracker.joinRoom({ socket, roomId, player })
 
-        cb(message)
-
-        roomTracker.updatePlayersExceptSelf(socket, roomId)
+        try {
+            roomTracker.joinRoom({ socket, roomId, player })
+            cb({ success: true })
+        } catch (err) {
+            console.error(`Error while joining room: ${err}`)
+            cb({ success: false, data: err })
+        }
     })
 
-    socket.on('start-game', function (payload) {
+    socket.on('start-game', function (payload, cb) {
         const { roomId } = payload
 
-        const message = roomTracker.startGame(roomId)
-
-        io.in(roomId).emit('game-started', message)
+        try {
+            roomTracker.startGame(roomId)
+            cb({ success: true })
+        } catch (err) {
+            console.error(`Error while starting game: ${err}`)
+            cb({ success: false, data: err })
+        }
     })
 
-    socket.on('end-game', function (payload) {
+    socket.on('end-game', function (payload, cb) {
         const { roomId } = payload
 
-        const message = roomTracker.endGame(roomId)
-
-        io.in(roomId).emit('game-ended', message)
+        try {
+            roomTracker.endGame(roomId)
+            cb({ success: true })
+        } catch (err) {
+            console.error(`Error while ending game: ${err}`)
+            cb({ success: false, data: err })
+        }
     })
 
-    socket.on('submit-answer', function (payload) {
+    socket.on('submit-answer', function (payload, cb) {
         const { roomId, answer } = payload
-
-        roomTracker.submitAnswer(socket, roomId, answer)
+        try {
+            roomTracker.submitAnswer(socket, roomId, answer)
+            cb({ success: true })
+        } catch (err) {
+            console.error(`Error while submitting answer: ${err}`)
+            cb({ success: false, data: err })
+        }
     })
 
-    socket.on('submit-vote', function (payload) {
+    socket.on('submit-vote', function (payload, cb) {
         const { roomId, playerId } = payload
-        roomTracker.submitVote(roomId, playerId)
+        try {
+            roomTracker.submitVote(roomId, playerId)
+            cb({ success: true })
+        } catch (err) {
+            console.error(`Error while submitting vote: ${err}`)
+            cb({ success: false, data: err })
+        }
     })
 
-    socket.on('review-scores', function (payload) {
+    socket.on('review-scores', function (payload, cb) {
         const { roomId } = payload
-        roomTracker.reviewScores(roomId)
+        try {
+            roomTracker.reviewScores(roomId)
+            cb({ success: true })
+        } catch (err) {
+            console.error(`Error while reviewing scores: ${err}`)
+            cb({ success: false, data: err })
+        }
     })
 
-    socket.on('start-next-round', function (payload) {
+    socket.on('start-next-round', function (payload, cb) {
         const { roomId } = payload
-        roomTracker.startNextRound(roomId)
+        try {
+            roomTracker.startNextRound(roomId)
+            cb({ success: true })
+        } catch (err) {
+            console.error(`Error while starting next round: ${err}`)
+            cb({ success: false, data: err })
+        }
     })
 })
 

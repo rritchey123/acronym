@@ -3,14 +3,23 @@ import socket from '../../../socket.ts'
 import { LeaveRoomButton } from '../../Buttons/LeaveRoomButton/LeaveRoomButton'
 import { Button } from '@/components/ui/button'
 import { PlayersContainer } from '@/components/PlayersContainer'
+import { selectFeState } from '@/lib/utils.ts'
 
 export function WaitRoom() {
-    const { roomId, playerType, players } = useSelector(
-        (state) => state.feState
-    )
+    const { room, playerType } = useSelector(selectFeState)
+    if (!room) return null
 
     function startGame() {
-        socket.emit('start-game', { roomId })
+        if (!room) {
+            alert('Room does not exist')
+            return
+        }
+        socket.emit('start-game', { roomId: room!.id }, ({ success, data }) => {
+            if (!success) {
+                alert(`Failed to create room: ${JSON.stringify(data)}`)
+                return
+            }
+        })
     }
     return (
         <>
@@ -28,11 +37,11 @@ export function WaitRoom() {
                         Waiting on leader to start the game...
                     </div>
                     <div className="text-center text-2xl">
-                        Room code: {roomId}
+                        Room code: {room.id}
                     </div>
 
                     <div className="text-center text-2xl my-4">PLAYERS</div>
-                    <PlayersContainer players={players} />
+                    <PlayersContainer players={room.players} />
                 </div>
             </div>
         </>

@@ -1,4 +1,5 @@
-import { Player, Room, RoomStatus } from '@shared/index.js'
+import { Player, Room, RoomStatus } from '@shared/index'
+// /Users/ryanritchey/Documents/GitHub/acronym/shared/types/index
 import { getRandomAcronym, getRandomPrompt } from './Database.js'
 import { generateId } from '../utils.js'
 
@@ -10,6 +11,7 @@ const DEFAULT_ROOM = {
     prompt: null,
     isGameOver: false,
     round: 1,
+    answers: {},
     votes: {},
     players: {},
     scores: {},
@@ -22,6 +24,12 @@ export default class RoomTrackerService {
         this._rooms = {}
         this._io = io
     }
+    getRoom(roomId): Room | undefined {
+        return this._rooms[roomId]
+    }
+    deleteRoom(roomId): void {
+        delete this._rooms[roomId]
+    }
 
     createRoom() {
         let id = generateId()
@@ -30,15 +38,8 @@ export default class RoomTrackerService {
             id = generateId()
         }
 
-        this._rooms[id] = structuredClone(DEFAULT_ROOM)
-
-        return { success: true, reason: '', data: { roomId: id } }
-    }
-    getRoom(roomId): Room | undefined {
-        return this._rooms[roomId]
-    }
-    deleteRoom(roomId): void {
-        delete this._rooms[roomId]
+        this._rooms[id] = { ...structuredClone(DEFAULT_ROOM), id }
+        return id
     }
 
     joinRoom({
@@ -53,44 +54,31 @@ export default class RoomTrackerService {
         const { id: playerId, name: playerName, type: playerType } = player
         const room = this.getRoom(roomId)
 
-        if (!room)
-            return {
-                success: false,
-                reason: `Room ${roomId} does not exist.`,
-                data: {},
-            }
-        if (room.status !== RoomStatus.WAITING)
-            return {
-                success: false,
-                reason: `Room ${roomId} has already started`,
-                data: {},
-            }
+        if (!room) {
+            throw new Error(`Room ${roomId} does not exist.`)
+        }
 
-        if (room.players[playerId])
-            return {
-                success: false,
-                reason: `Player with id ${playerId} already in room.`,
-            }
-        if (Object.values(room.players).find((i) => i.name === playerName))
-            return {
-                success: false,
-                reason: `Player with name ${playerName} already in room.`,
-            }
+        if (room.status !== RoomStatus.WAITING) {
+            throw new Error(`Room ${roomId} has already started.`)
+        }
 
-        const newPlayer = {
+        if (room.players[playerId]) {
+            throw new Error(`Player with id ${playerId} already in room.`)
+        }
+
+        if (Object.values(room.players).find((i) => i.name === playerName)) {
+            throw new Error(`Player with name ${playerName} already in room.`)
+        }
+
+        room.players[playerId] = {
             id: playerId,
             name: playerName,
             type: playerType,
         }
-        room.players[playerId] = newPlayer
 
         socket.join(roomId)
 
-        return {
-            success: true,
-            reason: '',
-            data: { roomId, players: room.players },
-        }
+        this.updateAllPlayers(roomId)
     }
 
     leaveRoom({
@@ -107,23 +95,19 @@ export default class RoomTrackerService {
 
         if (!onDisconnect) socket.leave(roomId)
 
-        if (!room)
-            return {
-                success: false,
-                reason: `Room ${roomId} does not exist.`,
-                data: {},
-            }
+        if (!room) {
+            throw new Error(`Room ${roomId} does not exist.`)
+        }
 
-        if (!room.players[playerId])
-            return {
-                success: false,
-                reason: `Player with id ${playerId} does not exist.`,
-            }
+        if (!room.players[playerId]) {
+            throw new Error(`Player with id ${playerId} does not exist.`)
+        }
+
         delete room.players[playerId]
 
         if (Object.keys(room.players).length === 0) this.deleteRoom(roomId)
 
-        return { success: true, reason: '', data: {} }
+        this.updateAllPlayers(roomId)
     }
 
     // Game operation
@@ -135,66 +119,40 @@ export default class RoomTrackerService {
         room.round = 1
 
         this.updateAllPlayers(roomId)
-
-        return { success: true, reason: '', data: { roomId } }
     }
 
     endGame(roomId) {
         const room = this.getRoom(roomId)
         room.status = RoomStatus.ENDED
-        return { success: true, reason: '', data: { roomId } }
+        this.updateAllPlayers(roomId)
     }
 
     // Players
     updatePlayersExceptSelf(socket, roomId) {
         const room = this.getRoom(roomId)
         if (!room) return
-
-        const message = {
-            success: true,
-            reason: '',
-            data: { room },
-        }
-        socket.in(roomId).emit('update-players', message)
+        socket.in(roomId).emit('update-players', room)
     }
 
     updateAllPlayers(roomId) {
         const room = this.getRoom(roomId)
         if (!room) return
-
-        const message = {
-            success: true,
-            reason: '',
-            data: { room },
-        }
-        this._io.in(roomId).emit('update-players', message)
+        this._io.in(roomId).emit('update-players', room)
     }
 
     submitAnswer(socket, roomId, answer) {
         const room = this.getRoom(roomId)
         if (!room) return
 
-        room.players[socket.id].currentAnswer = answer
+        room.answers[socket.id] = answer
 
-        this.updateAllPlayers(roomId)
-
-        const playersArray = Object.values(room.players)
-
+        const numAnswers = Object.keys(room.answers).length
+        const numPlayers = Object.keys(room.players).length
         // If everyone has answered, update all players with player answers`
-        if (playersArray.filter((i) => !i.currentAnswer).length === 0) {
-            const answers = playersArray.reduce((acc, player) => {
-                acc[player.id] = player.currentAnswer
-                return acc
-            }, {})
-
-            this._io.in(roomId).emit('vote-ready', {
-                success: true,
-                reason: '',
-                data: {
-                    answers,
-                },
-            })
+        if (numAnswers === numPlayers) {
+            room.status = RoomStatus.VOTING
         }
+        this.updateAllPlayers(roomId)
     }
 
     submitVote(roomId, playerId) {
@@ -210,16 +168,13 @@ export default class RoomTrackerService {
             (acc, cur) => acc + cur,
             0
         )
-        if (totalVotes === Object.keys(room.votes).length) {
+        const totalPlayers = Object.keys(room.players).length
+        if (totalVotes === totalPlayers) {
             room.isGameOver = this.isGameOver(roomId)
-            this._io.in(roomId).emit('round-summary-ready', {
-                success: true,
-                reason: '',
-                data: {
-                    votes: room.votes,
-                },
-            })
+            room.status = RoomStatus.REVIEWING_ROUND_SUMMARY
         }
+
+        this.updateAllPlayers(roomId)
     }
 
     startNextRound(roomId) {
@@ -229,34 +184,14 @@ export default class RoomTrackerService {
         room.prompt = getRandomPrompt()
         room.round += 1
         room.votes = {}
-        for (const player of Object.values(room.players)) {
-            player.currentAnswer = null
-        }
-
+        room.answers = {}
         this.updateAllPlayers(roomId)
-        this._io.in(roomId).emit('next-round-started', {
-            success: true,
-            reason: '',
-            data: {},
-        })
     }
 
     reviewScores(roomId) {
         const room = this.getRoom(roomId)
-        const scoreArray = []
-        for (const player of Object.values(room.players)) {
-            scoreArray.push({
-                name: player.name,
-                score: room.scores[player.id] || 0,
-            })
-        }
+        room.status = RoomStatus.REVIEWING_SCORE_SUMMARY
         this.updateAllPlayers(roomId)
-
-        this._io.in(roomId).emit('review-scores', {
-            success: true,
-            reason: '',
-            data: scoreArray,
-        })
     }
 
     isGameOver(roomId) {
@@ -265,9 +200,12 @@ export default class RoomTrackerService {
         )
     }
 
-    getRoomIdByPlayerId(playerId) {
-        return Object.entries(this._rooms).find(
-            ([, room]) => !!room.players[playerId]
+    playerDisconnected(socket) {
+        const roomId = Object.entries(this._rooms).find(
+            ([, room]) => !!room.players[socket.id]
         )?.[0]
+        if (!roomId) return
+        this.leaveRoom({ roomId, socket, onDisconnect: true })
+        this.updateAllPlayers(roomId)
     }
 }

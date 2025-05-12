@@ -1,4 +1,3 @@
-import React from 'react'
 import socket from '../../../socket.ts'
 
 export function DisconnectButton() {

@@ -3,13 +3,16 @@ import { AnswerEntry } from '../../Forms/AnswerEntry/AnswerEntry'
 import { useSelector } from 'react-redux'
 import { PlayersContainer } from '../../PlayersContainer'
 import { RoundHeader } from '../../RoundHeader'
+import { selectFeState } from '@/lib/utils'
 
 export function PlayRoom() {
     const [hasAnswered, setHasAnswered] = useState(false)
 
-    const { roomId, playerType, players, acronym, prompt, round } = useSelector(
-        (state) => state.feState
-    )
+    const { room } = useSelector(selectFeState)
+    if (!room) {
+        alert('Room does not exist')
+        return null
+    }
 
     return (
         <>
@@ -17,9 +20,9 @@ export function PlayRoom() {
             <div className="flex justify-center items-center">
                 <div className="w-sm">
                     <div className="text-2xl text-center">ACRONAYM</div>
-                    <div className="text-3xl text-center">{acronym}</div>
+                    <div className="text-3xl text-center">{room.acronym}</div>
                     <div className="text-2xl text-center">PROMPT</div>
-                    <div className="text-3xl text-center">{prompt}</div>
+                    <div className="text-3xl text-center">{room.prompt}</div>
 
                     {hasAnswered ? (
                         <div className="text-center">
@@ -32,7 +35,7 @@ export function PlayRoom() {
                     )}
 
                     <div className="text-2xl text-center">PLAYERS</div>
-                    <PlayersContainer players={players} />
+                    <PlayersContainer players={room.players} />
                 </div>
             </div>
         </>

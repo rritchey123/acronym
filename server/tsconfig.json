@@ -3,10 +3,12 @@
     "files": [],
     "compilerOptions": {
         "allowJs": true,
+        "outDir": "./dist",
         "baseUrl": ".",
         "esModuleInterop": true,
         "paths": {
-            "@/*": ["./src/*"]
+            "@/*": ["./src/*"],
+            "@shared/*": ["../shared/types/*"]
         }
     }
 }

@@ -8,10 +8,8 @@ import {
     DialogTitle,
     DialogTrigger,
 } from '@/components/ui/dialog'
-import { useTheme } from './ThemeProvider'
 
 export function InfoDialogue() {
-    const { theme } = useTheme()
     return (
         <>
             <Dialog>

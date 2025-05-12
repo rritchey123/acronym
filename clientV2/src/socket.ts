@@ -1,4 +1,5 @@
-import { io } from 'socket.io-client'
+import { ClientToServerEvents, ServerToClientEvents } from '@shared/index'
+import { io, Socket } from 'socket.io-client'
 
 const port = 3030
 // "undefined" means the URL will be computed from the `window.location` object
@@ -7,15 +8,12 @@ const URL =
         ? undefined
         : `http://localhost:${port}`
 
-console.log('before')
-const socket = io(URL, { autoConnect: true })
-console.log('after')
+const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(URL, {
+    autoConnect: true,
+})
 
 socket.on('connect', function () {
     console.log('Front end connected to backend!')
 })
 
-socket.on('room-created', (payload) => {
-    console.log('ROOM CREATED! ', payload)
-})
 export default socket

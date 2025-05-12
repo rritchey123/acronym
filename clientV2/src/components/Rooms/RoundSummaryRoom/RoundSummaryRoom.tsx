@@ -3,30 +3,33 @@ import socket from '../../../socket.ts'
 import { RoundHeader } from '../../RoundHeader'
 import { Button } from '../../ui/button'
 import { PlayerCard } from '../../Cards/Player/PlayerCard'
-
-const TmpCard = ({ answer }) => {
-    return (
-        <div
-            className={`rounded border bg-primary py-1 min-w-[100px] text-center justify-center`}
-        >
-            {answer}
-        </div>
-    )
-}
+import { selectFeState } from '@/lib/utils.ts'
+import { PlayerType } from '@shared/index'
 
 export function RoundSummaryRoom() {
-    const { answers, votes, playerType, players, roomId } = useSelector(
-        (state) => state.feState
-    )
+    const { room, playerType } = useSelector(selectFeState)
+    if (!room) {
+        alert('Room does not exist')
+        return null
+    }
 
     const onClick = () => {
-        socket.emit('review-scores', { roomId })
+        socket.emit(
+            'review-scores',
+            { roomId: room.id },
+            ({ success, data }) => {
+                if (!success) {
+                    alert(`Failed to review scores: ${JSON.stringify(data)}`)
+                    return
+                }
+            }
+        )
     }
 
     return (
         <>
             <RoundHeader isSummary />
-            {playerType === 'leader' && (
+            {playerType === PlayerType.LEADER && (
                 <Button className="m-4" onClick={onClick}>
                     Review scores?
                 </Button>
@@ -36,18 +39,24 @@ export function RoundSummaryRoom() {
                     <div className="mb-8 text-2xl text-center">
                         Waiting for leader to continue!
                     </div>
-                    {players.map((p) => {
-                        const { id, name } = p
-                        const voteCount = votes[id] || 0
-                        const answer = answers[id] || 'No answer :/'
+                    {Object.values(room.players).map((p) => {
+                        const voteCount = room.votes[p.id] || 0
+                        const answer = room.answers[p.id] || 'No answer :/'
 
                         return (
                             <div
-                                key={id}
+                                key={p.id}
                                 className="flex gap-2 items-center justify-around my-2"
                             >
-                                <PlayerCard player={p} />
-                                <TmpCard answer={answer} />
+                                <PlayerCard
+                                    playerName={p.name}
+                                    answer={answer}
+                                />
+                                <div
+                                    className={`rounded border bg-primary py-1 min-w-[100px] text-center justify-center`}
+                                >
+                                    {answer}
+                                </div>
                                 <div className='className="text-3xl text-center"'>{`${voteCount} vote${
                                     voteCount !== 1 ? 's' : ''
                                 }`}</div>

@@ -25,7 +25,8 @@
         /* Tailwind */
         "baseUrl": ".",
         "paths": {
-            "@/*": ["./src/*"]
+            "@/*": ["./src/*"],
+            "@shared/*": ["../shared/types/*"]
         }
     },
     "include": ["src"]

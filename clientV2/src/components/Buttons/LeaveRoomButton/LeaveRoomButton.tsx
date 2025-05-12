@@ -1,23 +1,26 @@
-import React from 'react'
 import socket from '../../../socket.ts'
 import { useSelector, useDispatch } from 'react-redux'
-import { setRoomId, setRoomName, setPlayerType } from '../../../redux/feState'
+import { setRoom } from '../../../redux/feState'
 import { Button } from '../../ui/button'
+import { selectFeState } from '@/lib/utils.ts'
 
 export function LeaveRoomButton({ buttonText = 'Leave Room' }) {
-    const { roomId } = useSelector((state) => state.feState)
-
+    const { room } = useSelector(selectFeState)
     const dispatch = useDispatch()
-
+    if (!room) {
+        alert('Room does not exist')
+        return null
+    }
     function leaveRoom() {
-        socket.emit('leave-room', { roomId }, ({ success, reason, data }) => {
+        if (!room) {
+            alert('Room does not exist')
+            return null
+        }
+        socket.emit('leave-room', { roomId: room.id }, ({ success, data }) => {
             if (!success) {
-                alert(reason)
-                return
+                alert(`Failed to leave room: ${JSON.stringify(data)}`)
             }
-            dispatch(setRoomId(''))
-            dispatch(setRoomName('homeRoom'))
-            dispatch(setPlayerType(null))
+            dispatch(setRoom(null))
         })
     }
 
