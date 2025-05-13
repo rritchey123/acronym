@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import socket from '../../../socket.ts'
 import { useSelector } from 'react-redux'
 import { Input } from '../../ui/input'
