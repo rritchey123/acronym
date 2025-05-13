@@ -5,6 +5,7 @@ import { PlayerCard } from '../../Cards/Player/PlayerCard'
 import { Button } from '../../ui/button'
 import { selectFeState } from '@/lib/utils.ts'
 import { PlayerType } from '@shared/index'
+import { RoundHeader } from '@/components/RoundHeader.tsx'
 export const ScoreReviewRoom = () => {
     const { room, playerType } = useSelector(selectFeState)
     if (!room) {
@@ -26,26 +27,31 @@ export const ScoreReviewRoom = () => {
 
     return (
         <>
-            {room.isGameOver && (
-                <>
-                    <h1>GAME OVER</h1>
-                </>
-            )}
+            <RoundHeader isGameSummary />
             {!room.isGameOver && playerType === PlayerType.LEADER && (
                 <Button className="m-4" onClick={onNextRountButtonClick}>
                     Next round
                 </Button>
             )}
             {room.isGameOver && (
-                <LeaveRoomButton buttonText="back to home page" />
+                <div className="ml-2">
+                    <LeaveRoomButton buttonText="back to home" />
+                </div>
             )}
             <div className="flex justify-center">
                 <div className="w-sm text-center flex-col">
-                    <div className="mb-8 text-2xl text-center">
-                        Waiting for leader to continue!
-                    </div>
-                    {Object.entries(room.scores).map(([playerId, score]) => {
-                        const { name } = room.players[playerId]
+                    {!room.isGameOver ? (
+                        <div className="mb-8 text-md text-center">
+                            Waiting for leader to continue!
+                        </div>
+                    ) : (
+                        <div className="mb-8 text-md text-center">
+                            Game over!
+                        </div>
+                    )}
+                    {Object.entries(room.players).map(([playerId, player]) => {
+                        const { name } = player
+                        const score = room.scores[playerId] || 0
                         return (
                             <div
                                 key={playerId}

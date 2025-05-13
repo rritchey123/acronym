@@ -34,7 +34,7 @@ export function VoteRoom() {
             <RoundHeader />
             <div className="flex justify-center">
                 <div className="w-sm">
-                    <div className="text-2xl text-center">
+                    <div className="text-2xl text-center mb-4">
                         {hasVoted
                             ? 'Waiting for other players to finish voting'
                             : 'Vote for the best answer!'}

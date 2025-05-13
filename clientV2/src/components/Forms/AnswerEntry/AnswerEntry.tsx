@@ -36,7 +36,7 @@ export function AnswerEntry({ setHasAnswered }: AnswerEntryProps) {
     }
     return (
         <form
-            className="flex justify-center items-center mt-4"
+            className="flex justify-center items-center mt-4 mx-4"
             onSubmit={sendAnswer}
         >
             <Input

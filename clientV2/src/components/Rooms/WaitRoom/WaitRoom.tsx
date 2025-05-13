@@ -23,12 +23,10 @@ export function WaitRoom() {
     }
     return (
         <>
-            <div>
+            <div className="mt-4 mx-2 flex flex-row flex-start gap-2">
                 <LeaveRoomButton />
                 {playerType === 'leader' && (
-                    <Button className="mt-4 ml-2" onClick={startGame}>
-                        Start Game
-                    </Button>
+                    <Button onClick={startGame}>Start Game</Button>
                 )}
             </div>
             <div className="flex justify-center">

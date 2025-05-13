@@ -28,15 +28,15 @@ export function RoundSummaryRoom() {
 
     return (
         <>
-            <RoundHeader isSummary />
+            <RoundHeader isRoundSummary />
             {playerType === PlayerType.LEADER && (
                 <Button className="m-4" onClick={onClick}>
-                    Review scores?
+                    Review game scores?
                 </Button>
             )}
             <div className="flex justify-center">
                 <div className="w-sm text-center flex-col">
-                    <div className="mb-8 text-2xl text-center">
+                    <div className="mb-8 text-md text-center">
                         Waiting for leader to continue!
                     </div>
                     {Object.values(room.players).map((p) => {

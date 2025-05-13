@@ -5,7 +5,7 @@ export const PlayersContainer = ({
     answers,
 }: {
     players: PlayersMap
-    answers: AnswersMap
+    answers?: AnswersMap
 }) => {
     return (
         <div className="flex flex-wrap gap-4 justify-center">

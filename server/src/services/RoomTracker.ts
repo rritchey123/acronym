@@ -3,7 +3,7 @@ import { Player, Room, RoomStatus } from '@shared/index'
 import { getRandomAcronym, getRandomPrompt } from './Database.js'
 import { generateId } from '../utils.js'
 
-const SCORE_LIMIT = 10
+const SCORE_LIMIT = 5
 
 const DEFAULT_ROOM = {
     status: RoomStatus.WAITING,
