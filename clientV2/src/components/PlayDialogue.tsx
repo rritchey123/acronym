@@ -84,47 +84,54 @@ export function PlayDialogue() {
         <>
             <Dialog>
                 <DialogTrigger asChild>
-                    <Button className="mb-4 w-20">Play</Button>
+                    <Button className="mb-4 w-40">Play</Button>
                 </DialogTrigger>
-                <DialogContent className="sm:max-w-[425px]">
+
+                <DialogContent className="sm:max-w-[400px] space-y-6">
                     <DialogHeader>
-                        <DialogTitle>Play</DialogTitle>
+                        <DialogTitle className="text-lg font-semibold">
+                            Play
+                        </DialogTitle>
                         <DialogDescription>
-                            Enter a player name. Create a new room or join a
-                            game with a room code.
+                            Enter your player name, then create or join a game
+                            with a room code.
                         </DialogDescription>
                     </DialogHeader>
-                    <form
-                        className="flex flex-col justify-around gap-8"
-                        onSubmit={joinRoom}
-                    >
-                        <Input
-                            className="mb-1 text-foreground"
-                            onChange={(e) => setPlayerName(e.target.value)}
-                            placeholder="Enter a player name"
-                        />
-                        <Button
-                            className="w-full"
-                            type="button"
-                            onClick={createRoom}
-                            disabled={isLoading}
-                        >
-                            Create Room
-                        </Button>
-                        <div>
+
+                    <form onSubmit={joinRoom} className="space-y-4">
+                        {/* Player Name */}
+                        <div className="space-y-2">
+                            <Input
+                                placeholder="Enter player name"
+                                value={playerName}
+                                onChange={(e) => setPlayerName(e.target.value)}
+                                className="text-foreground"
+                            />
                             <Button
-                                className="w-full mb-1"
+                                onClick={createRoom}
+                                disabled={isLoading || !playerName}
+                                className="w-full"
+                                type="button"
+                            >
+                                Create Room
+                            </Button>
+                        </div>
+
+                        {/* Room Code */}
+                        <div className="space-y-2">
+                            <Input
+                                placeholder="Enter room code"
+                                value={roomId}
+                                onChange={(e) => setRoomId(e.target.value)}
+                                className="text-foreground"
+                            />
+                            <Button
                                 type="submit"
-                                onClick={joinRoom}
-                                disabled={isLoading}
+                                disabled={isLoading || !playerName || !roomId}
+                                className="w-full"
                             >
                                 Join Room
                             </Button>
-                            <Input
-                                className="mb-1 text-foreground"
-                                onChange={(e) => setRoomId(e.target.value)}
-                                placeholder="Enter a room ID"
-                            />
                         </div>
                     </form>
                 </DialogContent>

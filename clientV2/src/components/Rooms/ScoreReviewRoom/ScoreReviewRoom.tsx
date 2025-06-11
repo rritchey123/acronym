@@ -1,7 +1,6 @@
 import { useSelector } from 'react-redux'
 import socket from '../../../socket.ts'
 import { LeaveRoomButton } from '../../Buttons/LeaveRoomButton/LeaveRoomButton'
-import { PlayerCard } from '../../Cards/Player/PlayerCard'
 import { Button } from '../../ui/button'
 import { selectFeState } from '@/lib/utils.ts'
 import { PlayerType } from '@shared/index'
@@ -25,42 +24,50 @@ export const ScoreReviewRoom = () => {
         )
     }
 
+    const waitingPropmpt =
+        playerType === PlayerType.LEADER
+            ? 'Click button to start next round!'
+            : 'Waiting for leader to continue!'
+
     return (
         <>
             <RoundHeader isGameSummary />
+
             {!room.isGameOver && playerType === PlayerType.LEADER && (
-                <Button className="m-4" onClick={onNextRountButtonClick}>
-                    Next round
-                </Button>
-            )}
-            {room.isGameOver && (
-                <div className="ml-2">
-                    <LeaveRoomButton buttonText="back to home" />
+                <div className="flex justify-center">
+                    <Button className="m-4" onClick={onNextRountButtonClick}>
+                        Next round
+                    </Button>
                 </div>
             )}
-            <div className="flex justify-center">
-                <div className="w-sm text-center flex-col">
-                    {!room.isGameOver ? (
-                        <div className="mb-8 text-md text-center">
-                            Waiting for leader to continue!
-                        </div>
-                    ) : (
-                        <div className="mb-8 text-md text-center">
-                            Game over!
-                        </div>
-                    )}
+
+            {room.isGameOver && (
+                <div className="flex justify-center m-4">
+                    <LeaveRoomButton buttonText="Back to home" />
+                </div>
+            )}
+
+            <div className="flex justify-center px-4">
+                <div className="w-full max-w-md space-y-6">
+                    <div className="text-center text-muted-foreground text-sm mb-4">
+                        {room.isGameOver ? 'Game over!' : waitingPropmpt}
+                    </div>
+
                     {Object.entries(room.players).map(([playerId, player]) => {
                         const { name } = player
                         const score = room.scores[playerId] || 0
+
                         return (
                             <div
                                 key={playerId}
-                                className="flex gap-2 items-center justify-around my-2"
+                                className="flex items-center justify-between border border-border rounded-lg bg-card px-4 py-3"
                             >
-                                <PlayerCard playerName={name} />
-                                <div className='w-20 className="text-3xl text-center"'>{`${score} vote${
-                                    score !== 1 ? 's' : ''
-                                }`}</div>
+                                <div className="text-sm font-medium text-muted-foreground truncate max-w-[70%]">
+                                    {name}
+                                </div>
+                                <div className="text-sm text-primary font-semibold">
+                                    {score} vote{score !== 1 ? 's' : ''}
+                                </div>
                             </div>
                         )
                     })}

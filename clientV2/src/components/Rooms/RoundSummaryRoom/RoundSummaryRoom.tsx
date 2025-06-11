@@ -2,7 +2,6 @@ import { useSelector } from 'react-redux'
 import socket from '../../../socket.ts'
 import { RoundHeader } from '../../RoundHeader'
 import { Button } from '../../ui/button'
-import { PlayerCard } from '../../Cards/Player/PlayerCard'
 import { selectFeState } from '@/lib/utils.ts'
 import { PlayerType } from '@shared/index'
 
@@ -29,16 +28,23 @@ export function RoundSummaryRoom() {
     return (
         <>
             <RoundHeader isRoundSummary />
+
             {playerType === PlayerType.LEADER && (
-                <Button className="m-4" onClick={onClick}>
-                    Review game scores?
-                </Button>
+                <div className="flex justify-center">
+                    <Button className="m-4" onClick={onClick}>
+                        Review game scores?
+                    </Button>
+                </div>
             )}
-            <div className="flex justify-center">
-                <div className="w-sm text-center flex-col">
-                    <div className="mb-8 text-md text-center">
-                        Waiting for leader to continue!
+
+            <div className="flex justify-center px-4">
+                <div className="w-full max-w-md space-y-6">
+                    <div className="text-center text-muted-foreground text-sm mb-4">
+                        {playerType === PlayerType.LEADER
+                            ? 'Click button to review game scores!'
+                            : 'Waiting for leader to continue!'}
                     </div>
+
                     {Object.values(room.players).map((p) => {
                         const voteCount = room.votes[p.id] || 0
                         const answer = room.answers[p.id] || 'No answer :/'
@@ -46,20 +52,22 @@ export function RoundSummaryRoom() {
                         return (
                             <div
                                 key={p.id}
-                                className="flex gap-2 items-center justify-around my-2"
+                                className="rounded-lg border border-border p-4 bg-card space-y-2"
                             >
-                                <PlayerCard
-                                    playerName={p.name}
-                                    answer={answer}
-                                />
-                                <div
-                                    className={`rounded border bg-primary py-1 min-w-[100px] text-center justify-center`}
-                                >
+                                {/* Player name */}
+                                <div className="text-sm font-medium text-muted-foreground truncate">
+                                    {p.name}
+                                </div>
+
+                                {/* Answer */}
+                                <div className="rounded-md bg-primary text-primary-foreground px-3 py-2 text-sm break-words">
                                     {answer}
                                 </div>
-                                <div className='className="text-3xl text-center"'>{`${voteCount} vote${
-                                    voteCount !== 1 ? 's' : ''
-                                }`}</div>
+
+                                {/* Vote count */}
+                                <div className="text-xs text-right text-muted-foreground">
+                                    {voteCount} vote{voteCount !== 1 ? 's' : ''}
+                                </div>
                             </div>
                         )
                     })}

@@ -8,7 +8,7 @@ export function PlayerCard({
     const bgColor = !answer ? 'bg-primary' : 'bg-secondary'
     return (
         <div
-            className={`overflow-auto rounded border py-1 w-[100px] text-center flex justify-center items-center ${bgColor}`}
+            className={`whitespace-nowrap overflow-scroll rounded border py-1 w-[300px] text-center ${bgColor} `}
         >
             {playerName}
         </div>
