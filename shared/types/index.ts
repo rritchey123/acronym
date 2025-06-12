@@ -93,3 +93,8 @@ export interface ClientToServerEvents {
         cb: (payload: WebsocketCallbackPayload) => void
     ) => void
 }
+
+export enum SuggestionType {
+    ACRONYM = 'Acronym',
+    PROMPT = 'Prompt',
+}
