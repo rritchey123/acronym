@@ -80,18 +80,6 @@ io.on('connection', function (socket) {
         }
     })
 
-    socket.on('end-game', function (payload, cb) {
-        const { roomId } = payload
-
-        try {
-            roomTracker.endGame(roomId)
-            cb({ success: true })
-        } catch (err) {
-            console.error(`Error while ending game: ${err}`)
-            cb({ success: false, data: err })
-        }
-    })
-
     socket.on('submit-answer', function (payload, cb) {
         const { roomId, answer } = payload
         try {

@@ -13,7 +13,6 @@ export enum RoomStatus {
     WAITING = 'waiting',
     PLAYING = 'playing',
     VOTING = 'voting',
-    ENDED = 'ended',
     REVIEWING_ROUND_SUMMARY = 'reviewing_round_summary',
     REVIEWING_SCORE_SUMMARY = 'reviewing_score_summary',
 }
@@ -69,10 +68,6 @@ export interface ClientToServerEvents {
         cb: (payload: WebsocketCallbackPayload) => void
     ) => void
     ['leave-room']: (
-        payload: { roomId: string },
-        cb: (payload: WebsocketCallbackPayload) => void
-    ) => void
-    ['end-game']: (
         payload: { roomId: string },
         cb: (payload: WebsocketCallbackPayload) => void
     ) => void

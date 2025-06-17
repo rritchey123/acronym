@@ -121,12 +121,6 @@ export default class RoomTrackerService {
         this.updateAllPlayers(roomId)
     }
 
-    endGame(roomId) {
-        const room = this.getRoom(roomId)
-        room.status = RoomStatus.ENDED
-        this.updateAllPlayers(roomId)
-    }
-
     // Players
     updatePlayersExceptSelf(socket, roomId) {
         const room = this.getRoom(roomId)

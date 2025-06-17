@@ -1,7 +1,6 @@
 import { RoomStatus } from '@shared/index'
 import { WaitRoom } from './WaitRoom/WaitRoom'
 import { PlayRoom } from './PlayRoom/PlayRoom'
-import { EndRoom } from './EndRoom/EndRoom'
 import { VoteRoom } from './VoteRoom/VoteRoom'
 import { RoundSummaryRoom } from './RoundSummaryRoom/RoundSummaryRoom'
 import { ScoreReviewRoom } from './ScoreReviewRoom/ScoreReviewRoom'
@@ -13,8 +12,6 @@ export const getRoom = (status: RoomStatus | null) => {
             return <WaitRoom />
         case RoomStatus.PLAYING:
             return <PlayRoom />
-        case RoomStatus.ENDED:
-            return <EndRoom />
         case RoomStatus.VOTING:
             return <VoteRoom />
         case RoomStatus.REVIEWING_ROUND_SUMMARY:
