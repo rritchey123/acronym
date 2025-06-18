@@ -3,6 +3,7 @@ import { AnswerEntry } from '../../Forms/AnswerEntry/AnswerEntry'
 import { useSelector } from 'react-redux'
 import { RoundHeader } from '../../RoundHeader'
 import { selectFeState } from '@/lib/utils'
+import { CountdownTimer } from '@/components/CountdownTimer'
 
 export function PlayRoom() {
     const [hasAnswered, setHasAnswered] = useState(false)
@@ -16,7 +17,6 @@ export function PlayRoom() {
     return (
         <>
             <RoundHeader />
-
             <div className="flex justify-center items-center">
                 <div className="w-full max-w-sm mx-auto space-y-8 p-4">
                     {/* Acronym Section */}
@@ -38,7 +38,15 @@ export function PlayRoom() {
                             {room.prompt}
                         </div>
                     </div>
-
+                    {/* Timer */}
+                    {!!room.roundStartTime && !!room.roundDuration ? (
+                        <CountdownTimer
+                            roundStartTime={room.roundStartTime}
+                            duration={room.roundDuration}
+                        />
+                    ) : (
+                        <>Missing roundStartTime or roundDuration</>
+                    )}
                     {/* Answer Entry or Waiting */}
                     {hasAnswered ? (
                         <div className="text-center text-muted-foreground text-sm flex justify-center items-center gap-1">
