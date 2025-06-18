@@ -14,21 +14,43 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { SuggestionType } from '@shared/index'
+import socket from '@/socket'
+import { useSelector } from 'react-redux'
+import { selectFeState } from '@/lib/utils'
 
 export const SuggestPromptDialog = () => {
+    const { room } = useSelector(selectFeState)
+
     const [suggestionType, setSuggestionType] = useState<SuggestionType>(
         SuggestionType.ACRONYM
     )
     const [inputValue, setInputValue] = useState('')
     const [isSubmitting, setIsSubmitting] = useState(false)
+    if (!room) {
+        alert('Room does not exist')
+        return null
+    }
 
     const handleSubmit = async () => {
         if (!inputValue.trim()) return
 
         setIsSubmitting(true)
         try {
-            // TODO: Replace with API call or store logic
-            console.log(`User suggested a ${suggestionType}:`, inputValue)
+            socket.emit(
+                'suggest',
+                { roomId: room.id, suggestionType, suggestion: inputValue },
+                ({ success, data }) => {
+                    if (!success) {
+                        alert(
+                            `Failed to suggest ${suggestionType}: ${JSON.stringify(
+                                data
+                            )}`
+                        )
+                    } else {
+                        alert(`Successfully suggested ${suggestionType}`)
+                    }
+                }
+            )
             setInputValue('')
         } finally {
             setIsSubmitting(false)

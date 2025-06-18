@@ -1,4 +1,4 @@
-import { Player, Room, RoomStatus } from '@shared/index'
+import { Player, Room, RoomStatus, SuggestionType } from '@shared/index'
 // /Users/ryanritchey/Documents/GitHub/acronym/shared/types/index
 import { getRandomAcronym, getRandomPrompt } from './Database.js'
 import { generateId } from '../utils.js'
@@ -15,6 +15,8 @@ const DEFAULT_ROOM = {
     votes: {},
     players: {},
     scores: {},
+    acronymSuggestions: [],
+    promptSuggestions: [],
 }
 
 export default class RoomTrackerService {
@@ -201,5 +203,17 @@ export default class RoomTrackerService {
         if (!roomId) return
         this.leaveRoom({ roomId, socket, onDisconnect: true })
         this.updateAllPlayers(roomId)
+    }
+
+    handleSuggestion(roomId, suggestionType, suggestion) {
+        if (suggestionType === SuggestionType.ACRONYM) {
+            this.getRoom(roomId).acronymSuggestions.push(suggestion)
+            console.log(this.getRoom(roomId).acronymSuggestions)
+        } else if (suggestionType === SuggestionType.PROMPT) {
+            this.getRoom(roomId).promptSuggestions.push(suggestion)
+            console.log(this.getRoom(roomId).promptSuggestions)
+        } else {
+            throw new Error(`Invalid suggestion type ${suggestionType}`)
+        }
     }
 }

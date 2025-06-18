@@ -123,6 +123,17 @@ io.on('connection', function (socket) {
             cb({ success: false, data: err })
         }
     })
+
+    socket.on('suggest', function (payload, cb) {
+        const { roomId, suggestionType, suggestion } = payload
+        try {
+            roomTracker.handleSuggestion(roomId, suggestionType, suggestion)
+            cb({ success: true })
+        } catch (err) {
+            console.error(`Error while starting next round: ${err}`)
+            cb({ success: false, data: err })
+        }
+    })
 })
 
 // Start listening on 3030

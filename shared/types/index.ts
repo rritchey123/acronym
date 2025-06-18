@@ -42,6 +42,8 @@ export interface Room {
     votes: VotesMap
     scores: ScoresMap
     players: PlayersMap
+    acronymSuggestions: string[]
+    promptSuggestions: string[]
 }
 
 export interface ServerToClientEvents {
@@ -85,6 +87,14 @@ export interface ClientToServerEvents {
     ) => void
     ['start-next-round']: (
         payload: { roomId: string },
+        cb: (payload: WebsocketCallbackPayload) => void
+    ) => void
+    ['suggest']: (
+        payload: {
+            roomId: string
+            suggestionType: SuggestionType
+            suggestion: string
+        },
         cb: (payload: WebsocketCallbackPayload) => void
     ) => void
 }
