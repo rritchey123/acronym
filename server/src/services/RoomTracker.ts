@@ -33,14 +33,18 @@ export default class RoomTrackerService {
         delete this._rooms[roomId]
     }
 
-    createRoom() {
+    createRoom({ defaultRoundDuration }) {
         let id = generateId()
         // In case id already exists
         while (this._rooms[id]) {
             id = generateId()
         }
 
-        this._rooms[id] = { ...structuredClone(DEFAULT_ROOM), id }
+        this._rooms[id] = {
+            ...structuredClone(DEFAULT_ROOM),
+            id,
+            defaultRoundDuration,
+        }
         return id
     }
 
@@ -115,11 +119,8 @@ export default class RoomTrackerService {
     // Game operation
     startGame(roomId) {
         const room = this.getRoom(roomId)
-        room.status = RoomStatus.PLAYING
-        room.acronym = this.getRandomAcronym(room)
-        room.prompt = this.getRandomPrompt(room)
+        this.newRound(room)
         room.round = 1
-
         this.updateAllPlayers(roomId)
     }
 
@@ -175,13 +176,19 @@ export default class RoomTrackerService {
 
     startNextRound(roomId) {
         const room = this.getRoom(roomId)
+        this.newRound(room)
+        room.round += 1
+        this.updateAllPlayers(roomId)
+    }
+
+    newRound(room) {
         room.status = RoomStatus.PLAYING
         room.acronym = this.getRandomAcronym(room)
         room.prompt = this.getRandomPrompt(room)
-        room.round += 1
+        room.roundStartTime = new Date().toISOString()
+        room.roundDuration = room.defaultRoundDuration
         room.votes = {}
         room.answers = {}
-        this.updateAllPlayers(roomId)
     }
 
     reviewScores(roomId) {

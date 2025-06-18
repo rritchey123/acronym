@@ -29,30 +29,36 @@ export function PlayDialogue() {
 
         setIsLoading(true)
 
-        socket.emit('create-room', ({ success, data }) => {
-            if (!success) {
-                alert(`Failed to create room: ${JSON.stringify(data)}`)
-                setIsLoading(false)
-                return
-            }
-            socket.emit(
-                'join-room',
-                {
-                    roomId: data.roomId,
-                    playerName,
-                    playerType: PlayerType.LEADER,
-                },
-                ({ success, data }) => {
-                    if (!success) {
-                        alert(`Failed to join room: ${JSON.stringify(data)}`)
-                    } else {
-                        dispatch(setPlayerType(PlayerType.LEADER))
-                    }
-
+        socket.emit(
+            'create-room',
+            { defaultRoundDuration: 60 },
+            ({ success, data }) => {
+                if (!success) {
+                    alert(`Failed to create room: ${JSON.stringify(data)}`)
                     setIsLoading(false)
+                    return
                 }
-            )
-        })
+                socket.emit(
+                    'join-room',
+                    {
+                        roomId: data.roomId,
+                        playerName,
+                        playerType: PlayerType.LEADER,
+                    },
+                    ({ success, data }) => {
+                        if (!success) {
+                            alert(
+                                `Failed to join room: ${JSON.stringify(data)}`
+                            )
+                        } else {
+                            dispatch(setPlayerType(PlayerType.LEADER))
+                        }
+
+                        setIsLoading(false)
+                    }
+                )
+            }
+        )
     }
 
     function joinRoom(event: any) {

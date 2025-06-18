@@ -34,9 +34,10 @@ io.on('connection', function (socket) {
         }
     })
 
-    socket.on('create-room', function (cb) {
+    socket.on('create-room', function (payload, cb) {
+        const { defaultRoundDuration } = payload
         try {
-            const roomId = roomTracker.createRoom()
+            const roomId = roomTracker.createRoom({ defaultRoundDuration })
             cb({ success: true, data: { roomId } })
         } catch (err) {
             console.error(`Error while creating room: ${err}`)

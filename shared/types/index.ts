@@ -7,6 +7,8 @@ export interface Player {
     id: string
     name: string
     type: PlayerType
+    // Later thing
+    offset?: number // offset in time when user sent first message to when server receives it
 }
 
 export enum RoomStatus {
@@ -44,6 +46,9 @@ export interface Room {
     players: PlayersMap
     acronymSuggestions: string[]
     promptSuggestions: string[]
+    roundStartTime?: string
+    defaultRoundDuration: number
+    roundDuration?: number
 }
 
 export interface ServerToClientEvents {
@@ -56,7 +61,10 @@ export type WebsocketCallbackPayload<T = any> = {
 }
 
 export interface ClientToServerEvents {
-    ['create-room']: (cb: (payload: WebsocketCallbackPayload) => void) => void
+    ['create-room']: (
+        payload: { defaultRoundDuration: number },
+        cb: (payload: WebsocketCallbackPayload) => void
+    ) => void
     ['join-room']: (
         payload: {
             roomId: string
