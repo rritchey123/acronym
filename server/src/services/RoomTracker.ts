@@ -1,7 +1,7 @@
 import { Player, Room, RoomStatus, SuggestionType } from '@shared/index'
-// /Users/ryanritchey/Documents/GitHub/acronym/shared/types/index
-import { getRandomAcronym, getRandomPrompt } from './Database.js'
+import { getRandomAcronymFromDb, getRandomPromptFromDb } from './Database.js'
 import { generateId } from '../utils.js'
+import { PREFER_USER_SUGGESTION_WEIGHT } from '../constants.js'
 
 const SCORE_LIMIT = 5
 
@@ -116,8 +116,8 @@ export default class RoomTrackerService {
     startGame(roomId) {
         const room = this.getRoom(roomId)
         room.status = RoomStatus.PLAYING
-        room.acronym = getRandomAcronym()
-        room.prompt = getRandomPrompt()
+        room.acronym = this.getRandomAcronym(room)
+        room.prompt = this.getRandomPrompt(room)
         room.round = 1
 
         this.updateAllPlayers(roomId)
@@ -176,8 +176,8 @@ export default class RoomTrackerService {
     startNextRound(roomId) {
         const room = this.getRoom(roomId)
         room.status = RoomStatus.PLAYING
-        room.acronym = getRandomAcronym()
-        room.prompt = getRandomPrompt()
+        room.acronym = this.getRandomAcronym(room)
+        room.prompt = this.getRandomPrompt(room)
         room.round += 1
         room.votes = {}
         room.answers = {}
@@ -214,6 +214,34 @@ export default class RoomTrackerService {
             console.log(this.getRoom(roomId).promptSuggestions)
         } else {
             throw new Error(`Invalid suggestion type ${suggestionType}`)
+        }
+    }
+
+    getRandomAcronym(room: Room) {
+        if (
+            room.acronymSuggestions.length &&
+            Math.random() < PREFER_USER_SUGGESTION_WEIGHT
+        ) {
+            const index = Math.floor(
+                Math.random() * room.acronymSuggestions.length
+            )
+            return room.acronymSuggestions.splice(index, 1)
+        } else {
+            return getRandomAcronymFromDb()
+        }
+    }
+
+    getRandomPrompt(room: Room) {
+        if (
+            room.promptSuggestions.length &&
+            Math.random() < PREFER_USER_SUGGESTION_WEIGHT
+        ) {
+            const index = Math.floor(
+                Math.random() * room.promptSuggestions.length
+            )
+            return room.promptSuggestions.splice(index, 1)
+        } else {
+            return getRandomAcronymFromDb()
         }
     }
 }

@@ -1,0 +1,1 @@
+export const PREFER_USER_SUGGESTION_WEIGHT = 0.75

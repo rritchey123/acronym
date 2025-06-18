@@ -74,10 +74,10 @@ const getRandomIndex = (array) => {
     return Math.floor(Math.random() * array.length)
 }
 
-export const getRandomAcronym = () => {
+export const getRandomAcronymFromDb = () => {
     return ACRONYMS[getRandomIndex(ACRONYMS)]
 }
 
-export const getRandomPrompt = () => {
+export const getRandomPromptFromDb = () => {
     return PROMPTS[getRandomIndex(PROMPTS)]
 }
