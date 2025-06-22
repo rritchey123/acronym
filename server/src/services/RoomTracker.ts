@@ -1,9 +1,11 @@
 import { Player, Room, RoomStatus, SuggestionType } from '@shared/index'
 import { getRandomAcronymFromDb, getRandomPromptFromDb } from './Database.js'
 import { generateId } from '../utils.js'
-import { PREFER_USER_SUGGESTION_WEIGHT } from '../constants.js'
-
-const SCORE_LIMIT = 5
+import {
+    DEFAULT_ROUND_DURATION,
+    DEFAULT_SCORE_LIMIT,
+    PREFER_USER_SUGGESTION_WEIGHT,
+} from '../constants.js'
 
 const DEFAULT_ROOM = {
     status: RoomStatus.WAITING,
@@ -17,6 +19,9 @@ const DEFAULT_ROOM = {
     scores: {},
     acronymSuggestions: [],
     promptSuggestions: [],
+    defaultRoundDuration: DEFAULT_ROUND_DURATION,
+    roundDuration: DEFAULT_ROUND_DURATION,
+    scoreLimit: DEFAULT_SCORE_LIMIT,
 }
 
 export default class RoomTrackerService {
@@ -33,7 +38,7 @@ export default class RoomTrackerService {
         delete this._rooms[roomId]
     }
 
-    createRoom({ defaultRoundDuration }) {
+    createRoom() {
         let id = generateId()
         // In case id already exists
         while (this._rooms[id]) {
@@ -43,7 +48,6 @@ export default class RoomTrackerService {
         this._rooms[id] = {
             ...structuredClone(DEFAULT_ROOM),
             id,
-            defaultRoundDuration,
         }
         return id
     }
@@ -198,9 +202,8 @@ export default class RoomTrackerService {
     }
 
     isGameOver(roomId) {
-        return Object.values(this.getRoom(roomId).scores).some(
-            (score) => score >= SCORE_LIMIT
-        )
+        const { scores, scoreLimit } = this.getRoom(roomId)
+        return Object.values(scores).some((score) => score >= scoreLimit)
     }
 
     playerDisconnected(socket) {
@@ -215,13 +218,12 @@ export default class RoomTrackerService {
     handleSuggestion(roomId, suggestionType, suggestion) {
         if (suggestionType === SuggestionType.ACRONYM) {
             this.getRoom(roomId).acronymSuggestions.push(suggestion)
-            console.log(this.getRoom(roomId).acronymSuggestions)
         } else if (suggestionType === SuggestionType.PROMPT) {
             this.getRoom(roomId).promptSuggestions.push(suggestion)
-            console.log(this.getRoom(roomId).promptSuggestions)
         } else {
             throw new Error(`Invalid suggestion type ${suggestionType}`)
         }
+        this.updateAllPlayers(roomId)
     }
 
     getRandomAcronym(room: Room) {
@@ -250,5 +252,13 @@ export default class RoomTrackerService {
         } else {
             return getRandomAcronymFromDb()
         }
+    }
+
+    handleUpdateGameRules(roomId, roundDuration, scoreLimit) {
+        const room = this.getRoom(roomId)
+        room.defaultRoundDuration = roundDuration
+        room.roundDuration = roundDuration
+        room.scoreLimit = scoreLimit
+        this.updateAllPlayers(roomId)
     }
 }

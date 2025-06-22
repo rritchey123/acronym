@@ -48,7 +48,8 @@ export interface Room {
     promptSuggestions: string[]
     roundStartTime?: string
     defaultRoundDuration: number
-    roundDuration?: number
+    roundDuration: number
+    scoreLimit: number
 }
 
 export interface ServerToClientEvents {
@@ -61,10 +62,7 @@ export type WebsocketCallbackPayload<T = any> = {
 }
 
 export interface ClientToServerEvents {
-    ['create-room']: (
-        payload: { defaultRoundDuration: number },
-        cb: (payload: WebsocketCallbackPayload) => void
-    ) => void
+    ['create-room']: (cb: (payload: WebsocketCallbackPayload) => void) => void
     ['join-room']: (
         payload: {
             roomId: string
@@ -102,6 +100,14 @@ export interface ClientToServerEvents {
             roomId: string
             suggestionType: SuggestionType
             suggestion: string
+        },
+        cb: (payload: WebsocketCallbackPayload) => void
+    ) => void
+    ['update-game-rules']: (
+        payload: {
+            roomId: string
+            defaultRoundDuration: number
+            scoreLimit: number
         },
         cb: (payload: WebsocketCallbackPayload) => void
     ) => void

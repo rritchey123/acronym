@@ -3,6 +3,7 @@ import socket from '../../../socket.ts'
 import { LeaveRoomButton } from '../../Buttons/LeaveRoomButton/LeaveRoomButton'
 import { Button } from '@/components/ui/button'
 import { selectFeState } from '@/lib/utils.ts'
+import { EditRulesDialog } from '@/components/EditRulesDialogue.tsx'
 
 export function WaitRoom() {
     const { room, playerType } = useSelector(selectFeState)
@@ -26,7 +27,10 @@ export function WaitRoom() {
             <div className="mt-4 mx-4 flex justify-between items-center">
                 <LeaveRoomButton />
                 {playerType === 'leader' && (
-                    <Button onClick={startGame}>Start Game</Button>
+                    <>
+                        <EditRulesDialog />
+                        <Button onClick={startGame}>Start Game</Button>
+                    </>
                 )}
             </div>
 

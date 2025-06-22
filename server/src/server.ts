@@ -34,10 +34,9 @@ io.on('connection', function (socket) {
         }
     })
 
-    socket.on('create-room', function (payload, cb) {
-        const { defaultRoundDuration } = payload
+    socket.on('create-room', function (cb) {
         try {
-            const roomId = roomTracker.createRoom({ defaultRoundDuration })
+            const roomId = roomTracker.createRoom()
             cb({ success: true, data: { roomId } })
         } catch (err) {
             console.error(`Error while creating room: ${err}`)
@@ -129,6 +128,21 @@ io.on('connection', function (socket) {
         const { roomId, suggestionType, suggestion } = payload
         try {
             roomTracker.handleSuggestion(roomId, suggestionType, suggestion)
+            cb({ success: true })
+        } catch (err) {
+            console.error(`Error while starting next round: ${err}`)
+            cb({ success: false, data: err })
+        }
+    })
+
+    socket.on('update-game-rules', function (payload, cb) {
+        const { roomId, defaultRoundDuration, scoreLimit } = payload
+        try {
+            roomTracker.handleUpdateGameRules(
+                roomId,
+                defaultRoundDuration,
+                scoreLimit
+            )
             cb({ success: true })
         } catch (err) {
             console.error(`Error while starting next round: ${err}`)
