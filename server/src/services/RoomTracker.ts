@@ -20,7 +20,7 @@ const DEFAULT_ROOM = {
     acronymSuggestions: [],
     promptSuggestions: [],
     defaultRoundDuration: DEFAULT_ROUND_DURATION,
-    roundDuration: DEFAULT_ROUND_DURATION,
+    currentRoundDuration: DEFAULT_ROUND_DURATION,
     scoreLimit: DEFAULT_SCORE_LIMIT,
 }
 
@@ -190,7 +190,7 @@ export default class RoomTrackerService {
         room.acronym = this.getRandomAcronym(room)
         room.prompt = this.getRandomPrompt(room)
         room.roundStartTime = new Date().toISOString()
-        room.roundDuration = room.defaultRoundDuration
+        room.currentRoundDuration = room.defaultRoundDuration
         room.votes = {}
         room.answers = {}
     }
@@ -257,7 +257,7 @@ export default class RoomTrackerService {
     handleUpdateGameRules(roomId, roundDuration, scoreLimit) {
         const room = this.getRoom(roomId)
         room.defaultRoundDuration = roundDuration
-        room.roundDuration = roundDuration
+        room.currentRoundDuration = roundDuration
         room.scoreLimit = scoreLimit
         this.updateAllPlayers(roomId)
     }

@@ -48,7 +48,7 @@ export interface Room {
     promptSuggestions: string[]
     roundStartTime?: string
     defaultRoundDuration: number
-    roundDuration: number
+    currentRoundDuration: number
     scoreLimit: number
 }
 

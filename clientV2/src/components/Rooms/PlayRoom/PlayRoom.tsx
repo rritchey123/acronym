@@ -39,13 +39,13 @@ export function PlayRoom() {
                         </div>
                     </div>
                     {/* Timer */}
-                    {!!room.roundStartTime && !!room.roundDuration ? (
+                    {!!room.roundStartTime && !!room.currentRoundDuration ? (
                         <CountdownTimer
                             roundStartTime={room.roundStartTime}
-                            duration={room.roundDuration}
+                            duration={room.currentRoundDuration}
                         />
                     ) : (
-                        <>Missing roundStartTime or roundDuration</>
+                        <>Missing roundStartTime or currentRoundDuration</>
                     )}
                     {/* Answer Entry or Waiting */}
                     {hasAnswered ? (

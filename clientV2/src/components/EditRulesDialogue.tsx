@@ -29,7 +29,7 @@ export function EditRulesDialog() {
 
     useEffect(() => {
         if (!room) return
-        setDefaultRoundDuration(room.roundDuration)
+        setDefaultRoundDuration(room.currentRoundDuration)
         setScoreLimit(room.scoreLimit)
     }, [room])
 
