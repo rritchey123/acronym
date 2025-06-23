@@ -130,7 +130,7 @@ io.on('connection', function (socket) {
             roomTracker.handleSuggestion(roomId, suggestionType, suggestion)
             cb({ success: true })
         } catch (err) {
-            console.error(`Error while starting next round: ${err}`)
+            console.error(`Error while suggesting ${suggestionType}: ${err}`)
             cb({ success: false, data: err })
         }
     })
@@ -145,7 +145,18 @@ io.on('connection', function (socket) {
             )
             cb({ success: true })
         } catch (err) {
-            console.error(`Error while starting next round: ${err}`)
+            console.error(`Error while updating game rules: ${err}`)
+            cb({ success: false, data: err })
+        }
+    })
+
+    socket.on('add-time', function (payload, cb) {
+        const { roomId } = payload
+        try {
+            roomTracker.addTime(roomId)
+            cb({ success: true })
+        } catch (err) {
+            console.error(`Error while adding time: ${err}`)
             cb({ success: false, data: err })
         }
     })

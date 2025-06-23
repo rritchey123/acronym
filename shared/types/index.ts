@@ -111,6 +111,12 @@ export interface ClientToServerEvents {
         },
         cb: (payload: WebsocketCallbackPayload) => void
     ) => void
+    ['add-time']: (
+        payload: {
+            roomId: string
+        },
+        cb: (payload: WebsocketCallbackPayload) => void
+    ) => void
 }
 
 export enum SuggestionType {

@@ -18,7 +18,7 @@ import socket from '@/socket'
 import { useSelector } from 'react-redux'
 import { selectFeState } from '@/lib/utils'
 
-export const SuggestPromptDialog = () => {
+export const SuggestDialog = () => {
     const { room } = useSelector(selectFeState)
 
     const [suggestionType, setSuggestionType] = useState<SuggestionType>(

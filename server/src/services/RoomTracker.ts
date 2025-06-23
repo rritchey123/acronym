@@ -2,6 +2,7 @@ import { Player, Room, RoomStatus, SuggestionType } from '@shared/index'
 import { getRandomAcronymFromDb, getRandomPromptFromDb } from './Database.js'
 import { generateId } from '../utils.js'
 import {
+    ADD_TIME_AMOUNT,
     DEFAULT_ROUND_DURATION,
     DEFAULT_SCORE_LIMIT,
     PREFER_USER_SUGGESTION_WEIGHT,
@@ -31,7 +32,7 @@ export default class RoomTrackerService {
         this._rooms = {}
         this._io = io
     }
-    getRoom(roomId): Room | undefined {
+    getRoom(roomId: string): Room | undefined {
         return this._rooms[roomId]
     }
     deleteRoom(roomId): void {
@@ -259,6 +260,12 @@ export default class RoomTrackerService {
         room.defaultRoundDuration = roundDuration
         room.currentRoundDuration = roundDuration
         room.scoreLimit = scoreLimit
+        this.updateAllPlayers(roomId)
+    }
+
+    addTime(roomId: string) {
+        const room = this.getRoom(roomId)
+        room.currentRoundDuration += ADD_TIME_AMOUNT
         this.updateAllPlayers(roomId)
     }
 }
