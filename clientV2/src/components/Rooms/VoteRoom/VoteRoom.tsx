@@ -4,6 +4,7 @@ import socket from '../../../socket.ts'
 import { Button } from '@/components/ui/button'
 import { RoundHeader } from '../../RoundHeader'
 import { selectFeState } from '@/lib/utils.ts'
+import { shuffleArray } from '@/components/utils.ts'
 
 export function VoteRoom() {
     const [hasVoted, setHasVoted] = useState(false)
@@ -49,7 +50,7 @@ export function VoteRoom() {
 
                     {/* Answer Options */}
                     <div className="flex flex-col gap-3">
-                        {Object.entries(room.answers).map(
+                        {shuffleArray(Object.entries(room.answers)).map(
                             ([playerId, answer]) => (
                                 <Button
                                     key={playerId}
