@@ -39,7 +39,8 @@ export const SuggestDialog = () => {
         suggestionType === SuggestionType.ACRONYM
             ? MAX_ACRONYM_LENGTH
             : MAX_PROMPT_LENGTH
-    const isInputValid = inputValue.trim().length <= maxChar
+    const isInputValid =
+        inputValue.trim() && inputValue.trim().length <= maxChar
 
     const handleSubmit = async () => {
         if (!isInputValid) return
