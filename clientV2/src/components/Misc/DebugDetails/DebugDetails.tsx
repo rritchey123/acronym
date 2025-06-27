@@ -1,4 +1,4 @@
-import { selectFeState } from '@/lib/utils.ts'
+import { errorToast, selectFeState } from '@/lib/utils.ts'
 import { ConnectButton } from '../../Buttons/ConnectButton/ConnectButton.tsx'
 import { DisconnectButton } from '../../Buttons/DisconnectButton/DisconnectButton.tsx'
 
@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux'
 export function DebugDetails() {
     const { room, playerType } = useSelector(selectFeState)
     if (!room) {
-        alert('Room does not exist')
+        errorToast('Room does not exist')
         return null
     }
 

@@ -12,7 +12,7 @@ import {
 import { Button } from '@/components/ui/button'
 import socket from '@/socket'
 import { useSelector } from 'react-redux'
-import { selectFeState } from '@/lib/utils'
+import { errorToast, selectFeState, successToast } from '@/lib/utils'
 
 export const AddTimeDialog = () => {
     const { room } = useSelector(selectFeState)
@@ -20,7 +20,7 @@ export const AddTimeDialog = () => {
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [hasAddedTime, setHasAddedTime] = useState(false)
     if (!room) {
-        alert('Room does not exist')
+        errorToast('Room does not exist')
         return null
     }
 
@@ -32,13 +32,13 @@ export const AddTimeDialog = () => {
                 { roomId: room.id },
                 ({ success, data }) => {
                     if (!success) {
-                        alert(
+                        errorToast(
                             `Failed to request more time: ${JSON.stringify(
                                 data
                             )}`
                         )
                     } else {
-                        alert(`Successfully added time`)
+                        successToast(`Successfully added time`)
                         setHasAddedTime(true)
                     }
                 }

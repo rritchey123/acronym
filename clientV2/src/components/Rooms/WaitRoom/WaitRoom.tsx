@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux'
 import socket from '../../../socket.ts'
 import { LeaveRoomButton } from '../../Buttons/LeaveRoomButton/LeaveRoomButton'
 import { Button } from '@/components/ui/button'
-import { selectFeState } from '@/lib/utils.ts'
+import { errorToast, selectFeState } from '@/lib/utils.ts'
 import { EditRulesDialog } from '@/components/EditRulesDialogue.tsx'
 
 export function WaitRoom() {
@@ -11,12 +11,12 @@ export function WaitRoom() {
 
     function startGame() {
         if (!room) {
-            alert('Room does not exist')
+            errorToast('Room does not exist')
             return
         }
         socket.emit('start-game', { roomId: room!.id }, ({ success, data }) => {
             if (!success) {
-                alert(`Failed to create room: ${JSON.stringify(data)}`)
+                errorToast(`Failed to create room: ${JSON.stringify(data)}`)
                 return
             }
         })

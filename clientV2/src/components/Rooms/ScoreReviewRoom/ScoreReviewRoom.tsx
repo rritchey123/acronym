@@ -2,13 +2,13 @@ import { useSelector } from 'react-redux'
 import socket from '../../../socket.ts'
 import { LeaveRoomButton } from '../../Buttons/LeaveRoomButton/LeaveRoomButton'
 import { Button } from '../../ui/button'
-import { selectFeState } from '@/lib/utils.ts'
+import { errorToast, selectFeState } from '@/lib/utils.ts'
 import { PlayerType } from '@shared/index'
 import { RoundHeader } from '@/components/RoundHeader.tsx'
 export const ScoreReviewRoom = () => {
     const { room, playerType } = useSelector(selectFeState)
     if (!room) {
-        alert('Room does not exist')
+        errorToast('Room does not exist')
         return null
     }
     const onNextRountButtonClick = () => {
@@ -17,7 +17,9 @@ export const ScoreReviewRoom = () => {
             { roomId: room.id },
             ({ success, data }) => {
                 if (!success) {
-                    alert(`Failed to start next round: ${JSON.stringify(data)}`)
+                    errorToast(
+                        `Failed to start next round: ${JSON.stringify(data)}`
+                    )
                     return
                 }
             }

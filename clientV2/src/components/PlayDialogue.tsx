@@ -13,7 +13,19 @@ import socket from '../socket.ts'
 import { useState } from 'react'
 import { PlayerType } from '@shared/index'
 import { setPlayerType } from '@/redux/feState.ts'
+import { errorToast, warningToast } from '@/lib/utils.ts'
 
+/**
+ * A dialog for creating a room or joining a room with a given room id.
+ *
+ * The dialog has two main sections:
+ * - A player name input field, with a "Create Room" button that creates a new room when clicked.
+ * - A room code input field, with a "Join Room" button that joins an existing room when clicked.
+ *
+ * The dialog also has a "Play" button that toggles the visibility of the dialog.
+ *
+ * The dialog is displayed when the user clicks the "Play" button in the navigation bar.
+ */
 export function PlayDialogue() {
     const [playerName, setPlayerName] = useState('')
     const [roomId, setRoomId] = useState('')
@@ -23,7 +35,7 @@ export function PlayDialogue() {
     function createRoom(event: any) {
         event.preventDefault()
         if (!playerName) {
-            alert('Please enter a player name')
+            warningToast('Please enter a name')
             return
         }
 
@@ -31,7 +43,7 @@ export function PlayDialogue() {
 
         socket.emit('create-room', ({ success, data }) => {
             if (!success) {
-                alert(`Failed to create room: ${JSON.stringify(data)}`)
+                errorToast(`Failed to create room: ${JSON.stringify(data)}`)
                 setIsLoading(false)
                 return
             }
@@ -44,7 +56,9 @@ export function PlayDialogue() {
                 },
                 ({ success, data }) => {
                     if (!success) {
-                        alert(`Failed to join room: ${JSON.stringify(data)}`)
+                        errorToast(
+                            `Failed to join room: ${JSON.stringify(data)}`
+                        )
                     } else {
                         dispatch(setPlayerType(PlayerType.LEADER))
                     }
@@ -59,12 +73,12 @@ export function PlayDialogue() {
         event.preventDefault()
         setIsLoading(true)
         if (!playerName) {
-            alert('Please enter a name')
+            warningToast('Please enter a name')
             setIsLoading(false)
             return
         }
         if (!roomId) {
-            alert('Please enter a room ID')
+            warningToast('Please enter a room ID')
             setIsLoading(false)
             return
         }
@@ -74,7 +88,7 @@ export function PlayDialogue() {
             { playerName, roomId, playerType: PlayerType.NORMAL },
             ({ success, data }) => {
                 if (!success) {
-                    alert(`Failed to join room: ${JSON.stringify(data)}`)
+                    errorToast(`Failed to join room: ${JSON.stringify(data)}`)
                 }
                 setIsLoading(false)
             }
@@ -109,7 +123,7 @@ export function PlayDialogue() {
                             />
                             <Button
                                 onClick={createRoom}
-                                disabled={isLoading || !playerName}
+                                // disabled={isLoading || !playerName}
                                 className="w-full"
                                 type="button"
                             >

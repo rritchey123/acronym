@@ -3,7 +3,7 @@ import socket from '../../../socket.ts'
 import { useSelector } from 'react-redux'
 import { Input } from '../../ui/input'
 import { Button } from '../../ui/button'
-import { selectFeState } from '@/lib/utils.ts'
+import { errorToast, selectFeState } from '@/lib/utils.ts'
 
 interface AnswerEntryProps {
     setHasAnswered: (hasAnswered: boolean) => void
@@ -12,13 +12,13 @@ export function AnswerEntry({ setHasAnswered }: AnswerEntryProps) {
     const [answer, setAnswer] = useState('')
     const { room } = useSelector(selectFeState)
     if (!room) {
-        alert('Room does not exist')
+        errorToast('Room does not exist')
         return null
     }
 
     function sendAnswer(event: any) {
         if (!room) {
-            alert('Room does not exist')
+            errorToast('Room does not exist')
             return null
         }
         event.preventDefault()
@@ -28,7 +28,9 @@ export function AnswerEntry({ setHasAnswered }: AnswerEntryProps) {
             { roomId: room.id, answer },
             ({ success, data }) => {
                 if (!success) {
-                    alert(`Failed to submit answer: ${JSON.stringify(data)}`)
+                    errorToast(
+                        `Failed to submit answer: ${JSON.stringify(data)}`
+                    )
                     return
                 }
             }

@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { AnswerEntry } from '../../Forms/AnswerEntry/AnswerEntry'
 import { useSelector } from 'react-redux'
 import { RoundHeader } from '../../RoundHeader'
-import { selectFeState } from '@/lib/utils'
+import { errorToast, selectFeState } from '@/lib/utils'
 import { CountdownTimer } from '@/components/CountdownTimer'
 
 export function PlayRoom() {
@@ -10,7 +10,7 @@ export function PlayRoom() {
 
     const { room } = useSelector(selectFeState)
     if (!room) {
-        alert('Room does not exist')
+        errorToast('Room does not exist')
         return null
     }
 

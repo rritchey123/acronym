@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux'
 import { Separator } from '@/components/ui/separator'
-import { selectFeState } from '@/lib/utils'
+import { errorToast, selectFeState } from '@/lib/utils'
 export const RoundHeader = (
     {
         isRoundSummary,
@@ -12,7 +12,7 @@ export const RoundHeader = (
 ) => {
     const { room } = useSelector(selectFeState)
     if (!room) {
-        alert('Room does not exist')
+        errorToast('Room does not exist')
         return null
     }
     return (

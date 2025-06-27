@@ -16,7 +16,7 @@ import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { SuggestionType } from '@shared/index'
 import socket from '@/socket'
 import { useSelector } from 'react-redux'
-import { selectFeState } from '@/lib/utils'
+import { errorToast, selectFeState, successToast } from '@/lib/utils'
 
 export const SuggestDialog = () => {
     const { room } = useSelector(selectFeState)
@@ -27,7 +27,7 @@ export const SuggestDialog = () => {
     const [inputValue, setInputValue] = useState('')
     const [isSubmitting, setIsSubmitting] = useState(false)
     if (!room) {
-        alert('Room does not exist')
+        errorToast('Room does not exist')
         return null
     }
 
@@ -41,13 +41,13 @@ export const SuggestDialog = () => {
                 { roomId: room.id, suggestionType, suggestion: inputValue },
                 ({ success, data }) => {
                     if (!success) {
-                        alert(
+                        errorToast(
                             `Failed to suggest ${suggestionType}: ${JSON.stringify(
                                 data
                             )}`
                         )
                     } else {
-                        alert(`Successfully suggested ${suggestionType}`)
+                        successToast(`Successfully suggested ${suggestionType}`)
                     }
                 }
             )

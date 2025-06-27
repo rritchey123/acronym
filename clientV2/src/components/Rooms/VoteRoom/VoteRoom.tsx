@@ -3,14 +3,14 @@ import { useSelector } from 'react-redux'
 import socket from '../../../socket.ts'
 import { Button } from '@/components/ui/button'
 import { RoundHeader } from '../../RoundHeader'
-import { selectFeState } from '@/lib/utils.ts'
+import { errorToast, selectFeState } from '@/lib/utils.ts'
 import { shuffleArray } from '@/components/utils.ts'
 
 export function VoteRoom() {
     const [hasVoted, setHasVoted] = useState(false)
     const { room } = useSelector(selectFeState)
     if (!room) {
-        alert('Room does not exist')
+        errorToast('Room does not exist')
         return null
     }
 
@@ -22,7 +22,9 @@ export function VoteRoom() {
                 { playerId, roomId: room.id },
                 ({ success, data }) => {
                     if (!success) {
-                        alert(`Failed to submit vote: ${JSON.stringify(data)}`)
+                        errorToast(
+                            `Failed to submit vote: ${JSON.stringify(data)}`
+                        )
                         return
                     }
                 }

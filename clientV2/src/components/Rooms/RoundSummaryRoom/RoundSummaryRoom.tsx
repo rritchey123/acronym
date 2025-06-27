@@ -2,13 +2,13 @@ import { useSelector } from 'react-redux'
 import socket from '../../../socket.ts'
 import { RoundHeader } from '../../RoundHeader'
 import { Button } from '../../ui/button'
-import { selectFeState } from '@/lib/utils.ts'
+import { errorToast, selectFeState } from '@/lib/utils.ts'
 import { PlayerType } from '@shared/index'
 
 export function RoundSummaryRoom() {
     const { room, playerType } = useSelector(selectFeState)
     if (!room) {
-        alert('Room does not exist')
+        errorToast('Room does not exist')
         return null
     }
 
@@ -18,7 +18,9 @@ export function RoundSummaryRoom() {
             { roomId: room.id },
             ({ success, data }) => {
                 if (!success) {
-                    alert(`Failed to review scores: ${JSON.stringify(data)}`)
+                    errorToast(
+                        `Failed to review scores: ${JSON.stringify(data)}`
+                    )
                     return
                 }
             }

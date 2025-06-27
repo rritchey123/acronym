@@ -9,7 +9,7 @@ import {
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { selectFeState } from '@/lib/utils'
+import { errorToast, selectFeState, successToast } from '@/lib/utils'
 import { useSelector } from 'react-redux'
 import {
     MAX_ROUND_DURATION,
@@ -34,7 +34,7 @@ export function EditRulesDialog() {
     }, [room])
 
     if (!room) {
-        alert('EditRulesDialog: Room does not exist')
+        errorToast('EditRulesDialog: Room does not exist')
         return null
     }
 
@@ -48,12 +48,12 @@ export function EditRulesDialog() {
             },
             ({ success, data }) => {
                 if (!success) {
-                    alert(
+                    errorToast(
                         `Failed to update game rules: ${JSON.stringify(data)}`
                     )
                     return
                 }
-                alert('Game rules updated!')
+                successToast('Game rules updated!')
             }
         )
     }
