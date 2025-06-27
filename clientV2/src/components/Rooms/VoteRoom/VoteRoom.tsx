@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import { useSelector } from 'react-redux'
 import socket from '../../../socket.ts'
-import { Button } from '@/components/ui/button'
 import { RoundHeader } from '../../RoundHeader'
 import { errorToast, selectFeState } from '@/lib/utils.ts'
+import { Button } from '@/components/ui/button.tsx'
 import { shuffleArray } from '@/components/utils.ts'
 
 export function VoteRoom() {
@@ -32,6 +32,10 @@ export function VoteRoom() {
         }
     }
 
+    const playerIds: string[] = shuffleArray(Object.keys(room.answers)).filter(
+        (playerId) => playerId !== socket.id
+    )
+
     return (
         <>
             <RoundHeader />
@@ -50,20 +54,17 @@ export function VoteRoom() {
                         )}
                     </div>
 
-                    {/* Answer Options */}
                     <div className="flex flex-col gap-3">
-                        {shuffleArray(Object.entries(room.answers)).map(
-                            ([playerId, answer]) => (
-                                <Button
-                                    key={playerId}
-                                    onClick={submitVote(playerId)}
-                                    disabled={hasVoted}
-                                    className="rounded-md bg-primary text-primary-foreground px-3 py-2 text-sm break-words"
-                                >
-                                    {answer}
-                                </Button>
-                            )
-                        )}
+                        {playerIds.map((playerId: string) => (
+                            <Button
+                                key={playerId}
+                                onClick={submitVote(playerId)}
+                                disabled={hasVoted}
+                                className="rounded-md bg-primary text-primary-foreground px-3 py-2 text-sm break-words"
+                            >
+                                {room.answers[playerId]}
+                            </Button>
+                        ))}
                     </div>
                 </div>
             </div>
