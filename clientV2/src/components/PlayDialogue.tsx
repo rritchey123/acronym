@@ -15,6 +15,8 @@ import { PlayerType } from '@shared/index'
 import { setPlayerType } from '@/redux/feState.ts'
 import { errorToast, warningToast } from '@/lib/utils.ts'
 
+const PLAYER_NAME_MAX_LENGTH = 25
+
 /**
  * A dialog for creating a room or joining a room with a given room id.
  *
@@ -118,9 +120,16 @@ export function PlayDialogue() {
                             <Input
                                 placeholder="Enter player name"
                                 value={playerName}
-                                onChange={(e) => setPlayerName(e.target.value)}
+                                onChange={(e) => {
+                                    const value = e.target.value
+                                    if (value.length <= PLAYER_NAME_MAX_LENGTH)
+                                        setPlayerName(value)
+                                }}
                                 className="text-foreground"
                             />
+                            <div className="text-xs text-muted-foreground text-right">
+                                {playerName.length} / {PLAYER_NAME_MAX_LENGTH}
+                            </div>
                             <Button
                                 onClick={createRoom}
                                 // disabled={isLoading || !playerName}
