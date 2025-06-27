@@ -40,7 +40,7 @@ io.on('connection', function (socket) {
             cb({ success: true, data: { roomId } })
         } catch (err) {
             console.error(`Error while creating room: ${err}`)
-            cb({ success: false, data: err })
+            cb({ success: false, data: `${err}` })
         }
     })
 
@@ -51,7 +51,7 @@ io.on('connection', function (socket) {
             cb({ success: true })
         } catch (err) {
             console.error(`Error while leaving room: ${err}`)
-            cb({ success: false, data: err })
+            cb({ success: false, data: `${err}` })
         }
     })
 
@@ -64,7 +64,7 @@ io.on('connection', function (socket) {
             cb({ success: true })
         } catch (err) {
             console.error(`Error while joining room: ${err}`)
-            cb({ success: false, data: err })
+            cb({ success: false, data: `${err}` })
         }
     })
 
@@ -76,7 +76,7 @@ io.on('connection', function (socket) {
             cb({ success: true })
         } catch (err) {
             console.error(`Error while starting game: ${err}`)
-            cb({ success: false, data: err })
+            cb({ success: false, data: `${err}` })
         }
     })
 
@@ -87,7 +87,7 @@ io.on('connection', function (socket) {
             cb({ success: true })
         } catch (err) {
             console.error(`Error while submitting answer: ${err}`)
-            cb({ success: false, data: err })
+            cb({ success: false, data: `${err}` })
         }
     })
 
@@ -98,7 +98,7 @@ io.on('connection', function (socket) {
             cb({ success: true })
         } catch (err) {
             console.error(`Error while submitting vote: ${err}`)
-            cb({ success: false, data: err })
+            cb({ success: false, data: `${err}` })
         }
     })
 
@@ -109,7 +109,7 @@ io.on('connection', function (socket) {
             cb({ success: true })
         } catch (err) {
             console.error(`Error while reviewing scores: ${err}`)
-            cb({ success: false, data: err })
+            cb({ success: false, data: `${err}` })
         }
     })
 
@@ -120,7 +120,7 @@ io.on('connection', function (socket) {
             cb({ success: true })
         } catch (err) {
             console.error(`Error while starting next round: ${err}`)
-            cb({ success: false, data: err })
+            cb({ success: false, data: `${err}` })
         }
     })
 
@@ -131,7 +131,7 @@ io.on('connection', function (socket) {
             cb({ success: true })
         } catch (err) {
             console.error(`Error while suggesting ${suggestionType}: ${err}`)
-            cb({ success: false, data: err })
+            cb({ success: false, data: `${err}` })
         }
     })
 
@@ -146,7 +146,7 @@ io.on('connection', function (socket) {
             cb({ success: true })
         } catch (err) {
             console.error(`Error while updating game rules: ${err}`)
-            cb({ success: false, data: err })
+            cb({ success: false, data: `${err}` })
         }
     })
 
@@ -157,7 +157,7 @@ io.on('connection', function (socket) {
             cb({ success: true })
         } catch (err) {
             console.error(`Error while adding time: ${err}`)
-            cb({ success: false, data: err })
+            cb({ success: false, data: `${err}` })
         }
     })
 })
