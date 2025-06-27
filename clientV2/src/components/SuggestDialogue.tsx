@@ -18,6 +18,9 @@ import socket from '@/socket'
 import { useSelector } from 'react-redux'
 import { errorToast, selectFeState, successToast } from '@/lib/utils'
 
+const MAX_ACRONYM_LENGTH = 5
+const MAX_PROMPT_LENGTH = 75
+
 export const SuggestDialog = () => {
     const { room } = useSelector(selectFeState)
 
@@ -26,19 +29,30 @@ export const SuggestDialog = () => {
     )
     const [inputValue, setInputValue] = useState('')
     const [isSubmitting, setIsSubmitting] = useState(false)
+
     if (!room) {
         errorToast('Room does not exist')
         return null
     }
 
+    const maxChar =
+        suggestionType === SuggestionType.ACRONYM
+            ? MAX_ACRONYM_LENGTH
+            : MAX_PROMPT_LENGTH
+    const isInputValid = inputValue.trim().length <= maxChar
+
     const handleSubmit = async () => {
-        if (!inputValue.trim()) return
+        if (!isInputValid) return
 
         setIsSubmitting(true)
         try {
             socket.emit(
                 'suggest',
-                { roomId: room.id, suggestionType, suggestion: inputValue },
+                {
+                    roomId: room.id,
+                    suggestionType,
+                    suggestion: inputValue.trim(),
+                },
                 ({ success, data }) => {
                     if (!success) {
                         errorToast(
@@ -71,9 +85,7 @@ export const SuggestDialog = () => {
 
             <DialogContent className="sm:max-w-[425px] space-y-4">
                 <DialogHeader>
-                    <DialogTitle>
-                        Suggest a {SuggestionType.ACRONYM}
-                    </DialogTitle>
+                    <DialogTitle>Suggest a {suggestionType}</DialogTitle>
                     <DialogDescription>
                         Choose the type of suggestion you'd like to submit.
                     </DialogDescription>
@@ -105,29 +117,42 @@ export const SuggestDialog = () => {
                     </ToggleGroupItem>
                 </ToggleGroup>
 
-                {/* Input depending on selected type */}
-                {suggestionType === SuggestionType.ACRONYM ? (
-                    <Input
-                        placeholder="e.g. LOL, CRM, AI"
-                        value={inputValue}
-                        onChange={(e) => setInputValue(e.target.value)}
-                        className="text-foreground"
-                        maxLength={10}
-                    />
-                ) : (
-                    <Textarea
-                        placeholder="Enter a full prompt, e.g. 'Funny bumper sticker'"
-                        value={inputValue}
-                        onChange={(e) => setInputValue(e.target.value)}
-                        className="text-foreground"
-                        rows={4}
-                    />
-                )}
+                {/* Input field */}
+                <div className="space-y-1">
+                    {suggestionType === SuggestionType.ACRONYM ? (
+                        <Input
+                            placeholder="e.g. LOL, CRM, AI"
+                            value={inputValue}
+                            onChange={(e) => {
+                                if (e.target.value.length <= maxChar) {
+                                    setInputValue(e.target.value.toUpperCase())
+                                }
+                            }}
+                            className="text-foreground"
+                        />
+                    ) : (
+                        <Textarea
+                            placeholder="Enter a full prompt, e.g. 'Funny bumper sticker'"
+                            value={inputValue}
+                            onChange={(e) =>
+                                e.target.value.length <= maxChar &&
+                                setInputValue(e.target.value)
+                            }
+                            className="text-foreground"
+                            rows={4}
+                        />
+                    )}
+
+                    {/* Character counter */}
+                    <div className="text-xs text-muted-foreground text-right">
+                        {inputValue.trim().length} / {maxChar}
+                    </div>
+                </div>
 
                 <DialogFooter>
                     <Button
                         onClick={handleSubmit}
-                        disabled={isSubmitting || !inputValue.trim()}
+                        disabled={isSubmitting || !isInputValid}
                     >
                         {isSubmitting ? 'Submitting...' : 'Submit'}
                     </Button>
