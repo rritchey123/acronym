@@ -1,10 +1,13 @@
-import * as server from 'express'
-import * as httpModule from 'http'
+import express from 'express'
+import httpModule from 'http'
+import path from 'path'
 import RoomTrackerService from './services/RoomTracker.js'
 import { Server } from 'socket.io'
 import { instrument } from '@socket.io/admin-ui'
 import { ClientToServerEvents, ServerToClientEvents } from '@shared/index.js'
-const http = httpModule.createServer(server)
+
+const app = express()
+const http = httpModule.createServer(app)
 const io = new Server<
     ClientToServerEvents,
     ServerToClientEvents,
@@ -12,10 +15,20 @@ const io = new Server<
     undefined
 >(http, {
     cors: {
-        origin: [`http://localhost:3000`, 'https://admin.socket.io'],
+        origin: ['https://admin.socket.io'],
         credentials: true,
     },
     transports: ['websocket', 'polling'],
+})
+
+const PORT = process.env.PORT || 3000
+
+// Serve static files from the "public" directory
+app.use(express.static('../clientV2/dist'))
+
+// Serve index.html on the root route
+app.get('/', (req, res) => {
+    res.sendFile('../clientV2/dist/index.html', { root: '../clientV2/dist' })
 })
 
 // URL => https://admin.socket.io/#/
@@ -162,7 +175,7 @@ io.on('connection', function (socket) {
     })
 })
 
-// Start listening on 3030
-http.listen(3030, function () {
+// Start listening on 3000
+http.listen(PORT, function () {
     console.log('Server started!')
 })
