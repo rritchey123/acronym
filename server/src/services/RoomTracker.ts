@@ -251,7 +251,7 @@ export default class RoomTrackerService {
             )
             return room.promptSuggestions.splice(index, 1)
         } else {
-            return getRandomAcronymFromDb()
+            return getRandomPromptFromDb()
         }
     }
 
