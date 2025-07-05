@@ -6,6 +6,7 @@
     "type": "commonjs",
     "scripts": {
         "start": "pm2 start dist/server/src/server.js",
+        "stop": "pm2 stop dist/server/src/server.js",
         "build": "tsc",
         "dev": "nodemon src/server",
         "lint": "eslint",
