@@ -4,7 +4,7 @@ import path from 'path'
 import RoomTrackerService from './services/RoomTracker.js'
 import { Server } from 'socket.io'
 import { instrument } from '@socket.io/admin-ui'
-import { ClientToServerEvents, ServerToClientEvents } from '@shared/index.js'
+import { ClientToServerEvents, ServerToClientEvents } from '../../shared/types'
 
 const app = express()
 const http = httpModule.createServer(app)

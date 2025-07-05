@@ -1,8 +1,9 @@
 {
     "extends": "../tsconfig.json",
-    "files": [],
+    "include": ["./src", "../shared"],
     "compilerOptions": {
         "allowJs": true,
+        "module": "CommonJS",
         "outDir": "./dist",
         "baseUrl": ".",
         "esModuleInterop": true,

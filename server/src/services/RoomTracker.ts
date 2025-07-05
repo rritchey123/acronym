@@ -1,4 +1,4 @@
-import { Player, Room, RoomStatus, SuggestionType } from '@shared/index'
+import { Player, Room, RoomStatus, SuggestionType } from '../../../shared/types'
 import { getRandomAcronymFromDb, getRandomPromptFromDb } from './Database.js'
 import { generateId } from '../utils.js'
 import {

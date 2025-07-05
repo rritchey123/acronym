@@ -3,9 +3,10 @@
     "version": "1.0.0",
     "description": "",
     "main": "index.js",
-    "type": "module",
+    "type": "commonjs",
     "scripts": {
-        "start": "node src/server",
+        "start": "node dist/server/src/server.js",
+        "build": "tsc",
         "dev": "nodemon src/server",
         "lint": "eslint",
         "lint:fix": "eslint --fix"
