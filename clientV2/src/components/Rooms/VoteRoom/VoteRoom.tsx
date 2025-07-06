@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import socket from '../../../socket.ts'
 import { RoundHeader } from '../../RoundHeader'
@@ -8,11 +8,15 @@ import { shuffleArray } from '@/components/utils.ts'
 
 export function VoteRoom() {
     const [hasVoted, setHasVoted] = useState(false)
-    const { room } = useSelector(selectFeState)
-    if (!room) {
-        errorToast('Room does not exist')
-        return null
-    }
+    const feState = useSelector(selectFeState)
+    const room = feState.room!
+
+    const shuffledIds = useMemo(() => {
+        return shuffleArray(Object.keys(room.answers)).filter(
+            (playerId) => playerId !== socket.id
+        )
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [room.round])
 
     const submitVote = (playerId: string) => {
         return () => {
@@ -31,10 +35,6 @@ export function VoteRoom() {
             )
         }
     }
-
-    const playerIds: string[] = shuffleArray(Object.keys(room.answers)).filter(
-        (playerId) => playerId !== socket.id
-    )
 
     return (
         <>
@@ -55,7 +55,7 @@ export function VoteRoom() {
                     </div>
 
                     <div className="flex flex-col gap-3">
-                        {playerIds.map((playerId: string) => (
+                        {shuffledIds.map((playerId: string) => (
                             <Button
                                 key={playerId}
                                 onClick={submitVote(playerId)}
