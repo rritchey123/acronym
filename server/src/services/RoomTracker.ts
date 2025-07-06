@@ -155,7 +155,7 @@ export default class RoomTrackerService {
         const numPlayers = Object.keys(room.players).length
         // If everyone has answered, update all players with player answers`
         if (numAnswers === numPlayers) {
-            room.status = RoomStatus.VOTING
+            this.setRoomState(roomId, RoomStatus.VOTING)
         }
         this.updateAllPlayers(roomId)
     }
@@ -180,8 +180,7 @@ export default class RoomTrackerService {
                 : totalVotes === totalPlayers
         ) {
             room.isGameOver = this.isGameOver(roomId)
-            // this.clearNextRoundCallback(room)
-            room.status = RoomStatus.REVIEWING_ROUND_SUMMARY
+            this.setRoomState(roomId, RoomStatus.REVIEWING_ROUND_SUMMARY)
         }
 
         this.updateAllPlayers(roomId)
@@ -195,7 +194,7 @@ export default class RoomTrackerService {
     }
 
     newRound(room) {
-        room.status = RoomStatus.PLAYING
+        this.setRoomState(room.id, RoomStatus.PLAYING)
         room.acronym = this.getRandomAcronym(room)
         room.prompt = this.getRandomPrompt(room)
         room.roundStartTime = new Date().toISOString()
@@ -284,8 +283,7 @@ export default class RoomTrackerService {
         this.clearNextRoundCallback(room)
         return setTimeout(
             () => {
-                console.log('in callback!')
-                room.status = RoomStatus.VOTING
+                this.setRoomState(room.id, RoomStatus.VOTING)
                 this.updateAllPlayers(room.id)
             },
             room.currentRoundDuration * 1000 + 1000
@@ -301,7 +299,14 @@ export default class RoomTrackerService {
     reviewRoundScores(roomId) {
         const room = this.getRoom(roomId)
         this.clearNextRoundCallback(room)
-        room.status = RoomStatus.REVIEWING_ROUND_SUMMARY
+        this.setRoomState(room.id, RoomStatus.REVIEWING_ROUND_SUMMARY)
         this.updateAllPlayers(roomId)
+    }
+
+    // Always clear callback when updating room
+    setRoomState(roomId, state) {
+        const room = this.getRoom(roomId)
+        this.clearNextRoundCallback(room)
+        room.status = state
     }
 }
