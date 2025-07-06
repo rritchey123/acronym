@@ -20,8 +20,8 @@ const DEFAULT_ROOM = {
     scores: {},
     acronymSuggestions: [],
     promptSuggestions: [],
-    defaultRoundDuration: 5,
-    currentRoundDuration: 5,
+    defaultRoundDuration: DEFAULT_ROUND_DURATION,
+    currentRoundDuration: DEFAULT_ROUND_DURATION,
     scoreLimit: DEFAULT_SCORE_LIMIT,
 }
 
