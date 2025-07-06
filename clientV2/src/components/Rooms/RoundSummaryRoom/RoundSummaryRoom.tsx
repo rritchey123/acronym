@@ -14,7 +14,7 @@ export function RoundSummaryRoom() {
 
     const onClick = () => {
         socket.emit(
-            'review-scores',
+            'review-game-scores',
             { roomId: room.id },
             ({ success, data }) => {
                 if (!success) {

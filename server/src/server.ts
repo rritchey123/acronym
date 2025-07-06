@@ -115,10 +115,10 @@ io.on('connection', function (socket) {
         }
     })
 
-    socket.on('review-scores', function (payload, cb) {
+    socket.on('review-game-scores', function (payload, cb) {
         const { roomId } = payload
         try {
-            roomTracker.reviewScores(roomId)
+            roomTracker.reviewGameScores(roomId)
             cb({ success: true })
         } catch (err) {
             console.error(`Error while reviewing scores: ${err}`)
@@ -170,6 +170,17 @@ io.on('connection', function (socket) {
             cb({ success: true })
         } catch (err) {
             console.error(`Error while adding time: ${err}`)
+            cb({ success: false, data: `${err}` })
+        }
+    })
+
+    socket.on('review-round-scores', function (payload, cb) {
+        const { roomId } = payload
+        try {
+            roomTracker.reviewRoundScores(roomId)
+            cb({ success: true })
+        } catch (err) {
+            console.error(`Error while reviewing round scores: ${err}`)
             cb({ success: false, data: `${err}` })
         }
     })

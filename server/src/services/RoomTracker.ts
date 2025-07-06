@@ -20,8 +20,8 @@ const DEFAULT_ROOM = {
     scores: {},
     acronymSuggestions: [],
     promptSuggestions: [],
-    defaultRoundDuration: DEFAULT_ROUND_DURATION,
-    currentRoundDuration: DEFAULT_ROUND_DURATION,
+    defaultRoundDuration: 5,
+    currentRoundDuration: 5,
     scoreLimit: DEFAULT_SCORE_LIMIT,
 }
 
@@ -36,6 +36,8 @@ export default class RoomTrackerService {
         return this._rooms[roomId]
     }
     deleteRoom(roomId): void {
+        const room = this.getRoom(roomId)
+        this.clearNextRoundCallback(room)
         delete this._rooms[roomId]
     }
 
@@ -136,10 +138,11 @@ export default class RoomTrackerService {
         socket.in(roomId).emit('update-players', room)
     }
 
-    updateAllPlayers(roomId) {
+    updateAllPlayers(roomId: string) {
         const room = this.getRoom(roomId)
         if (!room) return
-        this._io.in(roomId).emit('update-players', room)
+        const { nextRoundCallback, ...roomWithoutCallback } = room
+        this._io.in(roomId).emit('update-players', roomWithoutCallback)
     }
 
     submitAnswer(socket, roomId, answer) {
@@ -171,7 +174,11 @@ export default class RoomTrackerService {
             0
         )
         const totalPlayers = Object.keys(room.players).length
-        if (totalVotes === totalPlayers) {
+        if (
+            Object.keys(room.answers).length === 1
+                ? totalVotes === totalPlayers - 1
+                : totalVotes === totalPlayers
+        ) {
             room.isGameOver = this.isGameOver(roomId)
             room.status = RoomStatus.REVIEWING_ROUND_SUMMARY
         }
@@ -194,10 +201,12 @@ export default class RoomTrackerService {
         room.currentRoundDuration = room.defaultRoundDuration
         room.votes = {}
         room.answers = {}
+        room.nextRoundCallback = this.getNextRoundCallback(room)
     }
 
-    reviewScores(roomId) {
+    reviewGameScores(roomId) {
         const room = this.getRoom(roomId)
+        this.clearNextRoundCallback(room)
         room.status = RoomStatus.REVIEWING_SCORE_SUMMARY
         this.updateAllPlayers(roomId)
     }
@@ -266,6 +275,32 @@ export default class RoomTrackerService {
     addTime(roomId: string) {
         const room = this.getRoom(roomId)
         room.currentRoundDuration += ADD_TIME_AMOUNT
+        room.nextRoundCallback = this.getNextRoundCallback(room)
+        this.updateAllPlayers(roomId)
+    }
+
+    getNextRoundCallback(room: Room) {
+        this.clearNextRoundCallback(room)
+        return setTimeout(
+            () => {
+                console.log('in callback!')
+                room.status = RoomStatus.VOTING
+                this.updateAllPlayers(room.id)
+            },
+            room.currentRoundDuration * 1000 + 1000
+        )
+    }
+
+    clearNextRoundCallback(room) {
+        if (room.nextRoundCallback) {
+            clearTimeout(room.nextRoundCallback)
+        }
+    }
+
+    reviewRoundScores(roomId) {
+        const room = this.getRoom(roomId)
+        this.clearNextRoundCallback(room)
+        room.status = RoomStatus.REVIEWING_ROUND_SUMMARY
         this.updateAllPlayers(roomId)
     }
 }

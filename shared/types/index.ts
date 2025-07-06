@@ -50,6 +50,7 @@ export interface Room {
     defaultRoundDuration: number
     currentRoundDuration: number
     scoreLimit: number
+    nextRoundCallback?: NodeJS.Timeout
 }
 
 export interface ServerToClientEvents {
@@ -87,7 +88,11 @@ export interface ClientToServerEvents {
         payload: { roomId: string; playerId: string },
         cb: (payload: WebsocketCallbackPayload) => void
     ) => void
-    ['review-scores']: (
+    ['review-round-scores']: (
+        payload: { roomId: string },
+        cb: (payload: WebsocketCallbackPayload) => void
+    ) => void
+    ['review-game-scores']: (
         payload: { roomId: string },
         cb: (payload: WebsocketCallbackPayload) => void
     ) => void

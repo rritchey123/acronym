@@ -5,11 +5,13 @@ import { RoundHeader } from '../../RoundHeader'
 import { errorToast, selectFeState } from '@/lib/utils.ts'
 import { Button } from '@/components/ui/button.tsx'
 import { shuffleArray } from '@/components/utils.ts'
+import { PlayerType } from '@shared/index.ts'
 
 export function VoteRoom() {
     const [hasVoted, setHasVoted] = useState(false)
     const feState = useSelector(selectFeState)
     const room = feState.room!
+    const playerType = feState.playerType
 
     const shuffledIds = useMemo(() => {
         return shuffleArray(Object.keys(room.answers)).filter(
@@ -36,6 +38,25 @@ export function VoteRoom() {
         }
     }
 
+    const reviewScores = () => {
+        socket.emit(
+            'review-round-scores',
+            { roomId: room.id },
+            ({ success, data }) => {
+                if (!success) {
+                    errorToast(
+                        `Failed to navigate to review round scores: ${JSON.stringify(
+                            data
+                        )}`
+                    )
+                    return
+                }
+            }
+        )
+    }
+    const numAnswers = Object.keys(room.answers).length
+    const isOnlyPersonToVote = numAnswers > 0 && !shuffledIds.length
+
     return (
         <>
             <RoundHeader />
@@ -54,17 +75,27 @@ export function VoteRoom() {
                         )}
                     </div>
 
-                    <div className="flex flex-col gap-3">
-                        {shuffledIds.map((playerId: string) => (
-                            <Button
-                                key={playerId}
-                                onClick={submitVote(playerId)}
-                                disabled={hasVoted}
-                                className="rounded-md bg-primary text-primary-foreground px-3 py-2 text-sm break-words"
-                            >
-                                {room.answers[playerId]}
+                    <div className="flex flex-col gap-3 text-center">
+                        {playerType === PlayerType.LEADER && !numAnswers && (
+                            <Button onClick={reviewScores}>
+                                Review Scores
                             </Button>
-                        ))}
+                        )}
+
+                        {isOnlyPersonToVote
+                            ? 'You are the only person to vote. Wait for others to vote...'
+                            : shuffledIds.length
+                            ? shuffledIds.map((playerId: string) => (
+                                  <Button
+                                      key={playerId}
+                                      onClick={submitVote(playerId)}
+                                      disabled={hasVoted}
+                                      className="rounded-md bg-primary text-primary-foreground px-3 py-2 text-sm break-words"
+                                  >
+                                      {room.answers[playerId]}
+                                  </Button>
+                              ))
+                            : 'No one answered! Wait for leader to continue...'}
                     </div>
                 </div>
             </div>
