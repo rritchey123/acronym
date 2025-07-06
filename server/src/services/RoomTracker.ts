@@ -1,12 +1,12 @@
 import { Player, Room, RoomStatus, SuggestionType } from '../../../shared/types'
-import { getRandomAcronymFromDb, getRandomPromptFromDb } from './Database.js'
+import { getRandomAcronymFromDb, getRandomPromptFromDb } from './Database'
 import { generateId } from '../utils.js'
 import {
     ADD_TIME_AMOUNT,
     DEFAULT_ROUND_DURATION,
     DEFAULT_SCORE_LIMIT,
     PREFER_USER_SUGGESTION_WEIGHT,
-} from '../constants.js'
+} from '../../../shared/constants'
 
 const DEFAULT_ROOM = {
     status: RoomStatus.WAITING,
@@ -180,6 +180,7 @@ export default class RoomTrackerService {
                 : totalVotes === totalPlayers
         ) {
             room.isGameOver = this.isGameOver(roomId)
+            // this.clearNextRoundCallback(room)
             room.status = RoomStatus.REVIEWING_ROUND_SUMMARY
         }
 

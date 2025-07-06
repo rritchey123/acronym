@@ -1,4 +1,0 @@
-export const PREFER_USER_SUGGESTION_WEIGHT = 0.75
-export const DEFAULT_ROUND_DURATION = 30
-export const DEFAULT_SCORE_LIMIT = 5
-export const ADD_TIME_AMOUNT = 30

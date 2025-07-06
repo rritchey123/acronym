@@ -16,7 +16,7 @@ import {
     MAX_SCORE_LIMIT,
     MIN_ROUND_DURATION,
     MIN_SCORE_LIMIT,
-} from './constants'
+} from '../../../shared/constants'
 import socket from '@/socket'
 
 export function EditRulesDialog() {
