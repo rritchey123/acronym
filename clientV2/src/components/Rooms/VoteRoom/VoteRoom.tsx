@@ -64,16 +64,6 @@ export function VoteRoom() {
             <div className="flex justify-center px-4">
                 <div className="w-full max-w-md space-y-6">
                     {/* Instruction or Waiting Message */}
-                    <div className="text-center text-xl font-semibold text-white">
-                        {hasVoted ? (
-                            <div className="flex justify-center items-center gap-1 text-muted-foreground text-sm">
-                                Waiting for other players to finish voting
-                                <span className="dot-anim" />
-                            </div>
-                        ) : (
-                            'Vote for the best answer!'
-                        )}
-                    </div>
 
                     <div className="flex flex-col gap-3 text-center">
                         {playerType === PlayerType.LEADER && !numAnswers && (
@@ -81,6 +71,38 @@ export function VoteRoom() {
                                 Review Scores
                             </Button>
                         )}
+
+                        <div className="text-center space-y-1">
+                            <div className="text-sm uppercase text-muted-foreground tracking-wider">
+                                Acronym
+                            </div>
+                            <div className="text-4xl font-bold text-white">
+                                {room.acronym}
+                            </div>
+                        </div>
+
+                        {/* Prompt Section */}
+                        <div className="text-center space-y-1">
+                            <div className="text-sm uppercase text-muted-foreground tracking-wider">
+                                Prompt
+                            </div>
+                            <div className="text-2xl font-semibold text-white break-words">
+                                {room.prompt}
+                            </div>
+                        </div>
+
+                        <div className="text-center text-xl font-semibold text-white">
+                            {hasVoted ? (
+                                <div className="flex justify-center items-center gap-1 text-muted-foreground text-sm">
+                                    Waiting for other players to finish voting
+                                    <span className="dot-anim" />
+                                </div>
+                            ) : (
+                                <div className="flex justify-center items-center gap-1 text-muted-foreground text-sm">
+                                    Vote for the best answer!
+                                </div>
+                            )}
+                        </div>
 
                         {isOnlyPersonToVote
                             ? 'You are the only person to vote. Wait for others to vote...'
