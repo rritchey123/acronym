@@ -4,6 +4,7 @@ import { LeaveRoomButton } from '../../Buttons/LeaveRoomButton/LeaveRoomButton'
 import { Button } from '@/components/ui/button'
 import { errorToast, selectFeState, warningToast } from '@/lib/utils.ts'
 import { EditRulesDialog } from '@/components/EditRulesDialogue.tsx'
+import { InfoDialogue } from '@/components/InfoDialogue.tsx'
 
 export function WaitRoom() {
     const { room, playerType } = useSelector(selectFeState)
@@ -53,7 +54,9 @@ export function WaitRoom() {
                             </span>
                         </div>
                     </div>
-
+                    <div className="flex justify-center">
+                        <InfoDialogue />
+                    </div>
                     {/* Player List */}
                     <div className="space-y-4">
                         <div className="text-lg font-semibold text-white text-center">
