@@ -5,6 +5,7 @@ import {
     ADD_TIME_AMOUNT,
     DEFAULT_ROUND_DURATION,
     DEFAULT_SCORE_LIMIT,
+    MIN_PLAYER_COUNT,
     PREFER_USER_SUGGESTION_WEIGHT,
 } from '../../../shared/constants'
 
@@ -126,6 +127,9 @@ export default class RoomTrackerService {
     // Game operation
     startGame(roomId) {
         const room = this.getRoom(roomId)
+        if (Object.keys(room.players).length < MIN_PLAYER_COUNT) {
+            throw new Error('3 or more players are required to start the game.')
+        }
         this.newRound(room)
         room.round = 1
         this.updateAllPlayers(roomId)

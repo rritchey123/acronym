@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux'
 import socket from '../../../socket.ts'
 import { LeaveRoomButton } from '../../Buttons/LeaveRoomButton/LeaveRoomButton'
 import { Button } from '@/components/ui/button'
-import { errorToast, selectFeState, warningToast } from '@/lib/utils.ts'
+import { errorToast, selectFeState } from '@/lib/utils.ts'
 import { EditRulesDialog } from '@/components/EditRulesDialogue.tsx'
 import { InfoDialogue } from '@/components/InfoDialogue.tsx'
 
@@ -15,13 +15,9 @@ export function WaitRoom() {
             errorToast('Room does not exist')
             return
         }
-        if (Object.keys(room.players).length < 3) {
-            warningToast('3 or more players are required to start the game.')
-            return
-        }
         socket.emit('start-game', { roomId: room!.id }, ({ success, data }) => {
             if (!success) {
-                errorToast(`Failed to create room: ${JSON.stringify(data)}`)
+                errorToast(`Failed to start game: ${JSON.stringify(data)}`)
                 return
             }
         })
