@@ -6,6 +6,7 @@ import { errorToast, selectFeState } from '@/lib/utils.ts'
 import { Button } from '@/components/ui/button.tsx'
 import { shuffleArray } from '@/components/utils.ts'
 import { PlayerType } from '@shared/index.ts'
+import { LeaveRoomButton } from '@/components/Buttons/LeaveRoomButton/LeaveRoomButton.tsx'
 
 export function VoteRoom() {
     const [hasVoted, setHasVoted] = useState(false)
@@ -60,6 +61,7 @@ export function VoteRoom() {
     return (
         <>
             <RoundHeader />
+            <LeaveRoomButton />
 
             <div className="flex justify-center px-4">
                 <div className="w-full max-w-md space-y-6">

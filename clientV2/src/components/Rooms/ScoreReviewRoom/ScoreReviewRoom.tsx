@@ -43,11 +43,10 @@ export const ScoreReviewRoom = () => {
                 </div>
             )}
 
-            {room.isGameOver && (
-                <div className="flex justify-center m-4">
-                    <LeaveRoomButton buttonText="Back to home" />
-                </div>
-            )}
+            {room.isGameOver && <div className="flex justify-center m-4"></div>}
+            <LeaveRoomButton
+                buttonText={room.isGameOver ? 'Back to home' : undefined}
+            />
 
             <div className="flex justify-center px-4">
                 <div className="w-full max-w-md space-y-6">

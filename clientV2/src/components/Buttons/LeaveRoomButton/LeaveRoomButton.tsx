@@ -4,7 +4,11 @@ import { setRoom } from '../../../redux/feState'
 import { Button } from '../../ui/button'
 import { errorToast, selectFeState } from '@/lib/utils.ts'
 
-export function LeaveRoomButton({ buttonText = 'Leave Room' }) {
+export function LeaveRoomButton({
+    buttonText = 'Leave Room',
+}: {
+    buttonText?: string
+}) {
     const { room } = useSelector(selectFeState)
     const dispatch = useDispatch()
     if (!room) {

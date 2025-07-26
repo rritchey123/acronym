@@ -4,6 +4,7 @@ import { RoundHeader } from '../../RoundHeader'
 import { Button } from '../../ui/button'
 import { errorToast, selectFeState } from '@/lib/utils.ts'
 import { PlayerType } from '@shared/index'
+import { LeaveRoomButton } from '@/components/Buttons/LeaveRoomButton/LeaveRoomButton.tsx'
 
 export function RoundSummaryRoom() {
     const { room, playerType } = useSelector(selectFeState)
@@ -30,7 +31,7 @@ export function RoundSummaryRoom() {
     return (
         <>
             <RoundHeader isRoundSummary />
-
+            <LeaveRoomButton />
             {playerType === PlayerType.LEADER && (
                 <div className="flex justify-center">
                     <Button className="m-4" onClick={onClick}>
