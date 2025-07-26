@@ -39,7 +39,7 @@ export default function App() {
 
     return (
         <div className="pt-16 bg-background h-screen">
-            {/* <DebugDetails roomName="Home Room"></DebugDetails> */}
+            {/* <DebugDetails /> */}
             {getRoom(status)}
         </div>
     )
