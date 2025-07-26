@@ -87,7 +87,11 @@ export function PlayDialogue() {
 
         socket.emit(
             'join-room',
-            { playerName, roomId, playerType: PlayerType.NORMAL },
+            {
+                playerName,
+                roomId: roomId.toLocaleLowerCase(),
+                playerType: PlayerType.NORMAL,
+            },
             ({ success, data }) => {
                 if (!success) {
                     errorToast(`Failed to join room: ${JSON.stringify(data)}`)
