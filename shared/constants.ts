@@ -8,4 +8,4 @@ export const MAX_ROUND_DURATION = 120
 export const MIN_SCORE_LIMIT = 1
 export const MAX_SCORE_LIMIT = 50
 
-export const MIN_PLAYER_COUNT = 1
+export const MIN_PLAYER_COUNT = 3
