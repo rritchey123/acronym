@@ -3,7 +3,7 @@ import socket from '../../../socket.ts'
 import { useSelector } from 'react-redux'
 import { Input } from '../../ui/input'
 import { Button } from '../../ui/button'
-import { errorToast, selectFeState } from '@/lib/utils.ts'
+import { errorToast, selectFeState, warningToast } from '@/lib/utils.ts'
 
 interface AnswerEntryProps {
     setHasAnswered: (hasAnswered: boolean) => void
@@ -22,6 +22,10 @@ export function AnswerEntry({ setHasAnswered }: AnswerEntryProps) {
             return null
         }
         event.preventDefault()
+        if (!answer) {
+            warningToast(`Please enter an answer`)
+            return
+        }
         setHasAnswered(true)
         socket.emit(
             'submit-answer',
