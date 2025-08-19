@@ -4,7 +4,7 @@ import socket from '../../../socket.ts'
 import { RoundHeader } from '../../RoundHeader'
 import { errorToast, selectFeState } from '@/lib/utils.ts'
 import { Button } from '@/components/ui/button.tsx'
-import { shuffleArray } from '@/components/utils.ts'
+import { getConnectedPlayers, shuffleArray } from '@/components/utils.ts'
 import { PlayerType } from '@shared/index.ts'
 import { LeaveRoomButton } from '@/components/Buttons/LeaveRoomButton/LeaveRoomButton.tsx'
 
@@ -13,10 +13,16 @@ export function VoteRoom() {
     const feState = useSelector(selectFeState)
     const room = feState.room!
     const playerType = feState.playerType
+    const playerId = feState.playerId
 
     const shuffledIds = useMemo(() => {
-        return shuffleArray(Object.keys(room.answers)).filter(
-            (playerId) => playerId !== socket.id
+        const connectedPlayerIdsExceptSelf = getConnectedPlayers(room)
+            .filter((p) => p.id !== playerId)
+            .map((p) => p.id)
+        console.log(connectedPlayerIdsExceptSelf)
+        console.log(Object.keys(room.answers))
+        return shuffleArray(Object.keys(room.answers)).filter((pId) =>
+            connectedPlayerIdsExceptSelf.includes(pId)
         )
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [room.round])
@@ -56,6 +62,7 @@ export function VoteRoom() {
         )
     }
     const numAnswers = Object.keys(room.answers).length
+    console.log(shuffledIds)
     const isOnlyPersonToVote = numAnswers > 0 && !shuffledIds.length
 
     return (

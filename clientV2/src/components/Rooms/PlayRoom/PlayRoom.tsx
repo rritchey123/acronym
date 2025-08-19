@@ -5,6 +5,7 @@ import { RoundHeader } from '../../RoundHeader'
 import { errorToast, selectFeState } from '@/lib/utils'
 import { CountdownTimer } from '@/components/CountdownTimer'
 import { LeaveRoomButton } from '@/components/Buttons/LeaveRoomButton/LeaveRoomButton'
+import { getConnectedPlayers } from '@/components/utils'
 
 export function PlayRoom() {
     const [hasAnswered, setHasAnswered] = useState(false)
@@ -65,7 +66,7 @@ export function PlayRoom() {
                             Players
                         </div>
                         <div className="flex flex-col gap-2">
-                            {Object.values(room.players).map((player) => {
+                            {getConnectedPlayers(room).map((player) => {
                                 const score = room.scores[player.id] || 0
                                 return (
                                     <div

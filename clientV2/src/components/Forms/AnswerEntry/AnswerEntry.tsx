@@ -10,9 +10,13 @@ interface AnswerEntryProps {
 }
 export function AnswerEntry({ setHasAnswered }: AnswerEntryProps) {
     const [answer, setAnswer] = useState('')
-    const { room } = useSelector(selectFeState)
+    const { room, playerId } = useSelector(selectFeState)
     if (!room) {
         errorToast('Room does not exist')
+        return null
+    }
+    if (!playerId) {
+        errorToast('Player has no id')
         return null
     }
 
@@ -29,7 +33,7 @@ export function AnswerEntry({ setHasAnswered }: AnswerEntryProps) {
         setHasAnswered(true)
         socket.emit(
             'submit-answer',
-            { roomId: room.id, answer },
+            { roomId: room.id, playerId: playerId!, answer },
             ({ success, data }) => {
                 if (!success) {
                     errorToast(

@@ -1,10 +1,11 @@
 import { ClientToServerEvents, ServerToClientEvents } from '@shared/index'
 import { io, Socket } from 'socket.io-client'
 
-const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io()
+export type AcronaymClientSocket = Socket<
+    ServerToClientEvents,
+    ClientToServerEvents
+>
 
-socket.on('connect', function () {
-    console.log('Front end connected to backend!')
-})
+const socket: AcronaymClientSocket = io()
 
 export default socket

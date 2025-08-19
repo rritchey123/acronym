@@ -3,12 +3,19 @@ export enum PlayerType {
     LEADER = 'leader',
 }
 
+export enum PlayerStatus {
+    CONNECTED = 'connected',
+    DISCONNECTED = 'disconnected',
+}
+
 export interface Player {
     id: string
+    socketId: string
     name: string
     type: PlayerType
     // Later thing
     offset?: number // offset in time when user sent first message to when server receives it
+    status: PlayerStatus
 }
 
 export enum RoomStatus {
@@ -29,9 +36,6 @@ export interface VotesMap {
 export interface ScoresMap {
     [key: string]: number
 }
-export interface PlayersMap {
-    [key: string]: Player
-}
 
 export interface Room {
     id: string
@@ -43,7 +47,7 @@ export interface Room {
     answers: AnswersMap
     votes: VotesMap
     scores: ScoresMap
-    players: PlayersMap
+    players: Player[]
     acronymSuggestions: string[]
     promptSuggestions: string[]
     roundStartTime?: string
@@ -77,11 +81,11 @@ export interface ClientToServerEvents {
         cb: (payload: WebsocketCallbackPayload) => void
     ) => void
     ['leave-room']: (
-        payload: { roomId: string },
+        payload: { roomId: string; playerId: string },
         cb: (payload: WebsocketCallbackPayload) => void
     ) => void
     ['submit-answer']: (
-        payload: { roomId: string; answer: string },
+        payload: { roomId: string; playerId: string; answer: string },
         cb: (payload: WebsocketCallbackPayload) => void
     ) => void
     ['submit-vote']: (
@@ -118,6 +122,13 @@ export interface ClientToServerEvents {
     ) => void
     ['add-time']: (
         payload: {
+            roomId: string
+        },
+        cb: (payload: WebsocketCallbackPayload) => void
+    ) => void
+    ['reconnect']: (
+        payload: {
+            playerId: string
             roomId: string
         },
         cb: (payload: WebsocketCallbackPayload) => void

@@ -4,6 +4,7 @@ import { Room } from '@shared/index'
 export interface FeState {
     room: Room | null
     playerType: string | null
+    playerId: string | null
 }
 
 export interface ReduxState {
@@ -14,6 +15,7 @@ export const feStateSlice = createSlice({
     initialState: {
         room: null,
         playerType: null,
+        playerId: null,
     },
     reducers: {
         setRoom: (state, action) => {
@@ -22,8 +24,11 @@ export const feStateSlice = createSlice({
         setPlayerType: (state, action) => {
             state.playerType = action.payload
         },
+        setPlayerId: (state, action) => {
+            state.playerId = action.payload
+        },
     },
 })
 
-export const { setRoom, setPlayerType } = feStateSlice.actions
+export const { setRoom, setPlayerType, setPlayerId } = feStateSlice.actions
 export default feStateSlice.reducer

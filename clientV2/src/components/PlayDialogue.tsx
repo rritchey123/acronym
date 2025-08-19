@@ -12,10 +12,14 @@ import { useDispatch } from 'react-redux'
 import socket from '../socket.ts'
 import { useState } from 'react'
 import { PlayerType } from '@shared/index'
-import { setPlayerType } from '@/redux/feState.ts'
+import { setPlayerId, setPlayerType } from '@/redux/feState.ts'
 import { errorToast, warningToast } from '@/lib/utils.ts'
-
-const PLAYER_NAME_MAX_LENGTH = 25
+import {
+    SESSION_STORAGE_PLAYER_ID_KEY,
+    SESSION_STORAGE_PLAYER_TYPE_KEY,
+    SESSION_STORAGE_ROOM_ID_KEY,
+    PLAYER_NAME_MAX_LENGTH,
+} from '../../../shared/constants.ts'
 
 /**
  * A dialog for creating a room or joining a room with a given room id.
@@ -49,10 +53,11 @@ export function PlayDialogue() {
                 setIsLoading(false)
                 return
             }
+            const roomId = data.roomId
             socket.emit(
                 'join-room',
                 {
-                    roomId: data.roomId,
+                    roomId,
                     playerName,
                     playerType: PlayerType.LEADER,
                 },
@@ -62,7 +67,26 @@ export function PlayDialogue() {
                             `Failed to join room: ${JSON.stringify(data)}`
                         )
                     } else {
-                        dispatch(setPlayerType(PlayerType.LEADER))
+                        const playerType = PlayerType.LEADER
+                        const playerId = socket.id
+                        sessionStorage.setItem(
+                            SESSION_STORAGE_PLAYER_TYPE_KEY,
+                            playerType
+                        )
+                        sessionStorage.setItem(
+                            SESSION_STORAGE_ROOM_ID_KEY,
+                            roomId
+                        )
+                        sessionStorage.setItem(
+                            SESSION_STORAGE_PLAYER_ID_KEY,
+                            playerId || ''
+                        )
+                        sessionStorage.setItem(
+                            SESSION_STORAGE_PLAYER_TYPE_KEY,
+                            playerType
+                        )
+                        dispatch(setPlayerType(playerType))
+                        dispatch(setPlayerId(playerId))
                     }
 
                     setIsLoading(false)
@@ -95,6 +119,24 @@ export function PlayDialogue() {
             ({ success, data }) => {
                 if (!success) {
                     errorToast(`Failed to join room: ${JSON.stringify(data)}`)
+                } else {
+                    const playerType = PlayerType.NORMAL
+                    const playerId = socket.id
+                    sessionStorage.setItem(
+                        SESSION_STORAGE_PLAYER_TYPE_KEY,
+                        playerType
+                    )
+                    sessionStorage.setItem(SESSION_STORAGE_ROOM_ID_KEY, roomId)
+                    sessionStorage.setItem(
+                        SESSION_STORAGE_PLAYER_ID_KEY,
+                        playerId || ''
+                    )
+                    sessionStorage.setItem(
+                        SESSION_STORAGE_PLAYER_TYPE_KEY,
+                        playerType
+                    )
+                    dispatch(setPlayerType(playerType))
+                    dispatch(setPlayerId(playerId))
                 }
                 setIsLoading(false)
             }

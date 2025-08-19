@@ -1,4 +1,10 @@
-import { Player, Room, RoomStatus, SuggestionType } from '../../../shared/types'
+import {
+    Player,
+    PlayerStatus,
+    Room,
+    RoomStatus,
+    SuggestionType,
+} from '../../../shared/types'
 import { getRandomAcronymFromDb, getRandomPromptFromDb } from './Database'
 import { generateId } from '../utils.js'
 import {
@@ -17,7 +23,7 @@ const DEFAULT_ROOM = {
     round: 1,
     answers: {},
     votes: {},
-    players: {},
+    players: [],
     scores: {},
     acronymSuggestions: [],
     promptSuggestions: [],
@@ -65,6 +71,7 @@ export default class RoomTrackerService {
         roomId: string
         player: Player
     }) {
+        console.log('Joining room', player)
         const { id: playerId, name: playerName, type: playerType } = player
         const room = this.getRoom(roomId)
 
@@ -80,15 +87,17 @@ export default class RoomTrackerService {
             throw new Error(`Player with id ${playerId} already in room.`)
         }
 
-        if (Object.values(room.players).find((i) => i.name === playerName)) {
+        if (room.players.find((i) => i.name === playerName)) {
             throw new Error(`Player with name ${playerName} already in room.`)
         }
 
-        room.players[playerId] = {
+        room.players.push({
             id: playerId,
+            socketId: socket.id,
             name: playerName,
             type: playerType,
-        }
+            status: PlayerStatus.CONNECTED,
+        })
 
         socket.join(roomId)
 
@@ -98,28 +107,30 @@ export default class RoomTrackerService {
     leaveRoom({
         socket,
         roomId,
-        onDisconnect,
+        playerId,
     }: {
         socket: any
         roomId: string
-        onDisconnect?: boolean
+        playerId: string
     }) {
         const room = this.getRoom(roomId)
-        const playerId = socket.id
 
-        if (!onDisconnect) socket.leave(roomId)
+        socket.leave(roomId)
 
         if (!room) {
             throw new Error(`Room ${roomId} does not exist.`)
         }
 
-        if (!room.players[playerId]) {
+        const playerIndex = room.players.findIndex(
+            (player) => player.id === playerId
+        )
+        if (!playerIndex) {
             throw new Error(`Player with id ${playerId} does not exist.`)
         }
 
-        delete room.players[playerId]
+        room.players.splice(playerIndex, 1)
 
-        if (Object.keys(room.players).length === 0) this.deleteRoom(roomId)
+        if (room.players.length === 0) this.deleteRoom(roomId)
 
         this.updateAllPlayers(roomId)
     }
@@ -127,7 +138,7 @@ export default class RoomTrackerService {
     // Game operation
     startGame(roomId) {
         const room = this.getRoom(roomId)
-        if (Object.keys(room.players).length < MIN_PLAYER_COUNT) {
+        if (room.players.length < MIN_PLAYER_COUNT) {
             throw new Error('3 or more players are required to start the game.')
         }
         this.newRound(room)
@@ -149,16 +160,27 @@ export default class RoomTrackerService {
         this._io.in(roomId).emit('update-players', roomWithoutCallback)
     }
 
-    submitAnswer(socket, roomId, answer) {
+    submitAnswer({
+        roomId,
+        playerId,
+        answer,
+    }: {
+        roomId: string
+        playerId: string
+        answer: string
+    }) {
         const room = this.getRoom(roomId)
         if (!room) return
 
-        room.answers[socket.id] = answer
+        room.answers[playerId] = answer
 
         const numAnswers = Object.keys(room.answers).length
-        const numPlayers = Object.keys(room.players).length
+        const numConncetedPlayers = room.players.filter(
+            (player) => player.status === PlayerStatus.CONNECTED
+        ).length
+
         // If everyone has answered, update all players with player answers`
-        if (numAnswers === numPlayers) {
+        if (numAnswers >= numConncetedPlayers) {
             this.setRoomState(roomId, RoomStatus.VOTING)
         }
         this.updateAllPlayers(roomId)
@@ -177,7 +199,9 @@ export default class RoomTrackerService {
             (acc, cur) => acc + cur,
             0
         )
-        const totalPlayers = Object.keys(room.players).length
+        const totalPlayers = room.players.filter(
+            (player) => player.status === PlayerStatus.CONNECTED
+        ).length
         if (
             Object.keys(room.answers).length === 1
                 ? totalVotes === totalPlayers - 1
@@ -218,15 +242,6 @@ export default class RoomTrackerService {
     isGameOver(roomId) {
         const { scores, scoreLimit } = this.getRoom(roomId)
         return Object.values(scores).some((score) => score >= scoreLimit)
-    }
-
-    playerDisconnected(socket) {
-        const roomId = Object.entries(this._rooms).find(
-            ([, room]) => !!room.players[socket.id]
-        )?.[0]
-        if (!roomId) return
-        this.leaveRoom({ roomId, socket, onDisconnect: true })
-        this.updateAllPlayers(roomId)
     }
 
     handleSuggestion(roomId, suggestionType, suggestion) {
@@ -312,5 +327,58 @@ export default class RoomTrackerService {
         const room = this.getRoom(roomId)
         this.clearNextRoundCallback(room)
         room.status = state
+    }
+
+    playerDisconnected(socket) {
+        console.log('Disconnected: ' + socket.id)
+        console.log(
+            'from playerDisconnected',
+            Object.values(this._rooms).map((room) => room.players)
+        )
+        const roomId = Object.entries(this._rooms).find(
+            ([_, room]) =>
+                !!room.players.find((player) => player.socketId === socket.id)
+        )?.[0]
+        if (!roomId) {
+            console.log('No room found for disconnected player')
+            return
+        }
+
+        const room = this.getRoom(roomId)
+        const player = room.players.find(
+            (player) => player.socketId === socket.id
+        )
+        player.status = PlayerStatus.DISCONNECTED
+
+        const atLeastOneConnectedPlayer = room.players.find(
+            (player) => player.status === PlayerStatus.CONNECTED
+        )
+        if (atLeastOneConnectedPlayer) {
+            console.log('Updating all players after player disconnected')
+            this.updateAllPlayers(roomId)
+        } else {
+            console.log('All players in room disconnected, deleting room')
+            this.deleteRoom(roomId)
+        }
+    }
+
+    reconnect(socket: any, playerId: string, roomId: string) {
+        console.log(`Trying reconnect for ${playerId} in ${roomId}`)
+        const room = this.getRoom(roomId)
+        if (!room) {
+            throw new Error(`Room ${roomId} does not exist.`)
+        }
+        const player = room.players.find((player) => player.id === playerId)
+
+        if (!player) throw new Error(`Player not in room.`)
+        console.log(player)
+        if (player.status !== PlayerStatus.DISCONNECTED)
+            throw new Error(`Player already connected in room.`)
+
+        player.status = PlayerStatus.CONNECTED
+        player.socketId = socket.id
+        socket.join(roomId)
+
+        this.updateAllPlayers(roomId)
     }
 }

@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { errorToast, selectFeState } from '@/lib/utils.ts'
 import { EditRulesDialog } from '@/components/EditRulesDialogue.tsx'
 import { InfoDialogue } from '@/components/InfoDialogue.tsx'
+import { getConnectedPlayers } from '@/components/utils.ts'
 
 export function WaitRoom() {
     const { room, playerType } = useSelector(selectFeState)
@@ -60,7 +61,7 @@ export function WaitRoom() {
                         </div>
 
                         <div className="flex flex-col gap-3">
-                            {Object.values(room.players).map((player) => (
+                            {getConnectedPlayers(room).map((player) => (
                                 <div
                                     key={player.id}
                                     className="flex items-center justify-between border border-border bg-card rounded-lg px-4 py-3"

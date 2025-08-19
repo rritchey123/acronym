@@ -5,12 +5,13 @@ import { DisconnectButton } from '../../Buttons/DisconnectButton/DisconnectButto
 import { useSelector } from 'react-redux'
 
 export function DebugDetails() {
-    const { room, playerType } = useSelector(selectFeState)
+    const { room, playerType, playerId } = useSelector(selectFeState)
 
     return (
         <div className="App">
             <h1>Room status: {room?.status || 'No room status'}</h1>
             <h1>room ID: {room?.id || 'No room'}</h1>
+            <h1>playerId : {playerId || 'No player id'} </h1>
             <h1>playerType : {playerType || 'No player type'} </h1>
             <ConnectButton />
             <DisconnectButton />

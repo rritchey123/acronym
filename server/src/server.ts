@@ -4,7 +4,11 @@ import path from 'path'
 import RoomTrackerService from './services/RoomTracker.js'
 import { Server } from 'socket.io'
 import { instrument } from '@socket.io/admin-ui'
-import { ClientToServerEvents, ServerToClientEvents } from '../../shared/types'
+import {
+    ClientToServerEvents,
+    PlayerStatus,
+    ServerToClientEvents,
+} from '../../shared/types'
 
 const app = express()
 const http = httpModule.createServer(app)
@@ -37,7 +41,7 @@ instrument(io, { auth: false, mode: 'development' })
 const roomTracker = new RoomTrackerService({ io })
 
 io.on('connection', function (socket) {
-    console.log('A user connected: ' + socket.id)
+    console.log('Connected: ' + socket.id)
 
     socket.on('disconnect', function () {
         try {
@@ -58,9 +62,9 @@ io.on('connection', function (socket) {
     })
 
     socket.on('leave-room', function (payload, cb) {
-        const { roomId } = payload
+        const { roomId, playerId } = payload
         try {
-            roomTracker.leaveRoom({ roomId, socket })
+            roomTracker.leaveRoom({ roomId, playerId, socket })
             cb({ success: true })
         } catch (err) {
             console.error(`Error while leaving room: ${err}`)
@@ -70,7 +74,13 @@ io.on('connection', function (socket) {
 
     socket.on('join-room', function (payload, cb) {
         const { roomId, playerName, playerType } = payload
-        const player = { id: socket.id, name: playerName, type: playerType }
+        const player = {
+            id: socket.id,
+            socketId: socket.id,
+            name: playerName,
+            type: playerType,
+            status: PlayerStatus.CONNECTED,
+        }
 
         try {
             roomTracker.joinRoom({ socket, roomId, player })
@@ -94,9 +104,9 @@ io.on('connection', function (socket) {
     })
 
     socket.on('submit-answer', function (payload, cb) {
-        const { roomId, answer } = payload
+        const { roomId, playerId, answer } = payload
         try {
-            roomTracker.submitAnswer(socket, roomId, answer)
+            roomTracker.submitAnswer({ roomId, playerId, answer })
             cb({ success: true })
         } catch (err) {
             console.error(`Error while submitting answer: ${err}`)
@@ -181,6 +191,16 @@ io.on('connection', function (socket) {
             cb({ success: true })
         } catch (err) {
             console.error(`Error while reviewing round scores: ${err}`)
+            cb({ success: false, data: `${err}` })
+        }
+    })
+
+    socket.on('reconnect', function ({ roomId, playerId }, cb) {
+        try {
+            roomTracker.reconnect(socket, playerId, roomId)
+            cb({ success: true })
+        } catch (err) {
+            console.error(`Error while trying to reconnect user: ${err}`)
             cb({ success: false, data: `${err}` })
         }
     })
