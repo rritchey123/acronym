@@ -21,7 +21,7 @@ const DEFAULT_ROOM = {
     prompt: null,
     isGameOver: false,
     round: 1,
-    answers: {},
+    answers: [],
     votes: {},
     players: [],
     scores: {},
@@ -172,15 +172,20 @@ export default class RoomTrackerService {
         const room = this.getRoom(roomId)
         if (!room) return
 
-        room.answers[playerId] = answer
+        room.answers.push({
+            playerId,
+            answer,
+        })
 
-        const numAnswers = Object.keys(room.answers).length
+        const numAnswers = room.answers.length
         const numConncetedPlayers = room.players.filter(
             (player) => player.status === PlayerStatus.CONNECTED
         ).length
 
         // If everyone has answered, update all players with player answers`
         if (numAnswers >= numConncetedPlayers) {
+            // Randomize answers
+            room.answers.sort(() => Math.random() - 0.5)
             this.setRoomState(roomId, RoomStatus.VOTING)
         }
         this.updateAllPlayers(roomId)
@@ -203,7 +208,7 @@ export default class RoomTrackerService {
             (player) => player.status === PlayerStatus.CONNECTED
         ).length
         if (
-            Object.keys(room.answers).length === 1
+            room.answers.length === 1
                 ? totalVotes === totalPlayers - 1
                 : totalVotes === totalPlayers
         ) {
@@ -228,7 +233,7 @@ export default class RoomTrackerService {
         room.roundStartTime = new Date().toISOString()
         room.currentRoundDuration = room.defaultRoundDuration
         room.votes = {}
-        room.answers = {}
+        room.answers = []
         room.nextRoundCallback = this.getNextRoundCallback(room)
     }
 

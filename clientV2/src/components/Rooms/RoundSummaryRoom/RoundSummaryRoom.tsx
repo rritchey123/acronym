@@ -50,7 +50,10 @@ export function RoundSummaryRoom() {
 
                     {Object.values(room.players).map((p) => {
                         const voteCount = room.votes[p.id] || 0
-                        const answer = room.answers[p.id] || 'No answer :/'
+                        const answer =
+                            room.answers.find(
+                                (answer) => answer.playerId === p.id
+                            )?.answer || 'No answer :/'
 
                         return (
                             <div

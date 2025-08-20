@@ -54,8 +54,7 @@ export const ScoreReviewRoom = () => {
                         {room.isGameOver ? 'Game over!' : waitingPropmpt}
                     </div>
 
-                    {Object.entries(room.players).map(([playerId, player]) => {
-                        const { name } = player
+                    {room.players.map(({ name, id: playerId }) => {
                         const score = room.scores[playerId] || 0
 
                         return (

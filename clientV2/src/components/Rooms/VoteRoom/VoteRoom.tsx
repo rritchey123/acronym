@@ -1,10 +1,9 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { useSelector } from 'react-redux'
 import socket from '../../../socket.ts'
 import { RoundHeader } from '../../RoundHeader'
 import { errorToast, selectFeState } from '@/lib/utils.ts'
 import { Button } from '@/components/ui/button.tsx'
-import { getConnectedPlayers, shuffleArray } from '@/components/utils.ts'
 import { PlayerType } from '@shared/index.ts'
 import { LeaveRoomButton } from '@/components/Buttons/LeaveRoomButton/LeaveRoomButton.tsx'
 
@@ -13,19 +12,7 @@ export function VoteRoom() {
     const feState = useSelector(selectFeState)
     const room = feState.room!
     const playerType = feState.playerType
-    const playerId = feState.playerId
-
-    const shuffledIds = useMemo(() => {
-        const connectedPlayerIdsExceptSelf = getConnectedPlayers(room)
-            .filter((p) => p.id !== playerId)
-            .map((p) => p.id)
-        console.log(connectedPlayerIdsExceptSelf)
-        console.log(Object.keys(room.answers))
-        return shuffleArray(Object.keys(room.answers)).filter((pId) =>
-            connectedPlayerIdsExceptSelf.includes(pId)
-        )
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [room.round])
+    const currentPlayerId = feState.playerId
 
     const submitVote = (playerId: string) => {
         return () => {
@@ -61,9 +48,6 @@ export function VoteRoom() {
             }
         )
     }
-    const numAnswers = Object.keys(room.answers).length
-    console.log(shuffledIds)
-    const isOnlyPersonToVote = numAnswers > 0 && !shuffledIds.length
 
     return (
         <>
@@ -75,11 +59,12 @@ export function VoteRoom() {
                     {/* Instruction or Waiting Message */}
 
                     <div className="flex flex-col gap-3 text-center">
-                        {playerType === PlayerType.LEADER && !numAnswers && (
-                            <Button onClick={reviewScores}>
-                                Review Scores
-                            </Button>
-                        )}
+                        {playerType === PlayerType.LEADER &&
+                            !room.answers.length && (
+                                <Button onClick={reviewScores}>
+                                    Review Scores
+                                </Button>
+                            )}
 
                         <div className="text-center space-y-1">
                             <div className="text-sm uppercase text-muted-foreground tracking-wider">
@@ -108,22 +93,23 @@ export function VoteRoom() {
                                 </div>
                             ) : (
                                 <div className="flex justify-center items-center gap-1 text-muted-foreground text-sm">
-                                    Vote for the best answer!
+                                    Vote for the best answer! You can't vote for
+                                    yourself...
                                 </div>
                             )}
                         </div>
-
-                        {isOnlyPersonToVote
-                            ? 'You are the only person to vote. Wait for others to vote...'
-                            : shuffledIds.length
-                            ? shuffledIds.map((playerId: string) => (
+                        {room.answers.length
+                            ? room.answers.map(({ playerId, answer }) => (
                                   <Button
                                       key={playerId}
                                       onClick={submitVote(playerId)}
-                                      disabled={hasVoted}
+                                      disabled={
+                                          hasVoted ||
+                                          playerId === currentPlayerId
+                                      }
                                       className="rounded-md bg-primary text-primary-foreground px-3 py-2 text-sm break-words"
                                   >
-                                      {room.answers[playerId]}
+                                      {answer}
                                   </Button>
                               ))
                             : 'No one answered! Wait for leader to continue...'}

@@ -26,15 +26,17 @@ export enum RoomStatus {
     REVIEWING_SCORE_SUMMARY = 'reviewing_score_summary',
 }
 
-export interface AnswersMap {
-    [key: string]: string
-}
 export interface VotesMap {
     [key: string]: number
 }
 
 export interface ScoresMap {
     [key: string]: number
+}
+
+export interface AnswerObject {
+    playerId: string
+    answer: string
 }
 
 export interface Room {
@@ -44,7 +46,7 @@ export interface Room {
     prompt?: string
     isGameOver: boolean
     round: number
-    answers: AnswersMap
+    answers: AnswerObject[]
     votes: VotesMap
     scores: ScoresMap
     players: Player[]
