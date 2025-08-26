@@ -124,7 +124,7 @@ export default class RoomTrackerService {
         const playerIndex = room.players.findIndex(
             (player) => player.id === playerId
         )
-        if (!playerIndex) {
+        if (playerIndex === -1) {
             throw new Error(`Player with id ${playerId} does not exist.`)
         }
 
