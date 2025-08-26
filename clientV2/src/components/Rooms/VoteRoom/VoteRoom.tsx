@@ -167,7 +167,12 @@ export function VoteRoom() {
                                     .map(({ playerId, answer }) => {
                                         const isMine =
                                             playerId === currentPlayerId
-                                        const disabled = hasVoted || isMine
+                                        const isDoneAnimating =
+                                            revealedIndex < answers.length
+                                        const disabled =
+                                            hasVoted ||
+                                            isMine ||
+                                            isDoneAnimating
 
                                         return (
                                             <motion.div
