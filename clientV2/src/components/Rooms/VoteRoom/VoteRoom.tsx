@@ -15,6 +15,7 @@ export function VoteRoom() {
     const [hasVoted, setHasVoted] = useState(false)
     const [revealedIndex, setRevealedIndex] = useState(0)
     const isFirstRender = useRef(true)
+    const isDoneAnimating = useRef(false)
 
     const acronym = useSelector(
         (s: ReduxState) => selectFeState(s).room!.acronym
@@ -44,8 +45,9 @@ export function VoteRoom() {
         intervalRef.current = window.setInterval(() => {
             setRevealedIndex((c) => {
                 const next = c + 1
-                if (next >= answers.length) {
+                if (next > answers.length) {
                     if (intervalRef.current) {
+                        isDoneAnimating.current = true
                         clearInterval(intervalRef.current)
                         intervalRef.current = null
                     }
@@ -173,12 +175,10 @@ export function VoteRoom() {
                                     .map(({ playerId, answer }) => {
                                         const isMine =
                                             playerId === currentPlayerId
-                                        const isDoneAnimating =
-                                            revealedIndex < answers.length
                                         const disabled =
                                             hasVoted ||
                                             isMine ||
-                                            isDoneAnimating
+                                            !isDoneAnimating.current
 
                                         return (
                                             <motion.div
