@@ -14,6 +14,7 @@ const REVEAL_DELAY_MS = 2500
 export function VoteRoom() {
     const [hasVoted, setHasVoted] = useState(false)
     const [revealedIndex, setRevealedIndex] = useState(0)
+    const isFirstRender = useRef(true)
 
     const acronym = useSelector(
         (s: ReduxState) => selectFeState(s).room!.acronym
@@ -98,15 +99,20 @@ export function VoteRoom() {
 
     // animation variants: start huge/above, fall/settle into place with a spring
     const itemVariants: any = {
-        hidden: { opacity: 0, y: -120, scale: 2.2, filter: 'blur(8px)' },
-        show: {
-            opacity: 1,
-            y: 0,
-            scale: 1,
-            filter: 'blur(0px)',
-            transition: { type: 'spring', stiffness: 260, damping: 20 },
-        },
+        hidden: isFirstRender.current
+            ? { opacity: 0, y: -120, scale: 2.2, filter: 'blur(8px)' }
+            : false,
+        show: isFirstRender.current
+            ? {
+                  opacity: 1,
+                  y: 0,
+                  scale: 1,
+                  filter: 'blur(0px)',
+                  transition: { type: 'spring', stiffness: 260, damping: 20 },
+              }
+            : 'visible',
     }
+    isFirstRender.current = false
 
     return (
         <>
