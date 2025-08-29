@@ -17,7 +17,6 @@ import {
     SESSION_STORAGE_PLAYER_TYPE_KEY,
     SESSION_STORAGE_ROOM_ID_KEY,
 } from '../../shared/constants.ts'
-import { DebugDetails } from './components/Misc/DebugDetails/DebugDetails.tsx'
 
 export default function App() {
     const { room } = useSelector((state: ReduxState) => state.feState)
@@ -100,7 +99,7 @@ export default function App() {
 
     return (
         <div className="pt-16 bg-background h-screen">
-            <DebugDetails />
+            {/* <DebugDetails /> */}
             {getRoom(status)}
         </div>
     )
