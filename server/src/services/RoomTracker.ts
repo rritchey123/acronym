@@ -47,14 +47,6 @@ export default class RoomTrackerService {
         return this._rooms[roomId]
     }
 
-    getPlayer(playerId: string, room: Room): Player {
-        const player = this.getPlayer(playerId, room)
-        if (!player)
-            throw new Error(
-                `Player with id ${playerId} does not exist in room ${room.id}.`
-            )
-        return player
-    }
     deleteRoom(roomId): void {
         const room = this.getRoom(roomId)
         this.clearNextRoundCallback(room)
@@ -411,7 +403,14 @@ export default class RoomTrackerService {
 
         const room = this.getRoom(roomId)
 
-        const player = this.getPlayer(socket.id, room)
+        const player = room.players.find(
+            (player) => player.socketId === socket.id
+        )
+        if (!player) {
+            throw new Error(
+                `Player with socketId ${socket.id} not found in room ${roomId}`
+            )
+        }
         player.status = PlayerStatus.DISCONNECTED
 
         const atLeastOneConnectedPlayer = room.players.find(
@@ -432,7 +431,10 @@ export default class RoomTrackerService {
         if (!room) {
             throw new Error(`Room ${roomId} does not exist.`)
         }
-        const player = this.getPlayer(playerId, room)
+        const player = room.players.find((player) => player.id === playerId)
+
+        if (!player) throw new Error(`Player not in room.`)
+
         if (player.status !== PlayerStatus.DISCONNECTED)
             throw new Error(`Player already connected in room.`)
 
