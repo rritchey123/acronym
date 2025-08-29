@@ -15,7 +15,7 @@ const http = httpModule.createServer(app)
 const io = new Server<
     ClientToServerEvents,
     ServerToClientEvents,
-    undefined,
+    {},
     undefined
 >(http, {
     cors: {
