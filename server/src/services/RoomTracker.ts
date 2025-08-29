@@ -16,10 +16,10 @@ import {
     PREFER_USER_SUGGESTION_WEIGHT,
 } from '../../../shared/constants'
 
-const DEFAULT_ROOM = {
+const DEFAULT_ROOM: Omit<Room, 'id'> = {
     status: RoomStatus.WAITING,
-    acronym: null,
-    prompt: null,
+    acronym: '',
+    prompt: '',
     isGameOver: false,
     round: 1,
     answers: [],
@@ -41,8 +41,19 @@ export default class RoomTrackerService {
         this._rooms = {}
         this._io = io
     }
-    getRoom(roomId: string): Room | undefined {
+    getRoom(roomId: string): Room {
+        if (!this._rooms[roomId])
+            throw new Error(`Room ${roomId} does not exist.`)
         return this._rooms[roomId]
+    }
+
+    getPlayer(playerId: string, room: Room): Player {
+        const player = this.getPlayer(playerId, room)
+        if (!player)
+            throw new Error(
+                `Player with id ${playerId} does not exist in room ${room.id}.`
+            )
+        return player
     }
     deleteRoom(roomId): void {
         const room = this.getRoom(roomId)
@@ -399,9 +410,8 @@ export default class RoomTrackerService {
         }
 
         const room = this.getRoom(roomId)
-        const player = room.players.find(
-            (player) => player.socketId === socket.id
-        )
+
+        const player = this.getPlayer(socket.id, room)
         player.status = PlayerStatus.DISCONNECTED
 
         const atLeastOneConnectedPlayer = room.players.find(
@@ -422,10 +432,7 @@ export default class RoomTrackerService {
         if (!room) {
             throw new Error(`Room ${roomId} does not exist.`)
         }
-        const player = room.players.find((player) => player.id === playerId)
-
-        if (!player) throw new Error(`Player not in room.`)
-        console.log(player)
+        const player = this.getPlayer(playerId, room)
         if (player.status !== PlayerStatus.DISCONNECTED)
             throw new Error(`Player already connected in room.`)
 
