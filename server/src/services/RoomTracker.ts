@@ -2,6 +2,7 @@ import {
     Player,
     PlayerStatus,
     Room,
+    RoomHistory,
     RoomStatus,
     SuggestionType,
 } from '../../../shared/types'
@@ -30,6 +31,7 @@ const DEFAULT_ROOM = {
     defaultRoundDuration: DEFAULT_ROUND_DURATION,
     currentRoundDuration: DEFAULT_ROUND_DURATION,
     scoreLimit: DEFAULT_SCORE_LIMIT,
+    history: [],
 }
 
 export default class RoomTrackerService {
@@ -221,9 +223,20 @@ export default class RoomTrackerService {
 
     startNextRound(roomId) {
         const room = this.getRoom(roomId)
+        this.trackHistory(room)
         this.newRound(room)
         room.round += 1
         this.updateAllPlayers(roomId)
+    }
+
+    trackHistory(room) {
+        const roomHistory: RoomHistory = {
+            acronym: room.acronym,
+            prompt: room.prompt,
+            answers: [...room.answers],
+            scores: { ...room.scores },
+        }
+        room.history.push(roomHistory)
     }
 
     newRound(room) {
@@ -261,31 +274,67 @@ export default class RoomTrackerService {
     }
 
     getRandomAcronym(room: Room) {
-        if (
+        if (this.shouldGetUserSuggestedAcronym(room)) {
+            return this.getUserSuggestedAcronym(room)
+        }
+        return this.getDefaultAcronym(room)
+    }
+
+    shouldGetUserSuggestedAcronym(room: Room) {
+        return (
             room.acronymSuggestions.length &&
             Math.random() < PREFER_USER_SUGGESTION_WEIGHT
-        ) {
-            const index = Math.floor(
-                Math.random() * room.acronymSuggestions.length
-            )
-            return room.acronymSuggestions.splice(index, 1)
-        } else {
-            return getRandomAcronymFromDb()
-        }
+        )
+    }
+
+    getUserSuggestedAcronym(room: Room) {
+        // Don't have to worry about duplicates, because we remove after use
+        const index = Math.floor(Math.random() * room.acronymSuggestions.length)
+        return room.acronymSuggestions.splice(index, 1)
+    }
+
+    getDefaultAcronym(room: Room) {
+        let acronym
+        do {
+            acronym = getRandomAcronymFromDb()
+        } while (this.hasSeenAcronymBefore(room, acronym))
+        return acronym
+    }
+
+    hasSeenAcronymBefore(room, acronym) {
+        return room.history.some((history) => history.acronym === acronym)
     }
 
     getRandomPrompt(room: Room) {
-        if (
+        if (this.shouldGetUserSuggestedPrompt(room)) {
+            return this.getUserSuggestedPrompt(room)
+        }
+        return this.getDefaultPrompt(room)
+    }
+
+    shouldGetUserSuggestedPrompt(room: Room) {
+        return (
             room.promptSuggestions.length &&
             Math.random() < PREFER_USER_SUGGESTION_WEIGHT
-        ) {
-            const index = Math.floor(
-                Math.random() * room.promptSuggestions.length
-            )
-            return room.promptSuggestions.splice(index, 1)
-        } else {
-            return getRandomPromptFromDb()
-        }
+        )
+    }
+
+    getUserSuggestedPrompt(room: Room) {
+        // Don't have to worry about duplicates, because we remove after use
+        const index = Math.floor(Math.random() * room.promptSuggestions.length)
+        return room.promptSuggestions.splice(index, 1)
+    }
+
+    getDefaultPrompt(room: Room) {
+        let prompt
+        do {
+            prompt = getRandomPromptFromDb()
+        } while (this.hasSeenPromptBefore(room, prompt))
+        return prompt
+    }
+
+    hasSeenPromptBefore(room: Room, prompt: string) {
+        return room.history.some((history) => history.prompt === prompt)
     }
 
     handleUpdateGameRules(roomId, roundDuration, scoreLimit) {

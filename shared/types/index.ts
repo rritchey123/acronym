@@ -39,6 +39,13 @@ export interface AnswerObject {
     answer: string
 }
 
+export interface RoomHistory {
+    acronym: string
+    prompt: string
+    answers: AnswerObject[]
+    scores: ScoresMap
+}
+
 export interface Room {
     id: string
     status: RoomStatus
@@ -57,6 +64,7 @@ export interface Room {
     currentRoundDuration: number
     scoreLimit: number
     nextRoundCallback?: NodeJS.Timeout
+    history: RoomHistory[]
 }
 
 export interface ServerToClientEvents {
